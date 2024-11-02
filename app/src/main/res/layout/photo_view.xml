@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- selected photo preview -->
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="264dp"
+        android:layout_height="239dp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_launcher_background" />
+
+    <!-- edit description button -->
+    <Button
+        android:id="@+id/DescriptionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="59dp"
+        android:layout_marginTop="50dp"
+        android:text="Description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+    <!-- edit tags buttokn -->
+    <Button
+        android:id="@+id/TagsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="59dp"
+        android:text="Tags"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+    <!-- description text view -->
+    <TextView
+        android:id="@+id/photoDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="49dp"
+        android:layout_marginEnd="30dp"
+        android:maxHeight="250dp"
+        android:text="Lorem ipsum odor amet, consectetuer adipiscing elit. Fringilla molestie aenean ut at libero himenaeos congue arcu. Id tristique efficitur vel, dui lacinia neque imperdiet. Dis interdum aliquet odio mollis parturient congue rhoncus. Orci quis faucibus a rhoncus maximus hac. Feugiat dictumst facilisis accumsan magna viverra erat ex ullamcorper. Nibh blandit leo fringilla donec a conubia. Curabitur purus ac ultricies sociosqu hac semper. Rhoncus pellentesque nulla phasellus litora lacinia auctor gravida."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/DescriptionButton" />
+
+    <!-- prototype view tags (EXPERIMENTAL) -->
+    <TableLayout
+        android:id="@+id/tagsTextBox"
+        android:layout_width="409dp"
+        android:layout_height="275dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/photoDescription">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </TableLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -29,6 +29,12 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"></activity>
+        <activity android:name=".photo_view"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
+        </activity> <!-- photo preview Declaration-->
+        <activity android:name=".album"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
+        </activity> <!-- album preview Declaration-->
 
     </application>
 
