@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <!-- Parent ViewPager2 for Horizontal Swiping -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/parentViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+<!--    <Button-->
+<!--        android:id="@+id/Audio"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Audio"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/fabSettings"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        android:background="@color/colorPrimary"-->
+<!--        android:layout_marginTop="16dp"/>-->
+
+    <!-- Floating Action Button for Caregiver Settings -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_menu_manage"
+        android:contentDescription="Settings"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:tint="@android:color/white"
+        app:backgroundTint="@color/colorPrimary" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/upload_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginEnd="180dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_upload"
+        android:contentDescription="Settings"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:tint="@android:color/white"
+        app:backgroundTint="@color/colorPrimary" />
+<!--    <com.google.android.material.button.MaterialButton-->
+<!--        android:id="@+id/uploadButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Upload Photo"-->
+<!--        android:padding="16dp"-->
+<!--        android:textSize="18sp"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:background="@color/white"-->
+
+<!--        app:iconGravity="start"-->
+<!--        app:cornerRadius="12dp"-->
+<!--        android:layout_margin="16dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"/>-->
+
+<!--    <ImageView-->
+<!--        android:id="@+id/previewImage"-->
+<!--        android:layout_width="300dp"-->
+<!--        android:layout_height="300dp"-->
+<!--        android:scaleType="centerCrop"-->
+<!--        android:contentDescription="Preview of selected image"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/uploadButton"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"/>-->
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
