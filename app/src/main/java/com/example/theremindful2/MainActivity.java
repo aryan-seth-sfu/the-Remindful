@@ -2,18 +2,26 @@ package com.example.theremindful2;
 
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.net.Uri;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import android.content.Intent;
+import android.widget.Toast;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,7 +53,46 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-//        SwingUtilities.invokeLater(() -> {
+        // getting the upload button
+        FloatingActionButton upload_button = findViewById(R.id.upload_button);
+
+        // setting listener
+        upload_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                System.out.println("hello there");
+//                Intent i = new Intent(MainActivity.this, FilePicker.class);
+//                startActivity(i);
+
+//                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                intent.setType("*/*");
+//                intent.addCategory(Intent.CATEGORY_OPENABLE);
+//                startActivityForResult(
+//                        Intent.createChooser(intent, "select a file"),
+//                        1
+//                );
+                try {
+                    // Create and start the intent
+                    Intent i = new Intent(MainActivity.this, com.example.theremindful2.FilePicker.class);
+
+                    setContentView(R.layout.activity_main);
+
+                    startActivity(i);  // Use startActivityForResult instead of startActivity
+                } catch (Exception e) {
+                    Log.e("MainActivity", "Error starting FilePickerActivity: " + e.getMessage());
+                    Toast.makeText(MainActivity.this, "Error opening file picker", Toast.LENGTH_SHORT).show();
+                }
+
+
+
+            }
+        });
+
+
+
+
+
+        //        SwingUtilities.invokeLater(() -> {
 //            ImageUploadExample example = new ImageUploadExample();
 //            example.setVisible(true);
 //        });
@@ -70,6 +117,25 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
     }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
+//            String imageUriString = data.getStringExtra("imageUri");
+//            if (imageUriString != null) {
+//                Uri imageUri = Uri.parse(imageUriString);
+//                try {
+//                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+//                    ViewPager2 parentViewPager = findViewById(R.id.parentViewPager);
+////                    parentViewPager.setImageBitmap(bitmap);
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    Toast.makeText(this, "Error loading image", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        }
+//    }
 
 //    public void startActivityForResult (Intent i, int intt) {
 //        System.out.println("hello world");
