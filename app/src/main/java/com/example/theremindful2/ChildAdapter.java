@@ -7,13 +7,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
+
+import com.example.theremindful2.data.Image;
+
+import java.io.File;
 import java.util.List;
 
 public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHolder> {
-    private final List<Integer> photos;
+    private final List<Image> photos;
     private final String themeName;
 
-    public ChildAdapter(List<Integer> photos, String themeName) {
+    public ChildAdapter(List<Image> photos, String themeName) {
         this.photos = photos;
         this.themeName = themeName;
     }
@@ -45,8 +50,12 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
             textViewTheme = itemView.findViewById(R.id.textViewTheme);
         }
 
-        public void bind(int photoResId, String themeName) {
-            imageView.setImageResource(photoResId);
+        public void bind(Image photoResId, String themeName) {
+
+//            imageView.setImageResource(photoResId);
+            Glide.with(itemView.getContext())
+                    .load(new File(photoResId.getImagePath()))
+                    .into(imageView);
             textViewTheme.setText(themeName);
         }
     }

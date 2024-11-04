@@ -31,9 +31,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 
+import com.example.theremindful2.data.Database;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 
 
 public class FilePicker extends AppCompatActivity {
@@ -89,13 +92,14 @@ public class FilePicker extends AppCompatActivity {
                         // Handle confirmation (e.g., save file URI, return to previous activity)
 //                        Intent resultIntent = new Intent();
 //                        i.setData(selectedFileUri);
-//                        String FileAbsPath = saveImageToInternalStorage(selectedFileUri,fileName);
+                        String FileAbsPath = saveImageToInternalStorage(selectedFileUri,fileName);
 
-                        Intent i = new Intent(FilePicker.this, MainActivity.class);
-                        setResult(RESULT_OK, i);
+
+//                        Intent i = new Intent(FilePicker.this, MainActivity.class);
+//                        setResult(RESULT_OK, i);
 
 //                        i.putExtra("filePATH",FileAbsPath);
-                        startActivity(i);
+//                        startActivity(i);
 
                         finish();
                     }
@@ -134,7 +138,7 @@ public class FilePicker extends AppCompatActivity {
         }
         return result;
     }
-    private String saveImageToInternalStorage(Uri imageUri, String fileName) {
+    private String saveImageToInternalStoragee(Uri imageUri, String fileName) {
         try {
             // Convert URI to Bitmap
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
@@ -154,7 +158,57 @@ public class FilePicker extends AppCompatActivity {
             return null;
         }
     }
+    private String saveImageToInternalStorage(Uri imageUri, String fileName) {
+        try {
+            // Get the input stream from Uri
+            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+            if (inputStream == null) return null;
+
+            // Create directory if it doesn't exist
+            File directory = new File(getFilesDir(), "memory_images");
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            // Create the file
+            File file = new File(directory, fileName);
+
+            // Copy the content
+            try (FileOutputStream outputStream = new FileOutputStream(file)) {
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = inputStream.read(buffer)) > 0) {
+                    outputStream.write(buffer, 0, length);
+                }
+                outputStream.flush();
+            }
+
+            inputStream.close();
+
+            Database db = new Database(this);
+            TextInputEditText themeInput = findViewById(R.id.themeInputEditText);
+
+            db.saveImage(file.getAbsolutePath(), String.valueOf(themeInput),"abc", new Database.DatabaseCallback<Long>() {
+
+                @Override
+                public void onSuccess(Long result) {
+                    System.out.println("image saved in database.");
+                }
+
+                @Override
+                public void onError(Exception e) {
+
+                }
+            });
+            return file.getAbsolutePath();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
+
 //    private static final int PICK_FILE_REQUEST_CODE = 1;
 //    private static final String TAG = "FilePicker";
 //    private Uri selectedFileUri;

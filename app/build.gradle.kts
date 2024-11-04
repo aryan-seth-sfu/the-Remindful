@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -29,6 +31,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
     buildFeatures {
         viewBinding = true
     }
@@ -44,4 +49,12 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(libs.activity.ktx)
     implementation(libs.activity.compose)
+    val roomVersion = "2.6.1"
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+    implementation(libs.glide.core)
+    ksp(libs.glide.compiler)
+
+
 }

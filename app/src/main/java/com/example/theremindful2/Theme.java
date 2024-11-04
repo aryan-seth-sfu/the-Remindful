@@ -8,14 +8,17 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
+
+import com.example.theremindful2.data.Image;
+
 import java.util.Arrays;
 import java.util.List;
 
 public class Theme {
     private final String name;
-    private final List<Integer> photos;
+    private final List<Image> photos;
 
-    public Theme(String name, List<Integer> photos) {
+    public Theme(String name, List<Image> photos) {
         this.name = name;
         this.photos = photos;
     }
@@ -24,7 +27,10 @@ public class Theme {
         return name;
     }
 
-    public List<Integer> getPhotos() {
+    public List<Image> getPhotos() {
         return photos;
+    }
+    public void addPhoto(Image photo) {
+        photos.add(photo);
     }
 }
