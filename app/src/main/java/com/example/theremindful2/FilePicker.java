@@ -1,4 +1,5 @@
 package com.example.theremindful2;
+import com.example.theremindful2.MainActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.database.Cursor;
@@ -86,19 +87,28 @@ public class FilePicker extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         // Handle confirmation (e.g., save file URI, return to previous activity)
-                        Intent resultIntent = new Intent();
-                        resultIntent.setData(selectedFileUri);
-                        setResult(RESULT_OK, resultIntent);
-                        saveImageToInternalStorage(selectedFileUri,fileName);
+//                        Intent resultIntent = new Intent();
+//                        i.setData(selectedFileUri);
+//                        String FileAbsPath = saveImageToInternalStorage(selectedFileUri,fileName);
+
+                        Intent i = new Intent(FilePicker.this, MainActivity.class);
+                        setResult(RESULT_OK, i);
+
+//                        i.putExtra("filePATH",FileAbsPath);
+                        startActivity(i);
+
                         finish();
                     }
                 });
             } else {
-                // If no file was selected, finish the activity
+                Intent i = new Intent(FilePicker.this, MainActivity.class);
+                startActivity(i);
                 finish();
             }
         } else {
             // If user canceled the picker, finish the activity
+            Intent i = new Intent(FilePicker.this, MainActivity.class);
+            startActivity(i);
             finish();
         }
     }
@@ -144,7 +154,8 @@ public class FilePicker extends AppCompatActivity {
             return null;
         }
     }
-}//    private static final int PICK_FILE_REQUEST_CODE = 1;
+}
+//    private static final int PICK_FILE_REQUEST_CODE = 1;
 //    private static final String TAG = "FilePicker";
 //    private Uri selectedFileUri;
 //    private TextView selectedFileTextView;
