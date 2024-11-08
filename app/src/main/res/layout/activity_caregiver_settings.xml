@@ -10,7 +10,9 @@
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/parentViewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent" >
+    </androidx.viewpager2.widget.ViewPager2>
 
     <!-- Floating Action Button for Caregiver Settings -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -44,69 +46,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- preview of images and albums -->
-    <ScrollView
-        android:layout_width="409dp"
-        android:layout_height="342dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/uploadButton">
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/flexBoxImages"
+        android:layout_width="412dp"
+        android:layout_height="345dp"
+        app:flexWrap="wrap"
+        app:justifyContent="flex_start"
+        app:layout_constraintBottom_toTopOf="@+id/newAlbumsButton"
+        app:layout_constraintTop_toBottomOf="@+id/uploadButton"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="-3dp"
 
-        <LinearLayout
-            android:id = "@+id/layoutUpload"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src = "@drawable/ic_launcher_foreground"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src = "@drawable/ic_launcher_foreground"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src = "@drawable/ic_launcher_foreground"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src = "@drawable/ic_launcher_foreground"/>
+    />
 
-        </LinearLayout>
-
-    </ScrollView>
-
-    <ScrollView
-        android:layout_width="409dp"
-        android:layout_height="165dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newAlbumsButton">
-
-        <LinearLayout
-            android:id = "@+id/layoutAlbums"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src = "@drawable/ic_launcher_foreground"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src = "@drawable/ic_launcher_foreground"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src = "@drawable/ic_launcher_foreground"/>
-
-
-        </LinearLayout>
-    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

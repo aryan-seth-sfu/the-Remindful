@@ -30,7 +30,6 @@ public class ImageUploadActivity extends Activity {
                 openGallery();
             }
         });
-//        System.out.println
     }
 
     private void openGallery() {

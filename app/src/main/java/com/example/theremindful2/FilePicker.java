@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import java.util.UUID;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -90,6 +91,32 @@ public class FilePicker extends AppCompatActivity {
 //                        Intent resultIntent = new Intent();
 //                        i.setData(selectedFileUri);
 //                        String FileAbsPath = saveImageToInternalStorage(selectedFileUri,fileName);
+
+                        Bitmap bitmap = null;
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedFileUri);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        if (bitmap != null) {
+                            try {
+                                String fileName = "image_" + UUID.randomUUID().toString() + ".jpg";
+                                // Define the file name and location
+                                File file = new File(getFilesDir(), fileName);
+
+                                // Open a file output stream to save the image
+                                FileOutputStream fos = new FileOutputStream(file);
+
+                                // Compress the bitmap and write to the output stream
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+
+                                // Close the output stream
+                                fos.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
 
                         Intent i = new Intent(FilePicker.this, MainActivity.class);
                         setResult(RESULT_OK, i);

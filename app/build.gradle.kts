@@ -44,4 +44,6 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(libs.activity.ktx)
     implementation(libs.activity.compose)
+    implementation(libs.biometric)
+    implementation(libs.flexbox)
 }
