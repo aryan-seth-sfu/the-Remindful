@@ -48,6 +48,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:tint="@android:color/white"
         app:backgroundTint="@color/colorPrimary" />
+<!--        Button for music player-->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/music_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="340dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_music_note"
+            android:contentDescription="Music"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:tint="@android:color/white"
+            app:backgroundTint="@color/colorPrimary" />
+
 <!--    <com.google.android.material.button.MaterialButton-->
 <!--        android:id="@+id/uploadButton"-->
 <!--        android:layout_width="wrap_content"-->
