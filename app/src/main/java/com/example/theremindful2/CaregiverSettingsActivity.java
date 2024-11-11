@@ -26,9 +26,16 @@ import com.example.theremindful2.databinding.ActivityMainBinding;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CaregiverSettingsActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> FilePickerLauncher;
@@ -50,32 +57,83 @@ public class CaregiverSettingsActivity extends AppCompatActivity {
         File directory = getFilesDir(); // Internal storage directory
         File[] files = directory.listFiles(); // List all files
 
-        List<Bitmap> imageBitmaps = new ArrayList<>();
+        List<Uri> imageUriList = new ArrayList<>();
+
+        FlexboxLayout albums = findViewById(R.id.flexBoxAlbum);
 
         if (files != null) {
             for (File file : files) {
                 if (file.isFile() && file.getName().endsWith(".jpg")) { // Or any extension you're using
-                    Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-                    imageBitmaps.add(bitmap);
+                    Uri imageUri = Uri.fromFile(file);
+                    imageUriList.add(imageUri);
+
+                }
+                if (file.isFile() && file.getName().endsWith(".json"))   {
+                    ImageView image = new ImageView(this);
+                    image.setImageResource(R.drawable.ic_launcher_foreground);
+                    // Set layout parameters to control the size
+                    FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
+                            300,  // Width of the image, adjust as needed
+                            300   // Height of the image, adjust as needed
+                    );
+                    layoutParams.setMargins(16, 16, 16, 16); // Optional margin around each image
+                    image.setLayoutParams(layoutParams);
+                    image.setTag(file.getName());
+                    // Add the ImageView to the FlexboxLayout
+                    albums.addView(image);
+
                 }
             }
         }
         FlexboxLayout flexboxImages = findViewById(R.id.flexBoxImages);
 
-        for (Bitmap bitmap : imageBitmaps) {
-            addImageToFlexBoxLayout(bitmap, flexboxImages);
+        for (Uri imageUri : imageUriList) {
+            addImageToFlexBoxLayout(imageUri, flexboxImages);
         }
-
-
-
-
         // New Album
-        //TODO: create a new album
         Button newAlbum = (Button)findViewById(R.id.newAlbumsButton);
         newAlbum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(CaregiverSettingsActivity.this,"Album Button Pressed",Toast.LENGTH_SHORT).show();
+                JSONObject albumInfo = new JSONObject();
+                String albumPath = UUID.randomUUID().toString() + "_info.json";
+                try{
+                    albumInfo.put("album_name","New Album");
+                    JSONArray imagesArray = new JSONArray();
+                    albumInfo.put("images",imagesArray);
+
+                    // Save the JSON metadata to a file
+                    File albumInfoFile = new File(directory, albumPath);
+                    try (FileWriter writer = new FileWriter(albumInfoFile)) {
+                        writer.write(albumInfo.toString());
+                    }
+                }catch(IOException e){
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                // Create an ImageView for the album thumbnail
+                ImageView thumbnailView = new ImageView(CaregiverSettingsActivity.this);
+                thumbnailView.setImageResource(R.drawable.ic_launcher_foreground); // Set placeholder image
+                FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
+                        300,  // Width of the thumbnail
+                        300   // Height of the thumbnail
+                );
+                layoutParams.setMargins(16, 16, 16, 16); // Optional margin
+                thumbnailView.setLayoutParams(layoutParams);
+                thumbnailView.setTag(albumPath);
+                thumbnailView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(CaregiverSettingsActivity.this, album.class);
+                        Toast.makeText(CaregiverSettingsActivity.this,"album Button Pressed" + thumbnailView.getTag(),Toast.LENGTH_SHORT).show();
+                        intent.putExtra("album", thumbnailView.getTag().toString());
+                        startActivity(intent);
+                    }
+                });
+                // Add the thumbnail ImageView to the FlexboxLayout
+                albums.addView(thumbnailView);
             }
         });
         //Make all image preview clickable to go to photo preview
@@ -85,8 +143,9 @@ public class CaregiverSettingsActivity extends AppCompatActivity {
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(CaregiverSettingsActivity.this,"image Button Pressed",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(CaregiverSettingsActivity.this, photo_view.class);
+                        Object Tag = view.getTag();
+                        intent.putExtra("Uri", Tag.toString());
                         startActivity(intent);
 
                     }
@@ -96,22 +155,25 @@ public class CaregiverSettingsActivity extends AppCompatActivity {
 
 
         //Make all albums(album images) clickable to go to album preview images
-        /*
-        LinearLayout albumView = findViewById(R.id.layoutAlbums);
-        for(int images = 0; images < albumView.getChildCount(); images++){
-            View view = albumView.getChildAt(images);
+
+        for(int images = 0; images < albums.getChildCount(); images++){
+            View view = albums.getChildAt(images);
             if(view instanceof ImageView){
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Toast.makeText(CaregiverSettingsActivity.this,"album Button Pressed",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(CaregiverSettingsActivity.this, album.class);
+                        Object album = view.getTag();
+                        Toast.makeText(CaregiverSettingsActivity.this,"album Button Pressed" + album,Toast.LENGTH_SHORT).show();
+
+                        intent.putExtra("album", album.toString());
                         startActivity(intent);
                     }
                 });
             }
         }
-        */
+
 
         FilePickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -143,9 +205,10 @@ public class CaregiverSettingsActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
-    private void addImageToFlexBoxLayout(Bitmap bitmap, FlexboxLayout flexBox){
+    private void addImageToFlexBoxLayout(Uri imageUri, FlexboxLayout flexBox){
         ImageView imageView = new ImageView(this);
-        imageView.setImageBitmap(bitmap);
+        imageView.setImageURI(imageUri);
+        imageView.setTag(imageUri);
         // Set layout parameters to control the size
         FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
                 300,  // Width of the image, adjust as needed
@@ -156,8 +219,6 @@ public class CaregiverSettingsActivity extends AppCompatActivity {
 
         // Add the ImageView to the FlexboxLayout
         flexBox.addView(imageView);
-
-
     }
 
 }

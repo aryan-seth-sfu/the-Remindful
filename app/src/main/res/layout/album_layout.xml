@@ -14,33 +14,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
     <!-- photos in album -->
-    <ScrollView
-        android:layout_width="409dp"
-        android:layout_height="681dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/AlbumAddPhoto">
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/AlbumPhoto"
+        android:layout_width="412dp"
+        android:layout_height="345dp"
+        app:flexWrap="wrap"
+        app:justifyContent="flex_start"
+        app:layout_constraintTop_toBottomOf="@+id/AlbumAddPhoto"
 
-        <LinearLayout
-            android:id = "@+id/AlbumPhoto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src = "@drawable/ic_launcher_foreground"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src = "@drawable/ic_launcher_foreground"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src = "@drawable/ic_launcher_foreground"/>
-        </LinearLayout>
-    </ScrollView>
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="1dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

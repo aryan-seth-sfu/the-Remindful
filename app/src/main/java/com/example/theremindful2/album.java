@@ -8,6 +8,8 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.flexbox.FlexboxLayout;
+
 public class album extends AppCompatActivity{
     @Override
 
@@ -19,8 +21,13 @@ public class album extends AppCompatActivity{
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        Intent intent = getIntent();
+        String path = intent.getStringExtra("album");
+
+
+
         //Make all photos in the album view clickable leading to image view
-        LinearLayout photoTap = findViewById(R.id.AlbumPhoto);
+        FlexboxLayout photoTap = findViewById(R.id.AlbumPhoto);
         for(int images = 0; images < photoTap.getChildCount();images++){
             View view = photoTap.getChildAt(images);
             if(view instanceof ImageView){

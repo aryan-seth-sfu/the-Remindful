@@ -1,7 +1,10 @@
 package com.example.theremindful2;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
@@ -12,6 +15,13 @@ public class photo_view extends AppCompatActivity{
     protected void onCreate(Bundle savedInstaceState){
         super.onCreate(savedInstaceState);
         setContentView(R.layout.photo_view);
+
+        Intent intent = getIntent();
+        String UriString = intent.getStringExtra("Uri");
+        Uri imageUri = Uri.parse(UriString);
+
+        ImageView image = findViewById(R.id.imageView2);
+        image.setImageURI(imageUri);
 
         // Enable the action bar back button
         ActionBar actionBar = getSupportActionBar();
