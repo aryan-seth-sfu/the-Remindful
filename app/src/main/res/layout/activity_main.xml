@@ -12,16 +12,6 @@
         android:id="@+id/parentViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-<!--    <Button-->
-<!--        android:id="@+id/Audio"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Audio"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/fabSettings"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        android:background="@color/colorPrimary"-->
-<!--        android:layout_marginTop="16dp"/>-->
 
     <!-- Floating Action Button for Caregiver Settings -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -35,47 +25,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:tint="@android:color/white"
         app:backgroundTint="@color/colorPrimary" />
+
+    <!-- Floating Action Button for Upload -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/upload_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:layout_marginEnd="180dp"
         android:layout_marginBottom="16dp"
         android:src="@drawable/ic_upload"
-        android:contentDescription="Settings"
+        android:contentDescription="Upload"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:tint="@android:color/white"
         app:backgroundTint="@color/colorPrimary" />
-<!--    <com.google.android.material.button.MaterialButton-->
-<!--        android:id="@+id/uploadButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Upload Photo"-->
-<!--        android:padding="16dp"-->
-<!--        android:textSize="18sp"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:background="@color/white"-->
 
-<!--        app:iconGravity="start"-->
-<!--        app:cornerRadius="12dp"-->
-<!--        android:layout_margin="16dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        app:layout_constraintRight_toRightOf="parent"/>-->
-
-<!--    <ImageView-->
-<!--        android:id="@+id/previewImage"-->
-<!--        android:layout_width="300dp"-->
-<!--        android:layout_height="300dp"-->
-<!--        android:scaleType="centerCrop"-->
-<!--        android:contentDescription="Preview of selected image"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/uploadButton"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        app:layout_constraintRight_toRightOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"/>-->
-
-
+    <!-- New Floating Action Button for Task Book -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabTaskBook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_task_book"
+        android:contentDescription="Daily Tasks"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:tint="@android:color/white"
+        app:backgroundTint="@color/colorPrimary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

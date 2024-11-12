@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.theremindful2">
+
+    <!-- Camera permission for accessing the device's camera -->
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,20 +27,25 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- MainActivity Declaration -->
+        </activity>
+
+        <!-- MainActivity Declaration -->
         <activity
             android:name=".MainActivity"
             android:exported="false"></activity>
-        <activity android:name=".photo_view"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
-        </activity> <!-- photo preview Declaration-->
-        <activity android:name=".album"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
-        </activity> <!-- album preview Declaration-->
 
+        <!-- photo preview Declaration -->
+        <activity
+            android:name=".photo_view"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
+        </activity>
+
+        <!-- album preview Declaration -->
+        <activity
+            android:name=".album"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
+        </activity>
     </application>
-
 </manifest>

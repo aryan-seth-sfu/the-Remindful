@@ -23,6 +23,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 
+
+import androidx.fragment.app.DialogFragment;
+
 public class MainActivity extends AppCompatActivity {
 
 //    private Button u_button;
@@ -85,6 +88,18 @@ private ActivityResultLauncher<Intent> FilePickerLauncher;
                     Toast.makeText(MainActivity.this, "Error opening file picker", Toast.LENGTH_SHORT).show();
                 }
 
+            }
+
+        });
+
+        // Daily Task Feature
+        FloatingActionButton fabTaskBook = findViewById(R.id.fabTaskBook);
+        fabTaskBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show the TaskDialogFragment
+                DialogFragment taskDialog = new TaskDialogFragment();
+                taskDialog.show(getSupportFragmentManager(), "TaskDialog");
             }
         });
 
