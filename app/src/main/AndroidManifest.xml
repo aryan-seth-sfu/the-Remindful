@@ -1,26 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.theremindful2">
+    package="com.example.theremindful2" >
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
+        <service
+            android:name=".MusicService"
+            android:enabled="true"
+            android:exported="false" />
+        <activity
+            android:name=".audioactivity"
+            android:exported="false" />
         <activity android:name=".FilePicker" />
         <activity
             android:name=".CaregiverSettingsActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
-
-        <activity android:name=".ImageUploadActivity"></activity>
-        <!-- SplashActivity Declaration - Set as Launcher Activity -->
+        <activity android:name=".ImageUploadActivity" /> <!-- SplashActivity Declaration - Set as Launcher Activity -->
         <activity
             android:name=".SplashActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,14 +36,18 @@
         </activity> <!-- MainActivity Declaration -->
         <activity
             android:name=".MainActivity"
-            android:exported="false"></activity>
-        <activity android:name=".photo_view"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
-        </activity> <!-- photo preview Declaration-->
-        <activity android:name=".album"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
-        </activity> <!-- album preview Declaration-->
-
+            android:exported="false" />
+        <activity
+            android:name=".photo_view"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" >
+        </activity> <!-- photo preview Declaration -->
+        <activity
+            android:name=".album"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" >
+        </activity>
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

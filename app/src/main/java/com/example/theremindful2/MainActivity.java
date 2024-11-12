@@ -27,6 +27,11 @@ public class MainActivity extends AppCompatActivity {
 
 //    private Button u_button;
 //    Uri Image;
+// uri gets path of audio file
+Uri audio;
+    // Button for choosing audio and extracting it
+    private Button audioButton;
+    private ActivityResultLauncher<Intent> audioPickerLauncher;
 
 
 
@@ -52,6 +57,34 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, com.example.theremindful2.CaregiverSettingsActivity.class);
             startActivity(intent);
         });
+        FloatingActionButton musicButton = findViewById(R.id.music_button);
+        musicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Intent to start MusicUploadActivity
+                Intent intent = new Intent(MainActivity.this, audioactivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+        // ActivityResultLauncher to start a launcer that gets a result (audio file) from it
+        // register for activity result will be a launcher that starts activity and deals with audio file
+        // new activitiy result contracts... starts activity fetches result
+        audioPickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), audioReturned-> {
+
+                    if (audioReturned.getResultCode() == RESULT_OK){
+                        Intent datafile = audioReturned.getData();
+                        if (datafile != null){
+                            audio = datafile.getData();
+
+
+                        }
+
+                    }
+                }
+        );
 
         // getting the upload button
         FloatingActionButton upload_button = findViewById(R.id.upload_button);
