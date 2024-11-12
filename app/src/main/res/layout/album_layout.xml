@@ -17,11 +17,26 @@
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/AlbumPhoto"
         android:layout_width="412dp"
-        android:layout_height="345dp"
+        android:layout_height="681dp"
         app:flexWrap="wrap"
         app:justifyContent="flex_start"
         app:layout_constraintTop_toBottomOf="@+id/AlbumAddPhoto"
 
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="1dp" />
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/AllPhotosView"
+        android:layout_width="412dp"
+        android:layout_height="730dp"
+        android:layout_marginBottom="1dp"
+        android:visibility="invisible"
+        app:flexWrap="wrap"
+
+        app:justifyContent="flex_start"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 </androidx.constraintlayout.widget.ConstraintLayout>
