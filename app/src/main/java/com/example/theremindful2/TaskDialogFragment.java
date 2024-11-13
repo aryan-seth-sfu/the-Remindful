@@ -1,6 +1,7 @@
 package com.example.theremindful2;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -48,7 +49,7 @@ public class TaskDialogFragment extends DialogFragment {
         Button okayButton = view.findViewById(R.id.okayButton);
         okayButton.setOnClickListener(v -> {
             // Check for camera permission
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+           /* if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
                     != PackageManager.PERMISSION_GRANTED) {
                 // Request camera permission
                 ActivityCompat.requestPermissions(requireActivity(),
@@ -56,34 +57,58 @@ public class TaskDialogFragment extends DialogFragment {
             } else {
                 // Open the camera if permission is already granted
                 openCamera();
-            }
+            }*/
+            openCamera();
+
         });
 
         return builder.create();
     }
 
     // Method to open the camera
-    private void openCamera() {
+   /* private void openCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
             startActivity(intent);
         } else {
             Toast.makeText(requireContext(), "No camera app found", Toast.LENGTH_SHORT).show();
         }
-    }
+    }*/
 
     // Handle the permission result
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                // Permission granted, open the camera
+//                openCamera();
+//            } else {
+//                // Permission denied, show a message
+//                Toast.makeText(requireContext(), "Camera permission is required to take a picture", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//    }
+    private static final int CAMERA_REQUEST_CODE = 1001;
+
+    private void openCamera() {
+        Intent intent = new Intent(requireActivity(), CameraActivity.class);
+        startActivityForResult(intent, CAMERA_REQUEST_CODE);
+    }
+
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, open the camera
-                openCamera();
-            } else {
-                // Permission denied, show a message
-                Toast.makeText(requireContext(), "Camera permission is required to take a picture", Toast.LENGTH_SHORT).show();
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                String photoPath = data.getStringExtra("photo_path");
+                // Handle the captured photo path here
+                // You can save it to your Room database or handle it as needed
+                Toast.makeText(requireContext(),
+                        "Photo saved: " + photoPath, Toast.LENGTH_SHORT).show();
+                System.out.print("Photo saved: " + photoPath );
+
             }
         }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

@@ -2,10 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.theremindful2">
 
-    <!-- Camera permission for accessing the device's camera -->
+    <!-- Place permissions here, right after manifest tag and before application tag -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -14,16 +16,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".FilePicker" />
         <activity
             android:name=".CaregiverSettingsActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
 
-        <activity android:name=".ImageUploadActivity"></activity>
-        <!-- SplashActivity Declaration - Set as Launcher Activity -->
+        <activity android:name=".ImageUploadActivity" />
+
         <activity
-            android:name=".SplashActivity"
+            android:name=".CameraActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,21 +39,13 @@
             </intent-filter>
         </activity>
 
-        <!-- MainActivity Declaration -->
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"></activity>
-
-        <!-- photo preview Declaration -->
         <activity
             android:name=".photo_view"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
-        </activity>
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
 
-        <!-- album preview Declaration -->
         <activity
             android:name=".album"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
-        </activity>
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
     </application>
+
 </manifest>
