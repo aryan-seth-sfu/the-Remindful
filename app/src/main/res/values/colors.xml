@@ -10,4 +10,6 @@
     <color name="colorPrimary">#6200EE</color> <!-- Primary color defined here -->
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+    <color name="light_gray">#C5C3C3</color>
+    <color name="dark_gray">#747474</color>
 </resources>

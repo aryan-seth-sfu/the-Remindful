@@ -20,7 +20,7 @@ public class ImageUploadActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         // Initialize views
-        uploadButton = findViewById(R.id.upload_button);
+        //uploadButton = findViewById(R.id.upload_button);
         imageView = findViewById(R.id.parentViewPager);
 
         // Set click listener for upload button

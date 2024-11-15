@@ -16,10 +16,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".FilePicker" />
-        <activity
-            android:name=".CaregiverSettingsActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
 
         <activity android:name=".ImageUploadActivity"></activity>
         <!-- SplashActivity Declaration - Set as Launcher Activity -->
@@ -36,11 +32,11 @@
             android:name=".MainActivity"
             android:exported="false"></activity>
         <activity android:name=".photo_view"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
-        </activity> <!-- photo preview Declaration-->
+
+        /> <!-- photo preview Declaration-->
         <activity android:name=".album"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
-        </activity> <!-- album preview Declaration-->
+
+        /> <!-- album preview Declaration-->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -50,6 +46,9 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+        <activity android:name=".Menu"></activity>
+        <activity android:name=".CareGiverImagesSettingsActivity"></activity>
+
     </application>
 
 </manifest>

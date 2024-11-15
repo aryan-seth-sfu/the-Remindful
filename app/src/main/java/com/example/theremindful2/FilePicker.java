@@ -118,7 +118,7 @@ public class FilePicker extends AppCompatActivity {
                         }
 
 
-                        Intent i = new Intent(FilePicker.this, CaregiverSettingsActivity.class);
+                        Intent i = new Intent(FilePicker.this, CareGiverImagesSettingsActivity.class);
                         setResult(RESULT_OK, i);
 
 //                        i.putExtra("filePATH",FileAbsPath);
@@ -128,13 +128,13 @@ public class FilePicker extends AppCompatActivity {
                     }
                 });
             } else {
-                Intent i = new Intent(FilePicker.this, CaregiverSettingsActivity.class);
+                Intent i = new Intent(FilePicker.this, CareGiverImagesSettingsActivity.class);
                 startActivity(i);
                 finish();
             }
         } else {
             // If user canceled the picker, finish the activity
-            Intent i = new Intent(FilePicker.this, CaregiverSettingsActivity.class);
+            Intent i = new Intent(FilePicker.this, CareGiverImagesSettingsActivity.class);
             startActivity(i);
             finish();
         }

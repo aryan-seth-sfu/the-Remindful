@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -19,6 +21,7 @@ import com.google.android.flexbox.FlexboxLayout;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,23 +40,22 @@ public class album extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_layout);
-        // Enable the action bar back button
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
 
         FlexboxLayout photoTap = findViewById(R.id.AlbumPhoto);
 
+        TextView albumName = findViewById(R.id.AlbumName);
+        FlexboxLayout allPhotos = findViewById(R.id.AllPhotosView);
 
-        Button uploadButton = findViewById(R.id.AlbumAddPhoto);
+        ImageButton uploadButton = findViewById(R.id.AlbumAddPhoto);
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                albumName.setVisibility(View.INVISIBLE);
+
                 List<File> imageFiles = getAllImagesInInternalStorage();
                 uploadButton.setVisibility(View.INVISIBLE);
                 photoTap.setVisibility(View.INVISIBLE);
-                FlexboxLayout allPhotos = findViewById(R.id.AllPhotosView);
                 allPhotos.setVisibility(View.VISIBLE);
                 allPhotos.removeAllViews();
                 try {
@@ -89,6 +91,7 @@ public class album extends AppCompatActivity{
 
                 Log.d("Image URI", imageFiles.toString());
                 clickableUpdate();
+
             }
         });
 
@@ -108,14 +111,72 @@ public class album extends AppCompatActivity{
                 });
             }
         }
+        ImageButton backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        Button editAlbumName = findViewById(R.id.editAlbumName);
+        Button deleteAlbum = findViewById(R.id.deleteAlbum);
+        Button cancelEdit = findViewById(R.id.cancelEditAlbum);
+        ImageButton editButton = findViewById(R.id.editButton);
+
+        editAlbumName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                albumName.setVisibility(View.VISIBLE);
+                editAlbumName.setVisibility(View.INVISIBLE);
+                deleteAlbum.setVisibility(View.INVISIBLE);
+                allPhotos.setVisibility(View.VISIBLE);
+                cancelEdit.setVisibility(View.INVISIBLE);
+                uploadButton.setVisibility(View.VISIBLE);
+                editButton.setVisibility(View.VISIBLE);
+            }
+        });
+        deleteAlbum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                albumName.setVisibility(View.VISIBLE);
+                editAlbumName.setVisibility(View.INVISIBLE);
+                deleteAlbum.setVisibility(View.INVISIBLE);
+                allPhotos.setVisibility(View.VISIBLE);
+                cancelEdit.setVisibility(View.INVISIBLE);
+                uploadButton.setVisibility(View.VISIBLE);
+                editButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                allPhotos.setVisibility(View.INVISIBLE);
+                albumName.setVisibility(View.INVISIBLE);
+                editAlbumName.setVisibility(View.VISIBLE);
+                deleteAlbum.setVisibility(View.VISIBLE);
+                cancelEdit.setVisibility(View.VISIBLE);
+                uploadButton.setVisibility(View.INVISIBLE);
+                editButton.setVisibility(View.INVISIBLE);
+            }
+        });
+        cancelEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                albumName.setVisibility(View.VISIBLE);
+                editAlbumName.setVisibility(View.INVISIBLE);
+                deleteAlbum.setVisibility(View.INVISIBLE);
+                allPhotos.setVisibility(View.VISIBLE);
+                cancelEdit.setVisibility(View.INVISIBLE);
+                uploadButton.setVisibility(View.VISIBLE);
+                editButton.setVisibility(View.VISIBLE);
+            }
+        });
 
 
     }
-    public boolean onSupportNavigateUp() {
-        // Handles the action when the back button is pressed
-        onBackPressed();
-        return true;
-    }
+
     public List<File> getAllImagesInInternalStorage() {
         File directory = getFilesDir(); // Use getExternalFilesDir() for external storage
         List<File> imageFiles = new ArrayList<>();
@@ -137,7 +198,8 @@ public class album extends AppCompatActivity{
     public void clickableUpdate(){
         FlexboxLayout allPhotos = findViewById(R.id.AllPhotosView);
         FlexboxLayout photoTap = findViewById(R.id.AlbumPhoto);
-        Button uploadButton = findViewById(R.id.AlbumAddPhoto);
+        ImageButton uploadButton = findViewById(R.id.AlbumAddPhoto);
+        TextView albumName = findViewById(R.id.AlbumName);
         for(int images = 0; images < allPhotos.getChildCount(); images++){
             View view = allPhotos.getChildAt(images);
             if(view instanceof ImageView){
@@ -162,6 +224,7 @@ public class album extends AppCompatActivity{
 
                         // Add the copied ImageView to the 'photoTap' FlexboxLayout
                         photoTap.addView(clickedImage);
+                        albumName.setVisibility(View.VISIBLE);
                         try {
                             JSONObject newAlbumData = new JSONObject();
                             newAlbumData.put("images",String.valueOf(imageUri));

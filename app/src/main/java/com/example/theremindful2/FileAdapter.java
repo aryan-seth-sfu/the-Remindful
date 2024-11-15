@@ -61,7 +61,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
 
         FileViewHolder(View itemView) {
             super(itemView);
-            fileNameText = itemView.findViewById(R.id.upload_button);
+            //fileNameText = itemView.findViewById(R.id.upload_button);
         }
     }
 }

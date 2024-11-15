@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import android.content.Intent;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -44,51 +45,15 @@ private ActivityResultLauncher<Intent> FilePickerLauncher;
         // Set the orientation for horizontal swiping
         parentViewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
 
-        // Reference to the Floating Action Button to open Caregiver Settings
-        FloatingActionButton fabSettings = findViewById(R.id.fabSettings);
-
-        // Handle click on the Floating Action Button to open Caregiver Settings Activity
-        fabSettings.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, com.example.theremindful2.CaregiverSettingsActivity.class);
-            startActivity(intent);
-        });
-
-        // getting the upload button
-        FloatingActionButton upload_button = findViewById(R.id.upload_button);
-
-        // setting the register for FilePicker
-        FilePickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    Intent data = result.getData();
-                    if (data != null) {
-                        System.out.println(data.getStringExtra("filePATH"));
-                    }
-                });
-
-
-        // setting listener
-        upload_button.setOnClickListener(new View.OnClickListener() {
+        ImageButton menu = findViewById(R.id.menu_button);
+        menu.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                try {
-                    // Create and start the intent
-//                    Intent i = new Intent(MainActivity.this, com.example.theremindful2.FilePicker.class);
-//
-//                    setContentView(R.layout.activity_main);
-//
-//                    startActivity(i);  // Use startActivityForResult instead of startActivity
-
-                    Intent i = new Intent(MainActivity.this, FilePicker.class);
-                    FilePickerLauncher.launch(i);
-                } catch (Exception e) {
-                    Log.e("MainActivity", "Error starting FilePickerActivity: " + e.getMessage());
-                    Toast.makeText(MainActivity.this, "Error opening file picker", Toast.LENGTH_SHORT).show();
-                }
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, Menu.class);
+                startActivity(intent);
 
             }
         });
-
-
 
 
     }
