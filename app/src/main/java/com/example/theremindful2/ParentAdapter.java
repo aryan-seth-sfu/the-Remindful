@@ -18,12 +18,7 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentView
 
     public ParentAdapter(Context context) {
         this.context = context;
-        this.themes = Arrays.asList(
-                new Theme("Sunset", Arrays.asList(R.drawable.sunset1, R.drawable.sunset2)),
-                new Theme("Fishing", Arrays.asList(R.drawable.fishing1, R.drawable.fishing2)),
-                new Theme("Mountains", Arrays.asList(R.drawable.mountain1, R.drawable.mountain2)),
-                new Theme("Beach", Arrays.asList(R.drawable.beach1, R.drawable.beach2, R.drawable.beach3, R.drawable.beach4))
-        );
+        this.themes = MetadataUtils.loadThemesFromStorage(context);
     }
 
     @NonNull

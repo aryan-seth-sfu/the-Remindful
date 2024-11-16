@@ -1,5 +1,6 @@
 package com.example.theremindful2;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,8 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
         }
 
         public void bind(int photoResId, String themeName) {
-            imageView.setImageResource(photoResId);
+            Uri imageUri = Uri.parse("android.resource://com.example.theremindful2/" + photoResId);
+            imageView.setImageURI(imageUri);
             textViewTheme.setText(themeName);
         }
     }

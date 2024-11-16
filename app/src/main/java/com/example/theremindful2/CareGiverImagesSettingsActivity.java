@@ -3,6 +3,8 @@ package com.example.theremindful2;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -54,8 +57,11 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                     imageUriList.add(imageUri);
 
                 }
-                if (file.isFile() && file.getName().endsWith(".json")) {
+                else if (file.isFile() && file.getName().endsWith(".json")) {
                     albumsList.add(file.getName());
+                }
+                else{
+                    Log.e("CaregiverSettingsActivity", "Failed to load album metadata for file: " + file.getName());
                 }
             }
         }
@@ -155,7 +161,26 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                 result -> {
                     Intent data = result.getData();
                     if (data != null) {
-                        System.out.println(data.getStringExtra("filePATH"));
+                        Uri selectedImageUri = data.getData();
+                        if (selectedImageUri != null) {
+                            try {
+                                Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImageUri));
+                                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                                byte[] imageBytes = byteArrayOutputStream.toByteArray();
+                                String imageFilename = UUID.randomUUID().toString() + ".jpg";
+                                Uri savedImageUri = StorageUtils.saveImageFile(getApplicationContext(), imageFilename, imageBytes);
+                                if (savedImageUri != null) {
+                                    addImageToFlexBoxLayout(savedImageUri, imageAlbumLayout);
+                                    Toast.makeText(CareGiverImagesSettingsActivity.this, "Image saved successfully", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(CareGiverImagesSettingsActivity.this, "Failed to save image", Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (IOException e) {
+                                Log.e("CaregiverSettingsActivity", "Error processing image: " + e.getMessage());
+                                Toast.makeText(CareGiverImagesSettingsActivity.this, "Error processing image", Toast.LENGTH_SHORT).show();
+                            }
+                        }
                     }
                 });
 
@@ -180,15 +205,15 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                         JSONArray imagesArray = new JSONArray();
                         albumInfo.put("images", imagesArray);
 
-                        // Save the JSON metadata to a file
-                        File albumInfoFile = new File(directory, albumPath);
-                        try (FileWriter writer = new FileWriter(albumInfoFile)) {
-                            writer.write(albumInfo.toString());
+                        boolean success = StorageUtils.saveToFile(getApplicationContext(), albumPath, albumInfo.toString());
+                        if (!success) {
+                            Toast.makeText(CareGiverImagesSettingsActivity.this, "Failed to save album metadata", Toast.LENGTH_SHORT).show();
+                            return;
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                        Log.e("CareGiverImagesSettingsActivity", "Error creating album metadata: " + e.getMessage());
+                        Toast.makeText(CareGiverImagesSettingsActivity.this, "Error creating album metadata", Toast.LENGTH_SHORT).show();
+                        return;
                     }
                     // Create an ImageView for the album thumbnail
                     ImageView thumbnailView = new ImageView(CareGiverImagesSettingsActivity.this);
