@@ -87,7 +87,7 @@
         android:layout_width="412dp"
         android:layout_height="640dp"
         android:layout_marginBottom="1dp"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:flexWrap="wrap"
 
         app:justifyContent="flex_start"

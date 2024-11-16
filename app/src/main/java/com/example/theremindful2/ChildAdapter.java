@@ -1,6 +1,7 @@
 package com.example.theremindful2;
 
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,13 +9,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.io.File;
 import java.util.List;
 
 public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHolder> {
-    private final List<Integer> photos;
+    private final List<String> photos;
     private final String themeName;
 
-    public ChildAdapter(List<Integer> photos, String themeName) {
+    public ChildAdapter(List<String> photos, String themeName) {
         this.photos = photos;
         this.themeName = themeName;
     }
@@ -46,10 +49,20 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
             textViewTheme = itemView.findViewById(R.id.textViewTheme);
         }
 
-        public void bind(int photoResId, String themeName) {
-            Uri imageUri = Uri.parse("android.resource://com.example.theremindful2/" + photoResId);
-            imageView.setImageURI(imageUri);
+        public void bind(String photoFilePath, String themeName) {
+            // Convert the file path to a Uri
+            File imageFile = new File(photoFilePath);
+            if (imageFile.exists()) {
+                Uri imageUri = Uri.fromFile(imageFile); // Create Uri from file path
+                imageView.setImageURI(imageUri);       // Set the image using the Uri
+            } else {
+                Log.e("bind", "Image file not found: " + photoFilePath);
+                imageView.setImageResource(R.drawable.ic_launcher_foreground); // Fallback to a placeholder image
+            }
+
+            // Set the theme name in the text view
             textViewTheme.setText(themeName);
         }
+
     }
 }

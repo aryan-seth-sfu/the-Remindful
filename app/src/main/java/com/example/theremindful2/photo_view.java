@@ -1,9 +1,12 @@
 package com.example.theremindful2;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -232,41 +235,72 @@ public class photo_view extends AppCompatActivity{
         builder.show();
     }
     private void saveImageAndReturn() {
-        try {
-            //TODO: fix save image changes
+        Intent intentSelf = getIntent();
+        String uriString = intentSelf.getStringExtra("Uri");
+        Uri newImageUri = Uri.parse(uriString);
+
+            if (newImageUri == null) {
+                Toast.makeText(this, "Image URI is invalid", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String filename = null;
+
+            if ("content".equals(newImageUri.getScheme())) {
+                // For content scheme Uris (e.g., from ContentResolver)
+                try (Cursor cursor = this.getContentResolver().query(newImageUri, null, null, null, null)) {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                        if (nameIndex != -1) {
+                            filename = cursor.getString(nameIndex);
+                        }
+                    }
+                }
+            } else if ("file".equals(newImageUri.getScheme())) {
+                // For file scheme Uris
+                filename = new File(newImageUri.getPath()).getName();
+            }
+
             // Create a unique filename for the image
-            String filename = UUID.randomUUID().toString() + ".jpg";
+            /*
+            String mimeType = getContentResolver().getType(newImageUri);
+            String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
+            String filename = UUID.randomUUID().toString() + "." + (extension != null ? extension : "jpg");
+            */
+
             File directory = getFilesDir();
             File file = new File(directory, filename);
+
             // Copy the image from the URI to internal storage
+            /*
             try (FileOutputStream out = new FileOutputStream(file);
-                 java.io.InputStream in = getContentResolver().openInputStream(imageUri)) {
+                 java.io.InputStream in = getContentResolver().openInputStream(newImageUri)) {
                 byte[] buffer = new byte[1024];
                 int length;
                 while ((length = in.read(buffer)) > 0) {
                     out.write(buffer, 0, length);
                 }
             }
+
+             */
             // Gather selected tags
-            List<String> selectedTags = new ArrayList<>();
-            // Iterate through tags list and find the selected tags
-            for (String tag : tagsList) {
-                // We might want to store which tags were selected.
-                // For simplicity here, I'm just adding all tags to selectedTags.
-                selectedTags.add(tag);
+            if (tagsList == null || tagsList.isEmpty()) {
+                Toast.makeText(this, "No tags selected", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+
+            List<String> selectedTags = new ArrayList<>(tagsList); // Ensure valid list
             // Save metadata
-            MetadataUtils.saveImageMetadata(this, R.drawable.ic_launcher_foreground, selectedTags);
+            MetadataUtils.saveImageMetadata(this, file.getAbsolutePath(), selectedTags);
             // Return to the main screen
             Intent intent = new Intent(photo_view.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            Log.d("save", "success");
+            Log.d("saveImageAndReturn", "Image saved successfully: " + filename);
             finish();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
         }
     }
 
-}
+
+

@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
@@ -27,16 +28,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class CareGiverImagesSettingsActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> FilePickerLauncher;
+    private static final String METADATA_FILE_NAME = "themes_metadata.json";
     @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +54,89 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
         File[] files = directory.listFiles(); // List all files
 
         List<Uri> imageUriList = new ArrayList<>();
-        List<String> albumsList = new ArrayList<>();
+        List<Pair<String, String>> albumsList = new ArrayList<>();
+        File metadataFile = new File(getFilesDir(), METADATA_FILE_NAME);
+        if(!metadataFile.exists()){
+            try {
+                metadataFile.createNewFile();
+                try {
+                    // Define theme tags
+                    String[] tags = {"Nature", "Vacation", "Family", "Friends"};
+
+                    // Create the root JSON object
+                    JSONObject rootObject = new JSONObject();
+                    JSONArray themesArray = new JSONArray();
+
+                    // Add themes with empty image arrays
+                    for (String tag : tags) {
+                        JSONObject themeObject = new JSONObject();
+                        themeObject.put("tag", tag);
+                        themeObject.put("images", new JSONArray()); // Empty images array
+                        themesArray.put(themeObject);
+                    }
+
+                    // Add the themes array to the root object
+                    rootObject.put("themes", themesArray);
+
+                    // Write the JSON to the specified file
+                    try (FileWriter writer = new FileWriter(metadataFile)) {
+                        writer.write(rootObject.toString(4)); // Indented with 4 spaces
+                        writer.flush();
+                    }
+
+                    System.out.println("JSON file created successfully: " + metadataFile.getAbsolutePath());
+                } catch (IOException | org.json.JSONException e) {
+                    e.printStackTrace();
+                }
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else{
+            BufferedReader reader = null;
+            try{
+                FileInputStream inputStream = new FileInputStream(metadataFile);
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder jsonBuilder = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    jsonBuilder.append(line);
+                }
+
+                // Parse the JSON
+                JSONObject rootObject = new JSONObject(jsonBuilder.toString());
+                JSONArray themesArray = rootObject.getJSONArray("themes");
+
+                for (int i = 0; i < themesArray.length(); i++) {
+                    JSONObject themeObject = themesArray.getJSONObject(i);
+
+                    // Extract the tag (theme name)
+                    String tag = themeObject.getString("tag");
+
+                    // Extract the first image path, if available
+                    JSONArray imagesArray = themeObject.getJSONArray("images");
+                    String firstImagePath = imagesArray.length() > 0 ? imagesArray.getString(0) : null;
+
+                    // Add theme name and first image path to the list
+                    albumsList.add(new Pair<>(tag, firstImagePath));
+                }
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    Log.e("getThemeNames", "Error closing reader", e);
+                }
+            }
+        }
 
         if (files != null) {
             for (File file : files) {
@@ -56,12 +144,6 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                     Uri imageUri = Uri.fromFile(file);
                     imageUriList.add(imageUri);
 
-                }
-                else if (file.isFile() && file.getName().endsWith(".json")) {
-                    albumsList.add(file.getName());
-                }
-                else{
-                    Log.e("CaregiverSettingsActivity", "Failed to load album metadata for file: " + file.getName());
                 }
             }
         }
@@ -125,10 +207,12 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                     toggleButton.setTextColor(getResources().getColor(R.color.black)); // Change text color
                     toggleButton.getBackground().setTint(getResources().getColor(R.color.light_gray)); // Background tint
                     imageAlbumLayout.removeAllViews();
-                    for( int fileNamesCount = 0; fileNamesCount < albumsList.size(); fileNamesCount++) {
-                        //TODO: read from file the first image and use that image as the thumbnail
+                    for(Pair<String, String> theme : albumsList) {
                         ImageView image = new ImageView(CareGiverImagesSettingsActivity.this);
-                        image.setImageResource(R.drawable.ic_launcher_foreground);
+                        File imageFile = new File(theme.second);
+                        Uri imageUri = Uri.fromFile(imageFile);
+                        image.setImageURI(imageUri);
+                        image.setTag(theme.first);
                         // Set layout parameters to control the size
                         FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
                                 300,  // Width of the image, adjust as needed
@@ -136,7 +220,6 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                         );
                         layoutParams.setMargins(16, 16, 16, 16); // Optional margin around each image
                         image.setLayoutParams(layoutParams);
-                        image.setTag(albumsList.get(fileNamesCount));
                         // Add the ImageView to the FlexboxLayout
                         imageAlbumLayout.addView(image);
                     }
@@ -148,6 +231,7 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                                 public void onClick(View view) {
                                     Intent intent = new Intent(CareGiverImagesSettingsActivity.this, album.class);
                                     Object album = view.getTag();
+                                    Log.d("album extra", album.toString());
                                     intent.putExtra("album", album.toString());
                                     startActivity(intent);
                                 }

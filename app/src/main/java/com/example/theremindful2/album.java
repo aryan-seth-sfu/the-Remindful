@@ -1,8 +1,10 @@
 package com.example.theremindful2;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -36,6 +38,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class album extends AppCompatActivity{
+    private static final String METADATA_FILE_NAME = "themes_metadata.json";
     @Override
 
     protected void onCreate(Bundle savedInstanceState){
@@ -46,6 +49,28 @@ public class album extends AppCompatActivity{
 
         TextView albumName = findViewById(R.id.AlbumName);
         FlexboxLayout allPhotos = findViewById(R.id.AllPhotosView);
+
+        Intent intentSelf = getIntent();
+        String albumNameString = intentSelf.getStringExtra("album");
+        albumName.setText(albumNameString);
+
+        List<String> albumImages = getImagePathsForTheme(this, albumNameString);
+        for (String imagePaths : albumImages){
+            ImageView image = new ImageView(album.this);
+            File imageFile = new File(imagePaths);
+            Uri imageUri = Uri.fromFile(imageFile);
+            image.setImageURI(imageUri);
+            // Set layout parameters to control the size
+            FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
+                    300,  // Width of the image, adjust as needed
+                    300   // Height of the image, adjust as needed
+            );
+            layoutParams.setMargins(16, 16, 16, 16); // Optional margin around each image
+            image.setLayoutParams(layoutParams);
+            // Add the ImageView to the FlexboxLayout
+            allPhotos.addView(image);
+        }
+
 
         ImageButton uploadButton = findViewById(R.id.AlbumAddPhoto);
         uploadButton.setOnClickListener(new View.OnClickListener() {
@@ -77,6 +102,7 @@ public class album extends AppCompatActivity{
                         );
 
                         if (imageUri != null) {
+                            //TODO: save image in metadata file
                             image.setImageURI(imageUri);
                             allPhotos.addView(image);
                             image.setTag(imageUri);
@@ -148,23 +174,7 @@ public class album extends AppCompatActivity{
                 uploadButton.setVisibility(View.VISIBLE);
                 editButton.setVisibility(View.VISIBLE);
 
-                Intent intentSelf = getIntent();
-                String fileName = intentSelf.getStringExtra("album");
-                File file = new File(getFilesDir(), fileName);
-
-                if (file.exists()) {
-                    // Attempt to delete the file
-                    boolean deleted = file.delete();
-
-                    if (deleted) {
-                        Toast.makeText(getApplicationContext(), "File deleted successfully", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Failed to delete file", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(getApplicationContext(), "File not found", Toast.LENGTH_SHORT).show();
-                }
+                //TODO delete album
             }
         });
 
@@ -319,5 +329,58 @@ public class album extends AppCompatActivity{
             e.printStackTrace();
         }
     }
+    public List<String> getImagePathsForTheme(Context context, String themeName) {
+        List<String> imagePaths = new ArrayList<>();
+        BufferedReader reader = null;
+
+        try {
+            // Locate the metadata file
+            File metadataFile = new File(context.getFilesDir(), METADATA_FILE_NAME);
+            if (metadataFile.exists()) {
+                // Read the file content
+                FileInputStream inputStream = new FileInputStream(metadataFile);
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder jsonBuilder = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    jsonBuilder.append(line);
+                }
+
+                // Parse the JSON object
+                JSONObject jsonObject = new JSONObject(jsonBuilder.toString());
+                JSONArray themesArray = jsonObject.getJSONArray("themes");
+
+                // Loop through the themes to find the matching one
+                for (int i = 0; i < themesArray.length(); i++) {
+                    JSONObject themeObject = themesArray.getJSONObject(i);
+                    String tag = themeObject.getString("tag");
+
+                    if (tag.equalsIgnoreCase(themeName)) {
+                        // Found the matching theme, extract its image paths
+                        JSONArray imagesArray = themeObject.getJSONArray("images");
+                        for (int j = 0; j < imagesArray.length(); j++) {
+                            imagePaths.add(imagesArray.getString(j)); // Add each path to the list
+                        }
+                        break; // Exit loop since the theme was found
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            Log.e("getImagePathsForTheme", "Metadata file not found", e);
+        } catch (IOException | JSONException e) {
+            Log.e("getImagePathsForTheme", "Error reading metadata file", e);
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                Log.e("getImagePathsForTheme", "Error closing reader", e);
+            }
+        }
+
+        return imagePaths;
+    }
+
 
 }
