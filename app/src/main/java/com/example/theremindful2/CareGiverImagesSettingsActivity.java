@@ -120,11 +120,13 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                         }
                     }
                 } else {
+                    //TODO: change layout of album preview
                     Log.d("toggle", "Checked: " + isChecked);
                     toggleButton.setTextColor(getResources().getColor(R.color.black)); // Change text color
                     toggleButton.getBackground().setTint(getResources().getColor(R.color.light_gray)); // Background tint
                     imageAlbumLayout.removeAllViews();
                     for( int fileNamesCount = 0; fileNamesCount < albumsList.size(); fileNamesCount++) {
+                        //TODO: read from file the first image and use that image as the thumbnail
                         ImageView image = new ImageView(CareGiverImagesSettingsActivity.this);
                         image.setImageResource(R.drawable.ic_launcher_foreground);
                         // Set layout parameters to control the size

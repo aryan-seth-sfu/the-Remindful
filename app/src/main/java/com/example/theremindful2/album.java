@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class album extends AppCompatActivity{
     @Override
@@ -146,6 +147,24 @@ public class album extends AppCompatActivity{
                 cancelEdit.setVisibility(View.INVISIBLE);
                 uploadButton.setVisibility(View.VISIBLE);
                 editButton.setVisibility(View.VISIBLE);
+
+                Intent intentSelf = getIntent();
+                String fileName = intentSelf.getStringExtra("album");
+                File file = new File(getFilesDir(), fileName);
+
+                if (file.exists()) {
+                    // Attempt to delete the file
+                    boolean deleted = file.delete();
+
+                    if (deleted) {
+                        Toast.makeText(getApplicationContext(), "File deleted successfully", Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Failed to delete file", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "File not found", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

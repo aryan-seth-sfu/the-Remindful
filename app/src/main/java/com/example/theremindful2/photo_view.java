@@ -233,6 +233,7 @@ public class photo_view extends AppCompatActivity{
     }
     private void saveImageAndReturn() {
         try {
+            //TODO: fix save image changes
             // Create a unique filename for the image
             String filename = UUID.randomUUID().toString() + ".jpg";
             File directory = getFilesDir();
