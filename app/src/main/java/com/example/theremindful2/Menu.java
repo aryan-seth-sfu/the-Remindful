@@ -30,5 +30,21 @@ public class Menu extends AppCompatActivity {
             }
         });
 
+        Button musicButton = findViewById(R.id.musicSettingButton);
+        musicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        Button taskButton = findViewById(R.id.taskSettingButton);
+        taskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
     }
 }
