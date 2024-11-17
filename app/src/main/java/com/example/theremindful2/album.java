@@ -8,6 +8,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
@@ -156,6 +158,23 @@ public class album extends AppCompatActivity{
         editAlbumName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(album.this);
+                builder.setTitle("Edit Album Name");
+                builder.setTitle("Edit Description");
+                // Set up the input
+                final EditText input = new EditText(album.this);
+                input.setText(albumName.getText());
+                builder.setView(input);
+                // Set up the buttons
+                builder.setPositiveButton("OK", (dialog, which) -> {
+                    String newDescription = input.getText().toString();
+                    albumName.setText(newDescription);
+                    renameThemeTag(album.this, intentSelf.getStringExtra("album"), newDescription);
+                });
+                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+                builder.show();
+
                 albumName.setVisibility(View.VISIBLE);
                 editAlbumName.setVisibility(View.INVISIBLE);
                 deleteAlbum.setVisibility(View.INVISIBLE);
@@ -176,8 +195,7 @@ public class album extends AppCompatActivity{
                 uploadButton.setVisibility(View.VISIBLE);
                 editButton.setVisibility(View.VISIBLE);
 
-                //TODO delete album
-
+                deleteThemeByTag(album.this, albumNameString);
             }
         });
 
@@ -447,6 +465,132 @@ public class album extends AppCompatActivity{
                 }
             } catch (IOException e) {
                 Log.e("addImagePathToTheme", "Error closing reader", e);
+            }
+        }
+    }
+    public void deleteThemeByTag(Context context, String tagToDelete) {
+        BufferedReader reader = null;
+        FileWriter writer = null;
+
+        try {
+            File metadataFile = new File(context.getFilesDir(), "themes.json"); // Your metadata file
+            if (!metadataFile.exists()) {
+                Log.e("deleteTheme", "Metadata file does not exist.");
+                return;
+            }
+
+            // Read the existing data from the file
+            FileInputStream inputStream = new FileInputStream(metadataFile);
+            reader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder jsonBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonBuilder.append(line);
+            }
+
+            // Parse the JSON data
+            JSONObject rootObject = new JSONObject(jsonBuilder.toString());
+            JSONArray themesArray = rootObject.getJSONArray("themes");
+
+            // Create a new array to store updated themes after deletion
+            JSONArray updatedThemesArray = new JSONArray();
+
+            // Iterate through the existing themes and add all except the one we want to delete
+            for (int i = 0; i < themesArray.length(); i++) {
+                JSONObject themeObject = themesArray.getJSONObject(i);
+                String tag = themeObject.getString("tag");
+
+                if (!tag.equals(tagToDelete)) {
+                    updatedThemesArray.put(themeObject); // Add the theme to the updated array
+                }
+            }
+
+            // Replace the "themes" array in the root object with the updated array
+            rootObject.put("themes", updatedThemesArray);
+
+            // Write the updated JSON data back to the file
+            writer = new FileWriter(metadataFile);
+            writer.write(rootObject.toString(4)); // Use indentation for readability
+            writer.flush();
+
+            Log.d("deleteTheme", "Theme with tag '" + tagToDelete + "' deleted successfully.");
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+            Log.e("deleteTheme", "Error deleting theme", e);
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void renameThemeTag(Context context, String oldTag, String newTag) {
+        BufferedReader reader = null;
+        FileWriter writer = null;
+
+        try {
+            File metadataFile = new File(context.getFilesDir(), METADATA_FILE_NAME); // Your metadata file
+            if (!metadataFile.exists()) {
+                Log.e("renameTheme", "Metadata file does not exist.");
+                return;
+            }
+
+            // Read the existing data from the file
+            FileInputStream inputStream = new FileInputStream(metadataFile);
+            reader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder jsonBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonBuilder.append(line);
+            }
+
+            // Parse the JSON data
+            JSONObject rootObject = new JSONObject(jsonBuilder.toString());
+            JSONArray themesArray = rootObject.getJSONArray("themes");
+
+            // Iterate through the themes to find and rename the tag
+            boolean tagFound = false;
+            for (int i = 0; i < themesArray.length(); i++) {
+                JSONObject themeObject = themesArray.getJSONObject(i);
+                String tag = themeObject.getString("tag");
+
+                if (tag.equals(oldTag)) {
+                    // Rename the tag
+                    themeObject.put("tag", newTag);
+                    tagFound = true;
+                    break;
+                }
+            }
+
+            // If the tag was found and renamed, update the themes array
+            if (tagFound) {
+                // Write the updated JSON data back to the file
+                writer = new FileWriter(metadataFile);
+                writer.write(rootObject.toString(4)); // Use indentation for readability
+                writer.flush();
+                Log.d("renameTheme", "Tag '" + oldTag + "' renamed to '" + newTag + "' successfully.");
+            } else {
+                Log.e("renameTheme", "Tag '" + oldTag + "' not found.");
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+            Log.e("renameTheme", "Error renaming theme", e);
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
