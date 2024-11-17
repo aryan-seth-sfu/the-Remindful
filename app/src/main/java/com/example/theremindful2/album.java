@@ -101,8 +101,10 @@ public class album extends AppCompatActivity{
                                 imageFile
                         );
 
+
                         if (imageUri != null) {
-                            //TODO: save image in metadata file
+                            Log.d("imageUriTest", String.valueOf(imageUri));
+                            addImagePathToTheme(album.this, albumNameString, imageFile.getPath());
                             image.setImageURI(imageUri);
                             allPhotos.addView(image);
                             image.setTag(imageUri);
@@ -175,6 +177,7 @@ public class album extends AppCompatActivity{
                 editButton.setVisibility(View.VISIBLE);
 
                 //TODO delete album
+
             }
         });
 
@@ -381,6 +384,73 @@ public class album extends AppCompatActivity{
 
         return imagePaths;
     }
+    public static void addImagePathToTheme(Context context, String tag, String imagePath) {
+        File jsonFile = new File(context.getFilesDir(), METADATA_FILE_NAME);
+        BufferedReader reader = null;
+
+        try {
+            // Check if the file exists
+            if (!jsonFile.exists()) {
+                Log.e("addImagePathToTheme", "Themes metadata file does not exist.");
+                return;
+            }
+
+            // Read the existing JSON file
+            FileInputStream inputStream = new FileInputStream(jsonFile);
+            reader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder jsonBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonBuilder.append(line);
+            }
+
+            // Parse the JSON
+            JSONObject rootObject = new JSONObject(jsonBuilder.toString());
+            JSONArray themesArray = rootObject.getJSONArray("themes");
+
+            // Search for the theme by tag
+            boolean tagFound = false;
+            for (int i = 0; i < themesArray.length(); i++) {
+                JSONObject themeObject = themesArray.getJSONObject(i);
+                String currentTag = themeObject.getString("tag");
+
+                if (currentTag.equalsIgnoreCase(tag)) {
+                    tagFound = true;
+
+                    // Get the images array and add the new image path
+                    JSONArray imagesArray = themeObject.getJSONArray("images");
+                    imagesArray.put(imagePath);
+
+                    // Update the theme in the array
+                    themesArray.put(i, themeObject);
+                    break;
+                }
+            }
+
+            // If the tag was found, update the JSON file, else log an error
+            if (tagFound) {
+                // Write the updated JSON back to the file
+                try (FileWriter writer = new FileWriter(jsonFile)) {
+                    writer.write(rootObject.toString(4)); // Pretty print with 4-space indentation
+                    writer.flush();
+                }
+                Log.d("addImagePathToTheme", "Image path added successfully to tag: " + tag);
+            } else {
+                Log.e("addImagePathToTheme", "Tag not found: " + tag);
+            }
+        } catch (JSONException | IOException e) {
+            Log.e("addImagePathToTheme", "Error adding image path to theme", e);
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                Log.e("addImagePathToTheme", "Error closing reader", e);
+            }
+        }
+    }
+
 
 
 }

@@ -295,22 +295,10 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                 } else {
                     //create new album
                     JSONObject albumInfo = new JSONObject();
-                    String albumPath = UUID.randomUUID().toString() + "_info.json";
-                    try {
-                        albumInfo.put("album_name", "New Album");
-                        JSONArray imagesArray = new JSONArray();
-                        albumInfo.put("images", imagesArray);
+                    String albumName = "new album";
 
-                        boolean success = StorageUtils.saveToFile(getApplicationContext(), albumPath, albumInfo.toString());
-                        if (!success) {
-                            Toast.makeText(CareGiverImagesSettingsActivity.this, "Failed to save album metadata", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                    } catch (JSONException e) {
-                        Log.e("CareGiverImagesSettingsActivity", "Error creating album metadata: " + e.getMessage());
-                        Toast.makeText(CareGiverImagesSettingsActivity.this, "Error creating album metadata", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+                    addNewTheme(CareGiverImagesSettingsActivity.this, albumName);
+
                     // Create an ImageView for the album thumbnail
                     ImageView thumbnailView = new ImageView(CareGiverImagesSettingsActivity.this);
                     thumbnailView.setImageResource(R.drawable.ic_launcher_foreground); // Set placeholder image
@@ -320,7 +308,7 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                     );
                     layoutParams.setMargins(16, 16, 16, 16); // Optional margin
                     thumbnailView.setLayoutParams(layoutParams);
-                    thumbnailView.setTag(albumPath);
+                    thumbnailView.setTag(albumName);
                     thumbnailView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -487,6 +475,65 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
         // Return null if the image is not found
         return null;
     }
+    public static void addNewTheme(Context context, String newTheme) {
+        File jsonFile = new File(context.getFilesDir(), METADATA_FILE_NAME);
+        BufferedReader reader = null;
+
+        try {
+            // Check if the file exists
+            if (!jsonFile.exists()) {
+                Log.e("addNewTheme", "Themes metadata file does not exist.");
+                return;
+            }
+
+            // Read the existing JSON file
+            FileInputStream inputStream = new FileInputStream(jsonFile);
+            reader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder jsonBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonBuilder.append(line);
+            }
+
+            // Parse the JSON
+            JSONObject rootObject = new JSONObject(jsonBuilder.toString());
+            JSONArray themesArray = rootObject.getJSONArray("themes");
+
+            // Check if the theme already exists
+            for (int i = 0; i < themesArray.length(); i++) {
+                JSONObject themeObject = themesArray.getJSONObject(i);
+                if (themeObject.getString("tag").equalsIgnoreCase(newTheme)) {
+                    Log.e("addNewTheme", "Theme already exists: " + newTheme);
+                    return; // Exit if the theme exists
+                }
+            }
+
+            // Add the new theme
+            JSONObject newThemeObject = new JSONObject();
+            newThemeObject.put("tag", newTheme);
+            newThemeObject.put("images", new JSONArray()); // Empty images array
+            themesArray.put(newThemeObject);
+
+            // Write the updated JSON back to the file
+            try (FileWriter writer = new FileWriter(jsonFile)) {
+                writer.write(rootObject.toString(4)); // Pretty print with 4-space indentation
+                writer.flush();
+            }
+
+            Log.d("addNewTheme", "New theme added successfully: " + newTheme);
+        } catch (JSONException | IOException e) {
+            Log.e("addNewTheme", "Error adding new theme", e);
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                Log.e("addNewTheme", "Error closing reader", e);
+            }
+        }
+    }
+
 
 
 }
