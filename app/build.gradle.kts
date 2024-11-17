@@ -46,4 +46,5 @@ dependencies {
     implementation(libs.activity.compose)
     implementation(libs.biometric)
     implementation(libs.flexbox)
+    implementation(libs.gson)
 }

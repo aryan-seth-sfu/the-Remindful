@@ -2,6 +2,7 @@ package com.example.theremindful2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -15,15 +16,24 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class photo_view extends AppCompatActivity {
-    private List<String> tagsList;
+    private static final String TAGS_PREFS = "TagsPrefs";
+    private static final String TAGS_KEY = "TagsList";
+
+    private Set<String> tagsList;
     private List<String> selectedTags;
     private Uri imageUri;
 
@@ -32,12 +42,14 @@ public class photo_view extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.photo_view);
 
-        // Initialize tags list with some default tags
-        tagsList = new ArrayList<>();
+        // Initialize tags list with some default tags and load saved tags
+        tagsList = new HashSet<>();
         tagsList.add("Nature");
         tagsList.add("Vacation");
         tagsList.add("Family");
         tagsList.add("Friends");
+
+        loadTagsFromPreferences();
 
         selectedTags = new ArrayList<>();
 
@@ -132,6 +144,7 @@ public class photo_view extends AppCompatActivity {
             String newTag = input.getText().toString().trim();
             if (!newTag.isEmpty() && !tagsList.contains(newTag)) {
                 tagsList.add(newTag);
+                saveTagsToPreferences(); // Save the updated tags list
                 Toast.makeText(photo_view.this, "Tag added: " + newTag, Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(photo_view.this, "Tag already exists or is empty", Toast.LENGTH_SHORT).show();
@@ -140,6 +153,23 @@ public class photo_view extends AppCompatActivity {
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
+    }
+
+    private void loadTagsFromPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences(TAGS_PREFS, Context.MODE_PRIVATE);
+        String json = sharedPreferences.getString(TAGS_KEY, null);
+        if (json != null) {
+            Type type = new TypeToken<Set<String>>() {}.getType();
+            tagsList = new Gson().fromJson(json, type);
+        }
+    }
+
+    private void saveTagsToPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences(TAGS_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        String json = new Gson().toJson(tagsList);
+        editor.putString(TAGS_KEY, json);
+        editor.apply();
     }
 
     private void saveImageAndReturn() {
