@@ -24,6 +24,7 @@ import java.util.UUID;
 
 public class photo_view extends AppCompatActivity {
     private List<String> tagsList;
+    private List<String> selectedTags;
     private Uri imageUri;
 
     @Override
@@ -37,6 +38,8 @@ public class photo_view extends AppCompatActivity {
         tagsList.add("Vacation");
         tagsList.add("Family");
         tagsList.add("Friends");
+
+        selectedTags = new ArrayList<>();
 
         Intent intent = getIntent();
         String UriString = intent.getStringExtra("Uri");
@@ -101,15 +104,12 @@ public class photo_view extends AppCompatActivity {
         builder.setPositiveButton("Add Custom Tag", (dialog, which) -> showAddCustomTagDialog());
 
         builder.setNegativeButton("OK", (dialog, which) -> {
-            // Handle OK click
-            StringBuilder selectedTags = new StringBuilder();
+            // Gather selected tags
+            selectedTags.clear();
             for (int i = 0; i < checkedTags.length; i++) {
                 if (checkedTags[i]) {
-                    selectedTags.append(tagsArray[i]).append(", ");
+                    selectedTags.add(tagsArray[i]);
                 }
-            }
-            if (selectedTags.length() > 0) {
-                selectedTags.setLength(selectedTags.length() - 2); // Remove the trailing comma and space
             }
             Toast.makeText(photo_view.this, "Selected Tags: " + selectedTags.toString(), Toast.LENGTH_SHORT).show();
         });
@@ -145,10 +145,7 @@ public class photo_view extends AppCompatActivity {
     private void saveImageAndReturn() {
         try {
             // Create a unique filename for the image
-            String themeName = "theme_name";  // Replace with the actual theme name based on user's selection
-            int photoNumber = UUID.randomUUID().hashCode();
-            String filename = themeName + "_" + photoNumber + ".jpg";
-
+            String filename = UUID.randomUUID().toString() + ".jpg";
             File directory = getExternalFilesDir(null); // Save to external files directory for accessibility
             File file = new File(directory, filename);
 
@@ -163,13 +160,7 @@ public class photo_view extends AppCompatActivity {
                 }
             }
 
-            // Gather selected tags
-            List<String> selectedTags = new ArrayList<>();
-            // Iterate through tags list and find the selected tags
-            // You may add a mechanism to filter out selected tags.
-            selectedTags.addAll(tagsList);
-
-            // Save metadata (use the file's absolute path as identifier)
+            // Save metadata using only the selected tags
             MetadataUtils.saveImageMetadata(this, file.getAbsolutePath(), selectedTags);
 
             // Return to the main screen

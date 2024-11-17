@@ -22,13 +22,14 @@ public class MetadataUtils {
     private static final String TAG = "MetadataUtils";
 
     // Change the image identifier from int (drawable resource ID) to String (file path)
-    public static void saveImageMetadata(Context context, String imagePath, List<String> tags) {
+    public static void saveImageMetadata(Context context, String imagePath, List<String> selectedTags) {
         FileWriter writer = null;
         BufferedReader reader = null;
         try {
             File metadataFile = new File(context.getFilesDir(), METADATA_FILE_NAME);
             JSONObject metadata = new JSONObject();
 
+            // Read existing metadata if it exists
             if (metadataFile.exists()) {
                 FileInputStream inputStream = new FileInputStream(metadataFile);
                 reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -42,20 +43,30 @@ public class MetadataUtils {
                 metadata.put("themes", new JSONArray());
             }
 
+            // Get the existing themes array
             JSONArray themesArray = metadata.getJSONArray("themes");
-            for (String tag : tags) {
+
+            // Iterate through the selected tags
+            for (String tag : selectedTags) {
                 boolean tagExists = false;
 
+                // Iterate through themesArray to find the theme with the matching tag
                 for (int i = 0; i < themesArray.length(); i++) {
                     JSONObject themeObject = themesArray.getJSONObject(i);
                     if (themeObject.getString("tag").equals(tag)) {
+                        // Tag exists, add the image to this theme
                         tagExists = true;
                         JSONArray imagesArray = themeObject.getJSONArray("images");
-                        imagesArray.put(imagePath);
+
+                        // Avoid duplicate images being added to the theme
+                        if (!isImageAlreadyAdded(imagesArray, imagePath)) {
+                            imagesArray.put(imagePath);
+                        }
                         break;
                     }
                 }
 
+                // If the tag does not exist, create a new theme for it
                 if (!tagExists) {
                     JSONObject newTheme = new JSONObject();
                     newTheme.put("tag", tag);
@@ -66,6 +77,7 @@ public class MetadataUtils {
                 }
             }
 
+            // Write updated metadata to the file
             writer = new FileWriter(metadataFile);
             writer.write(metadata.toString());
 
@@ -83,6 +95,16 @@ public class MetadataUtils {
                 Log.e(TAG, "Error closing resources", e);
             }
         }
+    }
+
+    // Helper method to check if an image is already in the images array
+    private static boolean isImageAlreadyAdded(JSONArray imagesArray, String imagePath) {
+        for (int i = 0; i < imagesArray.length(); i++) {
+            if (imagesArray.optString(i).equals(imagePath)) {
+                return true;  // Image is already added
+            }
+        }
+        return false;
     }
 
     public static List<Theme> loadThemesFromStorage(Context context) {
