@@ -1,4 +1,5 @@
 package com.example.theremindful2;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -20,7 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 
 public class photo_view extends AppCompatActivity {
     private List<String> tagsList;
@@ -53,30 +53,15 @@ public class photo_view extends AppCompatActivity {
 
         // Edit description button
         Button editDescription = findViewById(R.id.DescriptionButton);
-        editDescription.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showEditDescriptionDialog();
-            }
-        });
+        editDescription.setOnClickListener(view -> showEditDescriptionDialog());
 
         // Edit tags button
         Button editTags = findViewById(R.id.TagsButton);
-        editTags.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showEditTagsDialog();
-            }
-        });
+        editTags.setOnClickListener(view -> showEditTagsDialog());
 
         // Save button
         Button saveButton = findViewById(R.id.SaveButton);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveImageAndReturn();
-            }
-        });
+        saveButton.setOnClickListener(view -> saveImageAndReturn());
     }
 
     private void showEditDescriptionDialog() {
@@ -113,9 +98,7 @@ public class photo_view extends AppCompatActivity {
             checkedTags[which] = isChecked;
         });
 
-        builder.setPositiveButton("Add Custom Tag", (dialog, which) -> {
-            showAddCustomTagDialog();
-        });
+        builder.setPositiveButton("Add Custom Tag", (dialog, which) -> showAddCustomTagDialog());
 
         builder.setNegativeButton("OK", (dialog, which) -> {
             // Handle OK click
@@ -162,11 +145,14 @@ public class photo_view extends AppCompatActivity {
     private void saveImageAndReturn() {
         try {
             // Create a unique filename for the image
-            String filename = UUID.randomUUID().toString() + ".jpg";
-            File directory = getFilesDir();
+            String themeName = "theme_name";  // Replace with the actual theme name based on user's selection
+            int photoNumber = UUID.randomUUID().hashCode();
+            String filename = themeName + "_" + photoNumber + ".jpg";
+
+            File directory = getExternalFilesDir(null); // Save to external files directory for accessibility
             File file = new File(directory, filename);
 
-            // Copy the image from the URI to internal storage
+            // Copy the image from the URI to external storage
             try (FileOutputStream out = new FileOutputStream(file);
                  java.io.InputStream in = getContentResolver().openInputStream(imageUri)) {
 
@@ -180,14 +166,11 @@ public class photo_view extends AppCompatActivity {
             // Gather selected tags
             List<String> selectedTags = new ArrayList<>();
             // Iterate through tags list and find the selected tags
-            for (String tag : tagsList) {
-                // We might want to store which tags were selected.
-                // For simplicity here, I'm just adding all tags to selectedTags.
-                selectedTags.add(tag);
-            }
+            // You may add a mechanism to filter out selected tags.
+            selectedTags.addAll(tagsList);
 
-            // Save metadata
-            MetadataUtils.saveImageMetadata(this, R.drawable.ic_launcher_foreground, selectedTags);
+            // Save metadata (use the file's absolute path as identifier)
+            MetadataUtils.saveImageMetadata(this, file.getAbsolutePath(), selectedTags);
 
             // Return to the main screen
             Intent intent = new Intent(photo_view.this, MainActivity.class);
@@ -200,7 +183,6 @@ public class photo_view extends AppCompatActivity {
             Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     @Override
     public boolean onSupportNavigateUp() {

@@ -10,7 +10,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,7 +21,8 @@ public class MetadataUtils {
     private static final String METADATA_FILE_NAME = "themes_metadata.json";
     private static final String TAG = "MetadataUtils";
 
-    public static void saveImageMetadata(Context context, int imageResourceId, List<String> tags) {
+    // Change the image identifier from int (drawable resource ID) to String (file path)
+    public static void saveImageMetadata(Context context, String imagePath, List<String> tags) {
         FileWriter writer = null;
         BufferedReader reader = null;
         try {
@@ -51,7 +51,7 @@ public class MetadataUtils {
                     if (themeObject.getString("tag").equals(tag)) {
                         tagExists = true;
                         JSONArray imagesArray = themeObject.getJSONArray("images");
-                        imagesArray.put(imageResourceId);
+                        imagesArray.put(imagePath);
                         break;
                     }
                 }
@@ -60,7 +60,7 @@ public class MetadataUtils {
                     JSONObject newTheme = new JSONObject();
                     newTheme.put("tag", tag);
                     JSONArray imagesArray = new JSONArray();
-                    imagesArray.put(imageResourceId);
+                    imagesArray.put(imagePath);
                     newTheme.put("images", imagesArray);
                     themesArray.put(newTheme);
                 }
@@ -106,15 +106,13 @@ public class MetadataUtils {
                     JSONObject themeJson = themesArray.getJSONObject(i);
                     String tag = themeJson.getString("tag");
                     JSONArray imagesArray = themeJson.getJSONArray("images");
-                    List<Integer> imagePaths = new ArrayList<>();
+                    List<String> imagePaths = new ArrayList<>();
                     for (int j = 0; j < imagesArray.length(); j++) {
-                        imagePaths.add(imagesArray.getInt(j));
+                        imagePaths.add(imagesArray.getString(j));
                     }
                     themes.add(new Theme(tag, imagePaths));
                 }
             }
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "Metadata file not found", e);
         } catch (IOException | JSONException e) {
             Log.e(TAG, "Error loading themes from storage", e);
         } finally {

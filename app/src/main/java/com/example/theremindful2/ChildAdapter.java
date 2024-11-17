@@ -1,6 +1,5 @@
 package com.example.theremindful2;
 
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,13 +7,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import android.net.Uri;
+
+import java.io.File;
 import java.util.List;
 
 public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHolder> {
-    private final List<Integer> photos;
+    private final List<String> photos;  // Changed from List<Integer> to List<String>
     private final String themeName;
 
-    public ChildAdapter(List<Integer> photos, String themeName) {
+    public ChildAdapter(List<String> photos, String themeName) {
         this.photos = photos;
         this.themeName = themeName;
     }
@@ -46,9 +48,13 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
             textViewTheme = itemView.findViewById(R.id.textViewTheme);
         }
 
-        public void bind(int photoResId, String themeName) {
-            Uri imageUri = Uri.parse("android.resource://com.example.theremindful2/" + photoResId);
-            imageView.setImageURI(imageUri);
+        public void bind(String photoPath, String themeName) {
+            File file = new File(photoPath);
+            if (file.exists()) {
+                imageView.setImageURI(Uri.fromFile(file));
+            } else {
+                imageView.setImageResource(R.drawable.ic_launcher_foreground); // Set a default placeholder image
+            }
             textViewTheme.setText(themeName);
         }
     }

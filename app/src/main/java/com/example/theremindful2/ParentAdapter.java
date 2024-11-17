@@ -7,15 +7,16 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
+
 import java.util.List;
 
 public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentViewHolder> {
     private final Context context;
     private final List<Theme> themes;
 
-    public ParentAdapter(Context context) {
+    public ParentAdapter(Context context, List<Theme> themes) {
         this.context = context;
-        this.themes = MetadataUtils.loadThemesFromStorage(context);
+        this.themes = themes;  // Now the themes are loaded dynamically from the storage
     }
 
     @NonNull
