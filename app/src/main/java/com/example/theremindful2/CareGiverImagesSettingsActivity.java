@@ -1,6 +1,7 @@
 package com.example.theremindful2;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -43,6 +44,7 @@ import java.util.UUID;
 public class CareGiverImagesSettingsActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> FilePickerLauncher;
     private static final String METADATA_FILE_NAME = "themes_metadata.json";
+    private static final String IMAGES_METADATA_FILE_NAME = "image_only_metadata.json";
     @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -262,6 +264,8 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                                 byte[] imageBytes = byteArrayOutputStream.toByteArray();
                                 String imageFilename = UUID.randomUUID().toString() + ".jpg";
                                 Uri savedImageUri = StorageUtils.saveImageFile(getApplicationContext(), imageFilename, imageBytes);
+                                //TODO: add saved image json file for quick lookup of saved tags and descriptions -> make necessary changes
+
                                 if (savedImageUri != null) {
                                     addImageToFlexBoxLayout(savedImageUri, imageAlbumLayout);
                                     Toast.makeText(CareGiverImagesSettingsActivity.this, "Image saved successfully", Toast.LENGTH_SHORT).show();
@@ -284,7 +288,7 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                     try {
                         Intent i = new Intent(CareGiverImagesSettingsActivity.this, FilePicker.class);
                         FilePickerLauncher.launch(i);
-                    } catch (Exception e) {
+                        } catch (Exception e) {
                         Log.e("MainActivity", "Error starting FilePickerActivity: " + e.getMessage());
                         Toast.makeText(CareGiverImagesSettingsActivity.this, "Error opening file picker", Toast.LENGTH_SHORT).show();
                     }
@@ -362,5 +366,127 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
         // Add the ImageView to the FlexboxLayout
         flexBox.addView(imageView);
     }
+    public static void addImageToMetadataFile(Context context, String imagePath, String description) {
+        File jsonFile = new File(context.getFilesDir(), "images_metadata.json");
+        BufferedReader reader = null;
+
+        try {
+            JSONObject rootObject;
+            JSONArray imagesArray;
+
+            // Check if the JSON file exists
+            if (!jsonFile.exists()) {
+                // If the file does not exist, create it with an empty "images" array
+                rootObject = new JSONObject();
+                imagesArray = new JSONArray();
+                rootObject.put("images", imagesArray);
+
+                try (FileWriter writer = new FileWriter(jsonFile)) {
+                    writer.write(rootObject.toString(4)); // Create initial JSON file
+                }
+            } else {
+                // Read existing JSON file
+                FileInputStream inputStream = new FileInputStream(jsonFile);
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder jsonBuilder = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    jsonBuilder.append(line);
+                }
+
+                // Parse JSON
+                rootObject = new JSONObject(jsonBuilder.toString());
+                imagesArray = rootObject.getJSONArray("images");
+            }
+
+            // Add the new image object
+            JSONObject newImageObject = new JSONObject();
+            // Use the image path as it is without concatenation
+            newImageObject.put("path", imagePath);
+            newImageObject.put("description", description);
+            imagesArray.put(newImageObject);
+
+            // Write updated JSON back to the file
+            try (FileWriter writer = new FileWriter(jsonFile)) {
+                writer.write(rootObject.toString(4)); // Pretty print JSON with 4-space indentation
+                writer.flush();
+            }
+
+            Log.d("addImage", "Image added successfully to JSON metadata file.");
+        } catch (JSONException | IOException e) {
+            Log.e("addImage", "Error updating image metadata file", e);
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                Log.e("addImage", "Error closing reader", e);
+            }
+        }
+    }
+
+    public static void createMetadataFileIfNotExists(Context context) {
+        File metadataFile = new File(context.getFilesDir(), IMAGES_METADATA_FILE_NAME);
+
+        if (!metadataFile.exists()) {
+            try (FileWriter writer = new FileWriter(metadataFile)) {
+                // Initialize the file with an empty "images" array
+                JSONObject rootObject = new JSONObject();
+                rootObject.put("images", new JSONArray());
+                writer.write(rootObject.toString(4)); // Pretty-print with 4 spaces
+                writer.flush();
+                Log.d("Metadata", "Metadata file created successfully.");
+            } catch (IOException | JSONException e) {
+                Log.e("Metadata", "Error creating metadata file", e);
+            }
+        } else {
+            Log.d("Metadata", "Metadata file already exists.");
+        }
+    }
+    public static String getImageDescriptionByPath(Context context, String imagePath) {
+        BufferedReader reader = null;
+
+        try {
+            File metadataFile = new File(context.getFilesDir(), IMAGES_METADATA_FILE_NAME);
+            if (!metadataFile.exists()) {
+                Log.e("ImageMetadata", "Metadata file does not exist.");
+                return null;
+            }
+
+            FileInputStream inputStream = new FileInputStream(metadataFile);
+            reader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder jsonBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonBuilder.append(line);
+            }
+
+            // Parse the JSON
+            JSONObject rootObject = new JSONObject(jsonBuilder.toString());
+            JSONArray imagesArray = rootObject.getJSONArray("images");
+
+            // Find the image with the specified path
+            for (int i = 0; i < imagesArray.length(); i++) {
+                JSONObject imageObject = imagesArray.getJSONObject(i);
+                if (imageObject.getString("path").equals(imagePath)) {
+                    return imageObject.getString("description");
+                }
+            }
+
+        } catch (IOException | JSONException e) {
+            Log.e("ImageMetadata", "Error reading metadata file", e);
+        } finally {
+            try {
+                if (reader != null) reader.close();
+            } catch (IOException e) {
+                Log.e("ImageMetadata", "Error closing reader", e);
+            }
+        }
+
+        // Return null if the image is not found
+        return null;
+    }
+
 
 }

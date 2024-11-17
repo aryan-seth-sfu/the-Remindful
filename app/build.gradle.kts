@@ -39,6 +39,7 @@ dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.navigation.ui)
+    implementation(libs.firebase.crashlytics.buildtools)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -46,4 +47,5 @@ dependencies {
     implementation(libs.activity.compose)
     implementation(libs.biometric)
     implementation(libs.flexbox)
+    implementation(libs.gson)
 }

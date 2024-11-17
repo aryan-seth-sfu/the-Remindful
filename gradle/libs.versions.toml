@@ -8,6 +8,7 @@ espressoCore = "3.6.1"
 appcompat = "1.7.0"
 material = "1.12.0"
 navigationUi = "2.8.3"
+firebaseCrashlyticsBuildtools = "3.0.2"
 
 [libraries]
 biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
@@ -20,6 +21,8 @@ material = { group = "com.google.android.material", name = "material", version.r
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 activity-ktx = { group = "androidx.activity", name = "activity-ktx", version = "1.7.0" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version = "1.7.0" }
+gson = { module = "com.google.code.gson:gson", version = "2.8.9" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,11 +1,13 @@
 package com.example.theremindful2;
 import com.example.theremindful2.MainActivity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -28,19 +30,28 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 
+import java.io.InputStreamReader;
 import java.util.UUID;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class FilePicker extends AppCompatActivity {
     private static final int PICK_FILE_REQUEST_CODE = 1;
     private RecyclerView selectedFilesRecyclerView;
     private TextView selectedFileTextView;
+    private static final String IMAGES_METADATA_FILE_NAME = "image_only_metadata.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +112,11 @@ public class FilePicker extends AppCompatActivity {
                         if (bitmap != null) {
                             try {
                                 String fileName = "image_" + UUID.randomUUID().toString() + ".jpg";
+
+                                String filepath = getFilesDir() + "/" +fileName;
+                                createMetadataFileIfNotExists(FilePicker.this);
+                                addImageToMetadataFile(FilePicker.this, filepath ,"");
+
                                 // Define the file name and location
                                 File file = new File(getFilesDir(), fileName);
 
@@ -179,6 +195,76 @@ public class FilePicker extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+    public static void addImageToMetadataFile(Context context, String imagePath, String description) {
+        FileWriter writer = null;
+        BufferedReader reader = null;
+
+        try {
+            // Define the JSON file
+            File imageMetadataFile = new File(context.getFilesDir(), IMAGES_METADATA_FILE_NAME);
+
+            // Create a root JSON object
+            JSONObject rootObject = new JSONObject();
+            JSONArray imagesArray = new JSONArray();
+
+            // If the file exists, read the existing data
+            if (imageMetadataFile.exists()) {
+                FileInputStream inputStream = new FileInputStream(imageMetadataFile);
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder jsonBuilder = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    jsonBuilder.append(line);
+                }
+                rootObject = new JSONObject(jsonBuilder.toString());
+                imagesArray = rootObject.getJSONArray("images");
+            }
+
+            // Create a new JSON object for the image
+            JSONObject imageObject = new JSONObject();
+            imageObject.put("path", imagePath);
+            imageObject.put("description", description);
+
+            // Add the image object to the array
+            imagesArray.put(imageObject);
+
+            // Update the root object
+            rootObject.put("images", imagesArray);
+
+            // Write the updated JSON back to the file
+            writer = new FileWriter(imageMetadataFile);
+            writer.write(rootObject.toString(4)); // Pretty-print with 4 spaces
+            writer.flush();
+
+        } catch (IOException | JSONException e) {
+            Log.e("ImageMetadata", "Error updating image metadata file", e);
+        } finally {
+            try {
+                if (writer != null) writer.close();
+                if (reader != null) reader.close();
+            } catch (IOException e) {
+                Log.e("ImageMetadata", "Error closing resources", e);
+            }
+        }
+    }
+    public static void createMetadataFileIfNotExists(Context context) {
+        File metadataFile = new File(context.getFilesDir(), IMAGES_METADATA_FILE_NAME);
+
+        if (!metadataFile.exists()) {
+            try (FileWriter writer = new FileWriter(metadataFile)) {
+                // Initialize the file with an empty "images" array
+                JSONObject rootObject = new JSONObject();
+                rootObject.put("images", new JSONArray());
+                writer.write(rootObject.toString(4)); // Pretty-print with 4 spaces
+                writer.flush();
+                Log.d("Metadata", "Metadata file created successfully.");
+            } catch (IOException | JSONException e) {
+                Log.e("Metadata", "Error creating metadata file", e);
+            }
+        } else {
+            Log.d("Metadata", "Metadata file already exists.");
         }
     }
 }
