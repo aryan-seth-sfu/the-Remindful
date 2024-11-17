@@ -32,6 +32,7 @@ import androidx.appcompat.app.AlertDialog;
 
 public class photo_view extends AppCompatActivity{
     private List<String> tagsList;
+    private List<String> selectedTags;
     private Uri imageUri;
 
     @Override
@@ -46,6 +47,8 @@ public class photo_view extends AppCompatActivity{
         tagsList.add("Vacation");
         tagsList.add("Family");
         tagsList.add("Friends");
+
+        selectedTags = new ArrayList<>();
 
         Intent intent = getIntent();
         String UriString = intent.getStringExtra("Uri");
@@ -201,15 +204,13 @@ public class photo_view extends AppCompatActivity{
         });
         builder.setNegativeButton("OK", (dialog, which) -> {
             // Handle OK click
-            StringBuilder selectedTags = new StringBuilder();
+            selectedTags.clear();
             for (int i = 0; i < checkedTags.length; i++) {
                 if (checkedTags[i]) {
-                    selectedTags.append(tagsArray[i]).append(", ");
+                    selectedTags.add(tagsArray[i]);
                 }
             }
-            if (selectedTags.length() > 0) {
-                selectedTags.setLength(selectedTags.length() - 2); // Remove the trailing comma and space
-            }
+
             Toast.makeText(photo_view.this, "Selected Tags: " + selectedTags.toString(), Toast.LENGTH_SHORT).show();
         });
         builder.setNeutralButton("Cancel", (dialog, which) -> dialog.cancel());
@@ -235,6 +236,7 @@ public class photo_view extends AppCompatActivity{
         builder.show();
     }
     private void saveImageAndReturn() {
+        Log.d("Tags Selected", selectedTags.toString());
         Intent intentSelf = getIntent();
         String uriString = intentSelf.getStringExtra("Uri");
         Uri newImageUri = Uri.parse(uriString);
@@ -290,7 +292,6 @@ public class photo_view extends AppCompatActivity{
             }
 
 
-            List<String> selectedTags = new ArrayList<>(tagsList); // Ensure valid list
             // Save metadata
             MetadataUtils.saveImageMetadata(this, file.getAbsolutePath(), selectedTags);
             // Return to the main screen

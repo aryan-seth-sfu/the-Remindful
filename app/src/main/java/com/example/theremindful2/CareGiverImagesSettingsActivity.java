@@ -207,38 +207,44 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                     toggleButton.setTextColor(getResources().getColor(R.color.black)); // Change text color
                     toggleButton.getBackground().setTint(getResources().getColor(R.color.light_gray)); // Background tint
                     imageAlbumLayout.removeAllViews();
-                    for(Pair<String, String> theme : albumsList) {
-                        ImageView image = new ImageView(CareGiverImagesSettingsActivity.this);
-                        File imageFile = new File(theme.second);
-                        Uri imageUri = Uri.fromFile(imageFile);
-                        image.setImageURI(imageUri);
-                        image.setTag(theme.first);
-                        // Set layout parameters to control the size
-                        FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
-                                300,  // Width of the image, adjust as needed
-                                300   // Height of the image, adjust as needed
-                        );
-                        layoutParams.setMargins(16, 16, 16, 16); // Optional margin around each image
-                        image.setLayoutParams(layoutParams);
-                        // Add the ImageView to the FlexboxLayout
-                        imageAlbumLayout.addView(image);
-                    }
-                    for(int images = 0; images < imageAlbumLayout.getChildCount(); images++){
-                        View view = imageAlbumLayout.getChildAt(images);
-                        if(view instanceof ImageView){
-                            view.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Intent intent = new Intent(CareGiverImagesSettingsActivity.this, album.class);
-                                    Object album = view.getTag();
-                                    Log.d("album extra", album.toString());
-                                    intent.putExtra("album", album.toString());
-                                    startActivity(intent);
-                                }
-                            });
+                    if(!albumsList.isEmpty()) {
+                        for (Pair<String, String> theme : albumsList) {
+                            ImageView image = new ImageView(CareGiverImagesSettingsActivity.this);
+                            if(theme.second == null){
+                                image.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher_foreground,null));
+                            }
+                            else{
+                                File imageFile = new File(theme.second);
+                                Uri imageUri = Uri.fromFile(imageFile);
+                                image.setImageURI(imageUri);
+                            }
+                            image.setTag(theme.first);
+                            // Set layout parameters to control the size
+                            FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
+                                    300,  // Width of the image, adjust as needed
+                                    300   // Height of the image, adjust as needed
+                            );
+                            layoutParams.setMargins(16, 16, 16, 16); // Optional margin around each image
+                            image.setLayoutParams(layoutParams);
+                            // Add the ImageView to the FlexboxLayout
+                            imageAlbumLayout.addView(image);
+                        }
+                        for (int images = 0; images < imageAlbumLayout.getChildCount(); images++) {
+                            View view = imageAlbumLayout.getChildAt(images);
+                            if (view instanceof ImageView) {
+                                view.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent intent = new Intent(CareGiverImagesSettingsActivity.this, album.class);
+                                        Object album = view.getTag();
+                                        Log.d("album extra", album.toString());
+                                        intent.putExtra("album", album.toString());
+                                        startActivity(intent);
+                                    }
+                                });
+                            }
                         }
                     }
-
                 }
             }
         });

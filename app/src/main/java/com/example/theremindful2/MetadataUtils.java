@@ -20,7 +20,7 @@ public class MetadataUtils {
     public static void saveImageMetadata(Context context, String imageAbsolutePath, List<String> tags) {
         FileWriter writer = null;
         BufferedReader reader = null;
-
+        Log.d("selected tags in saveImageMetaData", tags.toString());
         try {
             File metadataFile = new File(context.getFilesDir(), METADATA_FILE_NAME);
             JSONObject metadata = new JSONObject();
