@@ -2,6 +2,7 @@
 agp = "8.7.1"
 biometric = "1.1.0"
 flexbox = "3.0.0"
+gson = "2.10.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -17,6 +18,7 @@ camerax = "1.2.3"
 [libraries]
 biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
 flexbox = { group = "com.google.android.flexbox", name = "flexbox", version.ref = "flexbox" }
+gson-v2101 = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="120dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/musicicon" />
+
+    <!-- Create a horizontal LinearLayout for play and skip icons -->
+
+    <ImageView
+        android:id="@+id/imageView9"
+        android:layout_width="488dp"
+        android:layout_height="51dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.512"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView7"
+        app:srcCompat="@drawable/img_1" />
+
+    <LinearLayout
+        android:id="@+id/iconLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="00dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/imageView9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp">
+
+        <ImageButton
+            android:id="@+id/backwards"
+            android:layout_width="94dp"
+            android:layout_height="64dp"
+            app:srcCompat="@drawable/backwardsicon"
+            android:background="@null"/>
+
+        <ImageButton
+            android:id="@+id/playicon"
+            android:layout_width="91dp"
+            android:layout_height="75dp"
+            app:srcCompat="@drawable/playicon"
+            android:background="@null"
+            />
+
+        <ImageButton
+            android:id="@+id/pause"
+            android:layout_width="91dp"
+            android:layout_height="75dp"
+            app:srcCompat="@drawable/pauseicon"
+            android:background="@null"/>
+
+        <ImageButton
+            android:id="@+id/skip"
+            android:layout_width="87dp"
+            android:layout_height="61dp"
+            android:layout_marginStart="8dp"
+            app:srcCompat="@drawable/skipicon"
+            android:background="@null"/>
+    </LinearLayout>
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/iconLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/currentTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/seekBar"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="00:00"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:layout_marginStart="16dp"/>
+
+    <TextView
+        android:id="@+id/totalTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/seekBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="00:00"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:layout_marginEnd="16dp"/>
+
+    <Button
+        android:id="@+id/bt_audio"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="96dp"
+        android:minWidth="160dp"
+        android:text="Select Audio"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iconLayout" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/alfa_slab_one"
+        android:text="Welcome to the music player!"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.021" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
