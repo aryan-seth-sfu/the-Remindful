@@ -5,32 +5,31 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
 material = "1.12.0"
-navigationUi = "2.8.3"
-cameraCore = "1.4.0"
-cameraView = "1.4.0"
-cameraLifecycle = "1.4.0"
-camerax = "1.2.3"
+navigationUi = "2.8.4"
 
 [libraries]
+
+camera-core = "androidx.camera:camera-core:1.4.0"
+camera-camera2 = "androidx.camera:camera-camera2:1.4.0"
+camera-lifecycle = "androidx.camera:camera-lifecycle:1.4.0"
+camera-view = "androidx.camera:camera-view:1.4.0"
+camera-extensions = "androidx.camera:camera-extensions:1.4.0"
+androidx-camera-core = { group = "androidx.camera", name = "camera-core", version = "1.4.0" }
+androidx-camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version = "1.4.0" }
+androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version = "1.4.0" }
+androidx-camera-view = { group = "androidx.camera", name = "camera-view", version = "1.4.0" }
+androidx-camera-extensions = { group = "androidx.camera", name = "camera-extensions", version = "1.4.0" }
+
+
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
-activity-ktx = "androidx.activity:activity-ktx:1.7.0"
-activity-compose = "androidx.activity:activity-compose:1.7.0"
-camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "cameraCore" }
-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraView" }
-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "cameraLifecycle" }
-androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "camerax" }
-androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "camerax" }
-androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "camerax" }
-androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "camerax" }
-androidx-camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "camerax" }
+activity-ktx = "androidx.activity:activity-ktx:1.9.3"
+activity-compose = "androidx.activity:activity-compose:1.9.3"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-
-
 
