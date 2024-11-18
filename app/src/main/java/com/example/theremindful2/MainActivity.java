@@ -10,6 +10,9 @@ import android.widget.ImageButton;
 
 import androidx.activity.result.ActivityResultLauncher;
 
+
+import androidx.fragment.app.DialogFragment;
+
 public class MainActivity extends AppCompatActivity {
 
 private ActivityResultLauncher<Intent> FilePickerLauncher;
@@ -36,6 +39,18 @@ private ActivityResultLauncher<Intent> FilePickerLauncher;
                 Intent intent = new Intent(MainActivity.this, Menu.class);
                 startActivity(intent);
 
+            }
+
+        });
+
+        // Daily Task Feature
+        FloatingActionButton fabTaskBook = findViewById(R.id.fabTaskBook);
+        fabTaskBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show the TaskDialogFragment
+                DialogFragment taskDialog = new TaskDialogFragment();
+                taskDialog.show(getSupportFragmentManager(), "TaskDialog");
             }
         });
 

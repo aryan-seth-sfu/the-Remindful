@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.theremindful2">
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
-    <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,8 +11,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".FilePicker" />
+        <activity
+            android:name=".CaregiverSettingsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
 
-        <activity android:name=".ImageUploadActivity"/>
+        <activity android:name=".ImageUploadActivity"></activity>
         <!-- SplashActivity Declaration - Set as Launcher Activity -->
         <activity
             android:name=".SplashActivity"
@@ -33,39 +29,14 @@
         </activity> <!-- MainActivity Declaration -->
         <activity
             android:name=".MainActivity"
-            android:exported="false"/>
+            android:exported="false"></activity>
         <activity android:name=".photo_view"
-
-        /> <!-- photo preview Declaration-->
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
+        </activity> <!-- photo preview Declaration-->
         <activity android:name=".album"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
+        </activity> <!-- album preview Declaration-->
 
-        /> <!-- album preview Declaration-->
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
-        <activity android:name=".Menu"/>
-        <activity android:name=".CareGiverImagesSettingsActivity"/>
-        <activity
-            android:name=".CameraActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-
-        <service
-            android:name=".MusicService"
-            android:enabled="true"
-            android:exported="false" />
-        <activity
-            android:name=".audioactivity"
-            android:exported="false" />
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

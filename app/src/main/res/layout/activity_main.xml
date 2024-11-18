@@ -5,143 +5,52 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    tools:ignore="ExtraText">
+    tools:context=".MainActivity">
 
     <!-- Parent ViewPager2 for Horizontal Swiping -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/parentViewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent" />
 
-    </androidx.viewpager2.widget.ViewPager2>
-<!--    <Button-->
-<!--        android:id="@+id/Audio"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Audio"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/fabSettings"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        android:background="@color/colorPrimary"-->
-<!--        android:layout_marginTop="16dp"/>-->
-
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/black"
+    <!-- Floating Action Button for Caregiver Settings -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_menu_manage"
+        android:contentDescription="Settings"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:tint="@android:color/white"
+        app:backgroundTint="@color/colorPrimary" />
 
-    <TextView
-        android:layout_width="70dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="20dp"
-        android:text="Remindful"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:textStyle="normal"
-        android:fontFamily="sans-serif-medium" />
-
-    <ImageButton
-        android:id="@+id/menu_button"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:contentDescription="Menu Icon"
-        android:src="@drawable/baseline_menu_20"
-        app:layout_constraintEnd_toEndOf="@+id/view"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/black"/>
-
-    <ImageButton
-        android:id="@+id/back_button"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:src="@drawable/baseline_arrow_back_20"
-        app:layout_constraintEnd_toStartOf="@+id/menu_button"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/black"/>
-
-    <View
-        android:id="@+id/musicView"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:visibility="invisible"
+    <!-- Floating Action Button for Upload -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/upload_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="180dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_upload"
+        android:contentDescription="Upload"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view" />
+        android:tint="@android:color/white"
+        app:backgroundTint="@color/colorPrimary" />
 
-    <ImageView
-        android:id="@+id/musicThumbnail"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="10dp"
-
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view"
-        android:visibility="invisible"/>
-
-    <ImageButton
-        android:id="@+id/playPauseButtonMiniView"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view"
+    <!-- New Floating Action Button for Task Book -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabTaskBook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_task_book"
+        android:contentDescription="Daily Tasks"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="invisible"
-
-        />
-    <ImageButton
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="@id/playPauseButtonMiniView"
-        app:layout_constraintTop_toBottomOf="@id/view"
-        android:visibility="invisible"
-/>
-    <ImageButton
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="@id/playPauseButtonMiniView"
-        app:layout_constraintTop_toBottomOf="@id/view"
-        android:src="@drawable/baseline_fast_forward_24"
-        android:background="@android:color/transparent"
-        android:visibility="invisible"
-    />
-
-    <ImageButton
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="50dp"
-        app:layout_constraintEnd_toEndOf="@+id/playPauseButtonMiniView"
-        app:layout_constraintTop_toBottomOf="@id/view"
-        android:visibility="invisible"/>
-    <ImageButton
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="100dp"
-        app:layout_constraintEnd_toEndOf="@+id/playPauseButtonMiniView"
-        app:layout_constraintTop_toBottomOf="@id/view"
-        android:src="@drawable/baseline_fast_rewind_24"
-        android:background="@android:color/transparent"
-        android:visibility="invisible"
-        />
-
+        android:tint="@android:color/white"
+        app:backgroundTint="@color/colorPrimary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
