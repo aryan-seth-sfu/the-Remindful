@@ -71,7 +71,7 @@
         android:background="@color/black"/>
 
     <View
-        android:id="@+id/view2"
+        android:id="@+id/musicView"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:visibility="invisible"
@@ -80,7 +80,7 @@
         app:layout_constraintTop_toBottomOf="@id/view" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/musicThumbnail"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="10dp"
@@ -91,7 +91,7 @@
         android:visibility="invisible"/>
 
     <ImageButton
-        android:id="@+id/playPauseButton"
+        android:id="@+id/playPauseButtonMiniView"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginStart="0dp"
@@ -107,7 +107,7 @@
         android:layout_height="35dp"
         android:layout_marginStart="50dp"
         android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="@id/playPauseButton"
+        app:layout_constraintStart_toStartOf="@id/playPauseButtonMiniView"
         app:layout_constraintTop_toBottomOf="@id/view"
         android:visibility="invisible"
 />
@@ -116,7 +116,7 @@
         android:layout_height="35dp"
         android:layout_marginStart="100dp"
         android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="@id/playPauseButton"
+        app:layout_constraintStart_toStartOf="@id/playPauseButtonMiniView"
         app:layout_constraintTop_toBottomOf="@id/view"
         android:src="@drawable/baseline_fast_forward_24"
         android:background="@android:color/transparent"
@@ -128,7 +128,7 @@
         android:layout_height="35dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="50dp"
-        app:layout_constraintEnd_toEndOf="@+id/playPauseButton"
+        app:layout_constraintEnd_toEndOf="@+id/playPauseButtonMiniView"
         app:layout_constraintTop_toBottomOf="@id/view"
         android:visibility="invisible"/>
     <ImageButton
@@ -136,7 +136,7 @@
         android:layout_height="35dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="100dp"
-        app:layout_constraintEnd_toEndOf="@+id/playPauseButton"
+        app:layout_constraintEnd_toEndOf="@+id/playPauseButtonMiniView"
         app:layout_constraintTop_toBottomOf="@id/view"
         android:src="@drawable/baseline_fast_rewind_24"
         android:background="@android:color/transparent"

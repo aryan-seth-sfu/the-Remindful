@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
     <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE"
         tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
 
     <application
         android:allowBackup="true"
@@ -17,7 +19,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".FilePicker" />
 
-        <activity android:name=".ImageUploadActivity"></activity>
+        <activity android:name=".ImageUploadActivity"/>
         <!-- SplashActivity Declaration - Set as Launcher Activity -->
         <activity
             android:name=".SplashActivity"
@@ -30,7 +32,7 @@
         </activity> <!-- MainActivity Declaration -->
         <activity
             android:name=".MainActivity"
-            android:exported="false"></activity>
+            android:exported="false"/>
         <activity android:name=".photo_view"
 
         /> <!-- photo preview Declaration-->
@@ -46,8 +48,12 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <activity android:name=".Menu"></activity>
-        <activity android:name=".CareGiverImagesSettingsActivity"></activity>
+        <activity android:name=".Menu"/>
+        <activity android:name=".CareGiverImagesSettingsActivity"/>
+        <activity
+            android:name=".CameraActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
 
     </application>
 
