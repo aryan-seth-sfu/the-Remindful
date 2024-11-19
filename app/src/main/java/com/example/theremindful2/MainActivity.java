@@ -1,5 +1,6 @@
 package com.example.theremindful2;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,16 +8,12 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import android.widget.ImageButton;
-
 import androidx.activity.result.ActivityResultLauncher;
-
-
 import androidx.fragment.app.DialogFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-private ActivityResultLauncher<Intent> FilePickerLauncher;
-
+    private ActivityResultLauncher<Intent> FilePickerLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +35,7 @@ private ActivityResultLauncher<Intent> FilePickerLauncher;
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, Menu.class);
                 startActivity(intent);
-
             }
-
         });
 
         // Daily Task Feature
@@ -53,6 +48,5 @@ private ActivityResultLauncher<Intent> FilePickerLauncher;
                 taskDialog.show(getSupportFragmentManager(), "TaskDialog");
             }
         });
-
     }
 }
