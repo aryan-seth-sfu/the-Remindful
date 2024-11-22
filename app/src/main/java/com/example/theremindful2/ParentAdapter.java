@@ -10,7 +10,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import java.util.Arrays;
 import java.util.List;
 
-// First, we'll create the Theme class (which was likely a data class in Kotlin)
+// First, we'll create the Theme class
 // Now the ParentAdapter
 public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentViewHolder> {
     private final Context context;

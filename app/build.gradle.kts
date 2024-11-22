@@ -40,6 +40,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.navigation.ui)
     implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -56,4 +58,5 @@ dependencies {
     implementation(libs.camera.core)
     implementation(libs.camera.view)
     implementation(libs.camera.lifecycle)
+    annotationProcessor(libs.androidx.room.compiler)
 }
