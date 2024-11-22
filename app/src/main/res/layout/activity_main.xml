@@ -144,4 +144,15 @@
         />
 
 
+    <!-- Add FloatingActionButton for Daily Task Feature -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabTaskBook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_task_book" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
