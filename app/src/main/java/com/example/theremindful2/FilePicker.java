@@ -99,8 +99,9 @@ public class FilePicker extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         // Handle confirmation (e.g., save file URI, return to previous activity)
-//                        Intent resultIntent = new Intent();
-//                        i.setData(selectedFileUri);
+                        Intent resultIntent = new Intent();
+                        resultIntent.setData(selectedFileUri);
+                        setResult(RESULT_OK, resultIntent);
 //                        String FileAbsPath = saveImageToInternalStorage(selectedFileUri,fileName);
 
                         Bitmap bitmap = null;
@@ -134,11 +135,12 @@ public class FilePicker extends AppCompatActivity {
                         }
 
 
-                        Intent i = new Intent(FilePicker.this, CareGiverImagesSettingsActivity.class);
-                        setResult(RESULT_OK, i);
+//                        Intent i = new Intent(FilePicker.this, CareGiverImagesSettingsActivity.class);
+//                        setResult(RESULT_OK, i);
+
 
 //                        i.putExtra("filePATH",FileAbsPath);
-                        startActivity(i);
+//                        startActivity(i);
 
                         finish();
                     }
