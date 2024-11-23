@@ -2,5 +2,12 @@
 <resources>
     <array name="preloaded_fonts" translatable="false">
         <item>@font/alfa_slab_one</item>
+        <item>@font/bangers</item>
+        <item>@font/frijole</item>
+        <item>@font/monofett</item>
+        <item>@font/nosifer</item>
+        <item>@font/oooh_baby</item>
+        <item>@font/rubik_doodle_shadow</item>
+        <item>@font/trade_winds</item>
     </array>
 </resources>

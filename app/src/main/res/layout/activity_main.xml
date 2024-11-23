@@ -15,37 +15,40 @@
         android:layout_height="match_parent" >
 
     </androidx.viewpager2.widget.ViewPager2>
-<!--    <Button-->
-<!--        android:id="@+id/Audio"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Audio"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/fabSettings"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        android:background="@color/colorPrimary"-->
-<!--        android:layout_marginTop="16dp"/>-->
+    <!--    <Button-->
+    <!--        android:id="@+id/Audio"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="Audio"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/fabSettings"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        android:background="@color/colorPrimary"-->
+    <!--        android:layout_marginTop="16dp"/>-->
 
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/black"
+        android:background="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:layout_width="70dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="250dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/trade_winds"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
         android:text="Remindful"
         android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="30sp"
         android:textStyle="normal"
-        android:fontFamily="sans-serif-medium" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/menu_button"
@@ -79,68 +82,84 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view" />
 
-    <ImageView
-        android:id="@+id/musicThumbnail"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="10dp"
+    <!--    <ImageView-->
+    <!--        android:id="@+id/musicThumbnail"-->
+    <!--        android:layout_width="40dp"-->
+    <!--        android:layout_height="40dp"-->
+    <!--        android:layout_marginStart="10dp"-->
 
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view"
-        android:visibility="invisible"/>
+    <!--        android:layout_marginTop="10dp"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/view"-->
+    <!--        android:visibility="visible"/>-->
 
     <ImageButton
         android:id="@+id/playPauseButtonMiniView"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="0dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/playicon"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        android:layout_marginStart="150dp"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="invisible"
+    android:visibility="visible"
+    android:background="@null" />
 
-        />
+
+
+
     <ImageButton
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="50dp"
+        android:layout_width="60dp"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        android:id="@+id/pause"
+        android:layout_height="60dp"
+        android:layout_marginStart="70dp"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="@id/playPauseButtonMiniView"
+        android:src="@drawable/pausebutton"
+        android:background="@null"
         app:layout_constraintTop_toBottomOf="@id/view"
-        android:visibility="invisible"
-/>
+        android:visibility="visible"
+        />
     <ImageButton
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="100dp"
+        android:layout_width="60dp"
+        android:id="@+id/skip"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        android:layout_height="60dp"
+        android:layout_marginStart="140dp"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="@id/playPauseButtonMiniView"
         app:layout_constraintTop_toBottomOf="@id/view"
         android:src="@drawable/baseline_fast_forward_24"
         android:background="@android:color/transparent"
-        android:visibility="invisible"
-    />
+        android:visibility="visible"
+        />
 
+    <!--    <ImageButton-->
+    <!--        android:layout_width="35dp"-->
+    <!--        android:layout_height="35dp"-->
+    <!--        android:layout_marginTop="10dp"-->
+    <!--        android:layout_marginRight="50dp"-->
+    <!--        app:layout_constraintEnd_toEndOf="@+id/playPauseButtonMiniView"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/view"-->
+    <!--        android:visibility="visible"/>-->
     <ImageButton
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="60dp"
+        android:id="@+id/back"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        android:layout_height="60dp"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="50dp"
-        app:layout_constraintEnd_toEndOf="@+id/playPauseButtonMiniView"
-        app:layout_constraintTop_toBottomOf="@id/view"
-        android:visibility="invisible"/>
-    <ImageButton
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="100dp"
+        android:layout_marginRight="90dp"
         app:layout_constraintEnd_toEndOf="@+id/playPauseButtonMiniView"
         app:layout_constraintTop_toBottomOf="@id/view"
         android:src="@drawable/baseline_fast_rewind_24"
-        android:background="@android:color/transparent"
-        android:visibility="invisible"
+        android:background="@null"
+        android:visibility="visible"
         />
 
 
@@ -153,6 +172,26 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:src="@drawable/ic_task_book" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/instruction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="100dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/instructions" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="90dp"
+        android:text="Instructions"
+        android:textColor="#120101"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
