@@ -1,5 +1,9 @@
 package com.example.theremindful2;
 
+import com.example.theremindful2.data.AppDatabase;
+import com.example.theremindful2.data.AudioDao;
+import com.example.theremindful2.data.AudioRepository;
+import com.example.theremindful2.data.ImageDao;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import android.content.Intent;
@@ -40,12 +44,26 @@ public class MainActivity extends AppCompatActivity {
             MusicService.LocalBinder binder = (MusicService.LocalBinder) service;
             musicService = binder.getService();
             serviceBound = true;
+            AppDatabase database = new AppDatabase() {
+                @Override
+                public ImageDao imageDao() {
+                    return null;
+                }
+
+                @Override
+                public AudioDao audioDao() {
+                    return null;
+                }
+                @Override
+                public void clearAllTables() {
+                }
+            };
 
             if (playlistManager == null){
                 SharedPreferences prefs = getSharedPreferences("AudioPLayerPreferences", MODE_PRIVATE);
                 String playlistJson = prefs.getString("playlist", null);
                 if (playlistJson != null){
-                    playlistManager = new AddRemoveSongs();
+                    playlistManager = new AddRemoveSongs(new AudioRepository(database));
                     playlistManager.fromJson(playlistJson);
                 }
                 else {

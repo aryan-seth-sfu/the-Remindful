@@ -46,4 +46,6 @@ public abstract class AppDatabase extends RoomDatabase {
                     "`createdAt` INTEGER NOT NULL)");
         }
     };
+
+    public abstract void clearAllTables();
 }
