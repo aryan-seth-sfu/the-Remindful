@@ -10,12 +10,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 public class MetadataUtils {
     private static final String METADATA_FILE_NAME = "themes_metadata.json";
     private static final String TAG = "MetadataUtils";
+    private static final String IMAGES_METADATA_FILE_NAME = "image_only_metadata.json";
 
     public static void saveImageMetadata(Context context, String imageAbsolutePath, List<String> tags) {
         FileWriter writer = null;
@@ -147,5 +150,62 @@ public class MetadataUtils {
 
 
     }
+    // Updated function to load JSON from internal storage and get description
+    public static String getDescriptionForImage(String imagePath, Context context) {
+        try {
+            // Load JSON data from internal storage
+            String jsonData = loadJsonFromInternalStorage(context, IMAGES_METADATA_FILE_NAME); // Adjust the filename if needed
+            if (jsonData != null) {
+                // Parse the JSON data
+                JSONObject jsonObject = new JSONObject(jsonData);
+                JSONArray imagesArray = jsonObject.getJSONArray("images");
+
+                // Loop through the images array and match the path
+                for (int i = 0; i < imagesArray.length(); i++) {
+                    JSONObject imageObject = imagesArray.getJSONObject(i);
+                    String path = imageObject.getString("path");
+                    String description = imageObject.getString("description");
+
+                    // Check if the paths match
+                    if (path.equals(imagePath)) {
+                        return description;  // Return the description for the matched image
+                    }
+                }
+            } else {
+                Log.e("MetadataUtils", "Failed to load JSON data.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;  // Return null if no description is found
+    }
+
+    // Helper method to load JSON data from internal storage
+    private static String loadJsonFromInternalStorage(Context context, String fileName) {
+        String json = null;
+        try {
+            // Get the file from internal storage
+            File file = new File(context.getFilesDir(), fileName);
+            if (file.exists()) {
+                // Open the file and read its contents
+                FileInputStream fis = new FileInputStream(file);
+                int size = fis.available();
+                byte[] buffer = new byte[size];
+                fis.read(buffer);
+                fis.close();
+
+                // Convert the byte array to a string
+                json = new String(buffer, StandardCharsets.UTF_8);
+            } else {
+                Log.e("MetadataUtils", "File not found: " + file.getAbsolutePath());
+            }
+        } catch (IOException ex) {
+            Log.e("MetadataUtils", "Error reading file from internal storage: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+
+        return json;
+    }
+
 
 }

@@ -64,7 +64,7 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentView
             }
 
             // Pass theme name to the ChildAdapter along with photos
-            childViewPager.setAdapter(new ChildAdapter(photos, theme.getName()));
+            childViewPager.setAdapter(new ChildAdapter(photos, theme.getName(),context));
             childViewPager.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
 
             // Start at a middle position to enable infinite scrolling
