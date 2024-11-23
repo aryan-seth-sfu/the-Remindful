@@ -53,15 +53,25 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
             textViewTheme = itemView.findViewById(R.id.textViewTheme);
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    imageView.setAlpha(0.5f);
+                }
+            });
         }
 
         public void bind(String photoFilePath, String themeName) {
             // Convert the file path to a Uri
             File imageFile = new File(photoFilePath);
-            if (imageFile.exists()) {
+
+            if (imageFile.exists() && imageFile.isFile()) {
+                // If the file exists, load it
                 Uri imageUri = Uri.fromFile(imageFile); // Create Uri from file path
-                imageView.setImageURI(imageUri);       // Set the image using the Uri
+                imageView.setImageURI(imageUri);         // Set the image using the Uri
             } else {
+                // If the image file doesn't exist, set a placeholder
                 Log.e("bind", "Image file not found: " + photoFilePath);
                 imageView.setImageResource(R.drawable.ic_launcher_foreground); // Fallback to a placeholder image
             }
@@ -69,6 +79,7 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
             // Set the theme name in the text view
             textViewTheme.setText(themeName);
         }
+
 
     }
 }

@@ -5,6 +5,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
@@ -74,11 +75,13 @@ public class MainActivity extends AppCompatActivity {
 //        syncPlaylistManager();
 
         // Reference to the parent ViewPager2 for horizontal swiping between themes
+
         ViewPager2 parentViewPager = findViewById(R.id.parentViewPager);
         ParentAdapter parentAdapter = new ParentAdapter(this);
-        parentViewPager.setAdapter(parentAdapter);
-        parentViewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
 
+        parentViewPager.setAdapter(parentAdapter);
+
+        parentViewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         playButton = findViewById(R.id.playPauseButtonMiniView);
         pauseButton = findViewById(R.id.pause);
         backButton = findViewById(R.id.back);
@@ -88,8 +91,16 @@ public class MainActivity extends AppCompatActivity {
 
 
 // Start at a middle position for infinite scrolling
-        int startPosition = Integer.MAX_VALUE / 2;
-        parentViewPager.setCurrentItem(startPosition - (startPosition % parentAdapter.getItemCount()), false);
+        int itemCount = parentAdapter.getItemCount();
+
+// Check if the item count is greater than 0 before proceeding
+        if (itemCount > 0) {
+            int startPosition = Integer.MAX_VALUE / 2;
+            parentViewPager.setCurrentItem(startPosition - (startPosition % itemCount), false);
+        } else {
+            Log.e("MainActivity", "Item count is zero, unable to set current item.");
+            // Optionally, handle empty list case or provide fallback behavior
+        }
 
 
         ImageButton menu = findViewById(R.id.menu_button);
