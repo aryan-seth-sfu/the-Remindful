@@ -15,6 +15,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/Home"
         android:layout_width="70dp"
         android:layout_height="20dp"
         android:layout_marginStart="5dp"

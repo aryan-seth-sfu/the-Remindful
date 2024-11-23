@@ -47,6 +47,15 @@ public class album extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_layout);
 
+        TextView Home = findViewById(R.id.Home);
+        Home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(album.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
         FlexboxLayout photoTap = findViewById(R.id.AlbumPhoto);
 
         TextView albumName = findViewById(R.id.AlbumName);

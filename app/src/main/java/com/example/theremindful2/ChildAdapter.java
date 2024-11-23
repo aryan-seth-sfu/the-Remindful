@@ -31,13 +31,19 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
 
     @Override
     public void onBindViewHolder(@NonNull ChildViewHolder holder, int position) {
-        holder.bind(photos.get(position), themeName);
+        if (photos == null || photos.isEmpty()) {
+            Log.e("ChildAdapter", "No photos available to display.");
+            return;
+        }
+        int actualPosition = position % photos.size();
+        holder.bind(photos.get(actualPosition), themeName);
     }
 
     @Override
     public int getItemCount() {
-        return photos.size();
+        return (photos == null || photos.isEmpty()) ? 0 : Integer.MAX_VALUE;
     }
+
 
     public class ChildViewHolder extends RecyclerView.ViewHolder {
         private final ImageView imageView;

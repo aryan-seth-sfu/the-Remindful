@@ -13,6 +13,8 @@ import android.content.Context;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import android.widget.ImageButton;
+import android.widget.TextView;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.fragment.app.DialogFragment;
 import android.media.MediaPlayer;
@@ -73,11 +75,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Reference to the parent ViewPager2 for horizontal swiping between themes
         ViewPager2 parentViewPager = findViewById(R.id.parentViewPager);
-
-        // Set the adapter for the parent ViewPager2
-        parentViewPager.setAdapter(new ParentAdapter(this));
-
-        // Set the orientation for horizontal swiping
+        ParentAdapter parentAdapter = new ParentAdapter(this);
+        parentViewPager.setAdapter(parentAdapter);
         parentViewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
 
         playButton = findViewById(R.id.playPauseButtonMiniView);
@@ -86,6 +85,11 @@ public class MainActivity extends AppCompatActivity {
         skipButton = findViewById(R.id.skip);
 
         setupListenersMain();
+
+
+// Start at a middle position for infinite scrolling
+        int startPosition = Integer.MAX_VALUE / 2;
+        parentViewPager.setCurrentItem(startPosition - (startPosition % parentAdapter.getItemCount()), false);
 
 
         ImageButton menu = findViewById(R.id.menu_button);
@@ -114,6 +118,14 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, instructionPage.class);
                 startActivity(intent);
 
+            }
+        });
+        TextView Home = findViewById(R.id.Home);
+        Home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
 

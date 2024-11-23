@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -50,6 +51,15 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_caregiver_images);
+
+        TextView Home = findViewById(R.id.Home);
+        Home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CareGiverImagesSettingsActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         //saved images
         File directory = getFilesDir(); // Internal storage directory

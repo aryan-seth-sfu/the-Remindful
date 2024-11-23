@@ -61,6 +61,14 @@ public class photo_view extends AppCompatActivity{
         super.onCreate(savedInstaceState);
         setContentView(R.layout.photo_view);
 
+        TextView Home = findViewById(R.id.Home);
+        Home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(photo_view.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Initialize tags list with some default tags
         tagsList = new HashSet<>();

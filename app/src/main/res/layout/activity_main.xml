@@ -36,17 +36,19 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:layout_width="250dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="100dp"
+        android:layout_width="170dp"
+        android:layout_height="44dp"
+        android:id="@+id/Home"
         android:layout_marginTop="5dp"
         android:fontFamily="@font/trade_winds"
         android:padding="0dp"
         android:scaleType="fitCenter"
         android:text="Remindful"
+        android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="30sp"
         android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
