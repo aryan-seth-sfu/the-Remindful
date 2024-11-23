@@ -25,11 +25,21 @@ public class instructionPage extends AppCompatActivity {
         View thirdText = findViewById(R.id.thirdView);
         View instructionofButtons = findViewById(R.id.buttonInstructions);
         View pausePlaySkipView = findViewById(R.id.playPauseButtonMiniView);
+        View instructionImages = findViewById(R.id.imageInsP1);
+        View instructionImagesText = findViewById(R.id.fourthView);
 
         Button nextButton = findViewById(R.id.nextbutton);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (thirdText.getVisibility() == View.VISIBLE){
+                    thirdText.setVisibility(View.INVISIBLE);
+                    instructionofButtons.setVisibility(View.INVISIBLE);
+                    pausePlaySkipView.setVisibility(View.INVISIBLE);
+                    instructionImages.setVisibility(View.VISIBLE);
+                    instructionImagesText.setVisibility(View.VISIBLE);
+                }
+
 
                 if (TextView.getVisibility() != View.VISIBLE && AudioView.getVisibility() == View.VISIBLE) {
                     AudioView.setVisibility(View.INVISIBLE);

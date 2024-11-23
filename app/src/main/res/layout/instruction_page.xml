@@ -90,6 +90,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/fourthView"
+        android:visibility="invisible"
+
+        android:layout_width="350dp"
+        android:layout_height="352dp"
+        android:layout_marginTop="120dp"
+        android:text="After selecting the images button in the task bar you will be lead to this page where you can view previously saved images and hit the plus to upload new images.
+"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.154"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/imageInsP1"
+        android:layout_width="346dp"
+        android:layout_height="151dp"
+        android:layout_marginTop="340dp"
+        android:background="@null"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:srcCompat="@drawable/addingimagesinstruction" />
     <ImageView
         android:id="@+id/playPauseButtonMiniView"
         android:layout_width="346dp"
