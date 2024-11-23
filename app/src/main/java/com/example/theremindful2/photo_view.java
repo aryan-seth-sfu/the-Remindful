@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -51,13 +53,14 @@ public class photo_view extends AppCompatActivity{
     private static final String IMAGES_METADATA_FILE_NAME = "image_only_metadata.json";
     private static final String TAGS_PREFS = "TagsPrefs";
     private static final String TAGS_KEY = "TagsList";
+    private static final String METADATA_FILE_NAME = "themes_metadata.json";
     private Set<String> tagsList;
     private List<String> selectedTags;
     private Uri imageUri;
     private String imagePath;
 
     @Override
-    protected void onCreate(Bundle savedInstaceState){
+    protected void onCreate(Bundle savedInstaceState) {
         super.onCreate(savedInstaceState);
         setContentView(R.layout.photo_view);
 
@@ -99,6 +102,7 @@ public class photo_view extends AppCompatActivity{
         TextView descriptionView = findViewById(R.id.photoDescription);
         String description = getImageDescriptionByPath(this, imagePath);
         descriptionView.setText(description);
+        descriptionView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         addTagToPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,9 +121,10 @@ public class photo_view extends AppCompatActivity{
                 image.setVisibility(View.INVISIBLE);
                 descTagsToggle.setVisibility(View.VISIBLE);
                 saveButton.setVisibility(View.VISIBLE);
-                if(descTagsToggle.isChecked()){
+                descriptionView.setVisibility(View.INVISIBLE);
+                if (descTagsToggle.isChecked()) {
                     addTagToPhoto.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     editDescription.setVisibility(View.VISIBLE);
                 }
             }
@@ -139,53 +144,16 @@ public class photo_view extends AppCompatActivity{
         descTagsToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (descTagsToggle.isChecked()){
+                if (descTagsToggle.isChecked()) {
                     addTagToPhoto.setVisibility(View.VISIBLE);
                     editDescription.setVisibility(View.INVISIBLE);
                     //tags
                     tagsContainer.setVisibility(View.VISIBLE);
                     tagsContainer.removeAllViews();
+                    tags(tagsContainer);
 
 
-                    TextView tagName = new TextView(photo_view.this);
-                    tagName.setText("New Item");
-                    tagName.setTextSize(16);
-                    tagName.setBackgroundColor(getResources().getColor(android.R.color.white));
-                    tagName.setTextColor(getResources().getColor(android.R.color.black));
-
-                    // Create a new ImageView
-                    ImageView imageView = new ImageView(photo_view.this);
-                    imageView.setImageResource(R.drawable.baseline_delete_24); // Replace with your image
-                    imageView.setLayoutParams(new FlexboxLayout.LayoutParams(100, 100)); // Adjust dimensions as needed
-
-                    // Add both views to the FlexboxLayout
-                    FlexboxLayout.LayoutParams textLayoutParams = new FlexboxLayout.LayoutParams(
-                            FlexboxLayout.LayoutParams.WRAP_CONTENT,
-                            FlexboxLayout.LayoutParams.WRAP_CONTENT
-                    );
-                    textLayoutParams.setMargins(8, 8, 8, 8); // Add margins for spacing
-                    tagName.setLayoutParams(textLayoutParams);
-
-                    FlexboxLayout.LayoutParams imageLayoutParams = new FlexboxLayout.LayoutParams(
-                            FlexboxLayout.LayoutParams.WRAP_CONTENT,
-                            FlexboxLayout.LayoutParams.WRAP_CONTENT
-                    );
-                    imageLayoutParams.setMargins(8, 8, 8, 8);
-                    imageView.setLayoutParams(imageLayoutParams);
-
-                    imageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    });
-
-                    // Add views to Flexbox
-                    tagsContainer.addView(tagName);
-                    tagsContainer.addView(imageView);
-
-                }
-                else{
+                } else {
                     editDescription.setVisibility(View.VISIBLE);
                     addTagToPhoto.setVisibility(View.INVISIBLE);
                     //description
@@ -212,9 +180,79 @@ public class photo_view extends AppCompatActivity{
                 editImageDescription(photo_view.this, imagePath, newDescription);
             }
         });
-
-
     }
+    private void tags(FlexboxLayout tagsContainer){
+        List<Theme> themes = MetadataUtils.filterThemesByImagePathFromJson(photo_view.this, METADATA_FILE_NAME,imagePath );
+
+        for (int counter = 0; counter < themes.size(); counter++) {
+            // Create a horizontal LinearLayout for the text and image
+            LinearLayout horizontalLayout = new LinearLayout(photo_view.this);
+            horizontalLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+            // Set layout parameters for the horizontal LinearLayout
+            FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
+                    FlexboxLayout.LayoutParams.MATCH_PARENT,  // Full width to enforce one item per line
+                    FlexboxLayout.LayoutParams.WRAP_CONTENT
+            );
+            layoutParams.setMargins(8, 8, 8, 8); // Margins around the horizontal layout
+            horizontalLayout.setLayoutParams(layoutParams);
+
+            // Create the TextView
+            TextView tagName = new TextView(photo_view.this);
+            tagName.setText(themes.get(counter).getName());
+            tagName.setTextSize(16);
+            tagName.setBackgroundColor(getResources().getColor(android.R.color.white));
+            tagName.setTextColor(getResources().getColor(android.R.color.black));
+
+            // Set layout parameters for the TextView
+            LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            textParams.setMargins(8, 8, 8, 8);
+            tagName.setLayoutParams(textParams);
+
+            // Create the ImageView
+            ImageView imageView = new ImageView(photo_view.this);
+            imageView.setImageResource(R.drawable.baseline_delete_24); // Replace with your image
+
+            // Set layout parameters for the ImageView
+            LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
+                    100, // Width of the image
+                    100  // Height of the image
+            );
+            imageParams.setMargins(8, 8, 8, 8);
+            imageView.setLayoutParams(imageParams);
+
+            List<String> data = new ArrayList<>();
+            data.add(imagePath);
+            data.add(themes.get(counter).getName());
+            imageView.setTag(data);
+
+            //imageView.setTag(1,themes.get(counter).getName());
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Handle image click event
+                    List<String> data = (List<String>) imageView.getTag();
+                    MetadataUtils.removeImageFromTheme(photo_view.this, METADATA_FILE_NAME,data.get(1), data.get(0));
+                    tagsContainer.removeAllViewsInLayout();
+                    tags(tagsContainer);
+
+                }
+            });
+
+            // Add the TextView and ImageView to the horizontal LinearLayout
+            horizontalLayout.addView(tagName);
+            horizontalLayout.addView(imageView);
+
+            // Add the horizontal LinearLayout to the FlexboxLayout
+            tagsContainer.addView(horizontalLayout);
+        }
+    }
+
+
+
     private void showEditDescriptionDialog() {
         TextView description = findViewById(R.id.photoDescription);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

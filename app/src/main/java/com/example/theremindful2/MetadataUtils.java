@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -207,5 +208,104 @@ public class MetadataUtils {
         return json;
     }
 
+    public static List<Theme> filterThemesByImagePathFromJson(Context context, String jsonFileName, String imagePath) {
+        List<Theme> filteredThemes = new ArrayList<>();
+
+        Log.d("image path", imagePath);
+        try {
+            // Load JSON file from internal storage
+            String jsonData = loadJsonFromInternalStorage(context, jsonFileName);
+
+            if (jsonData != null) {
+                // Parse the JSON data
+                JSONObject jsonObject = new JSONObject(jsonData);
+                JSONArray themesArray = jsonObject.getJSONArray("themes");
+
+                // Iterate through the themes
+                for (int i = 0; i < themesArray.length(); i++) {
+                    JSONObject themeObject = themesArray.getJSONObject(i);
+
+                    String name = themeObject.getString("tag");
+                    JSONArray imagePathsArray = themeObject.getJSONArray("images");
+
+                    // Convert JSONArray to List<String>
+                    List<String> imagePaths = new ArrayList<>();
+                    for (int j = 0; j < imagePathsArray.length(); j++) {
+                        imagePaths.add(imagePathsArray.getString(j));
+                    }
+
+                    // Check if the imagePath is in the list
+                    if (imagePaths.contains(imagePath)) {
+                        // Add the theme to the filtered list
+                        filteredThemes.add(new Theme(name, imagePaths));
+                    }
+                }
+            } else {
+                System.err.println("Failed to load JSON data.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return filteredThemes; // Return the filtered themes
+    }
+    public static boolean removeImageFromTheme(Context context, String jsonFileName, String themeName, String imagePath) {
+        try {
+            // Load JSON file from internal storage
+            String jsonData = loadJsonFromInternalStorage(context, jsonFileName);
+
+            if (jsonData != null) {
+                // Parse the JSON data
+                JSONObject jsonObject = new JSONObject(jsonData);
+                JSONArray themesArray = jsonObject.getJSONArray("themes");
+
+                // Iterate through the themes to find the matching theme
+                for (int i = 0; i < themesArray.length(); i++) {
+                    JSONObject themeObject = themesArray.getJSONObject(i);
+
+                    if (themeObject.getString("tag").equals(themeName)) {
+                        // Found the matching theme
+                        JSONArray imagePathsArray = themeObject.getJSONArray("images");
+
+                        // Find and remove the image path
+                        for (int j = 0; j < imagePathsArray.length(); j++) {
+                            if (imagePathsArray.getString(j).equals(imagePath)) {
+                                // Remove the image path from the array
+                                imagePathsArray.remove(j);
+
+                                // Save the updated JSON back to the file
+                                saveJsonToInternalStorage(context, jsonFileName, jsonObject);
+                                return true; // Successfully removed the image
+                            }
+                        }
+
+                        // If the image path is not found in this theme
+                        System.out.println("Image path not found in theme: " + themeName);
+                        return false;
+                    }
+                }
+
+                // If the theme is not found
+                System.out.println("Theme not found: " + themeName);
+                return false;
+            } else {
+                System.err.println("Failed to load JSON data.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false; // Operation failed
+    }
+    // Helper function to save JSON back to internal storage
+    private static void saveJsonToInternalStorage(Context context, String fileName, JSONObject jsonObject) {
+        try {
+            FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+            fos.write(jsonObject.toString().getBytes(StandardCharsets.UTF_8));
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }
