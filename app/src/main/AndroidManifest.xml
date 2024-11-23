@@ -37,6 +37,7 @@
         <activity android:name=".photo_view"
 
         /> <!-- photo preview Declaration-->
+        <activity android:name=".LauncherActivity" />
         <activity android:name=".album"
 
         /> <!-- album preview Declaration-->
