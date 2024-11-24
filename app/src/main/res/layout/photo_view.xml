@@ -26,24 +26,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/Home"
-        android:layout_width="170dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="5dp"
-        android:fontFamily="@font/agbalumoreg"
-        android:padding="0dp"
-        android:scaleType="fitCenter"
-        android:text="Remindful"
-        android:textAlignment="center"
-        android:textColor="#100101"
-        android:textSize="30sp"
-        android:textStyle="normal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"  />
-
-<!--    <ImageButton-->
+    <!--    <ImageButton-->
 <!--        android:id="@+id/menu_button"-->
 <!--        android:layout_width="20dp"-->
 <!--        android:layout_height="20dp"-->
@@ -55,18 +38,75 @@
 <!--        app:layout_constraintTop_toTopOf="parent"-->
 <!--        android:background="@color/black"/>-->
 
+    <TextView
+        android:id="@+id/Home"
+        android:layout_width="370dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/agbalumoreg"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        android:text="Add a description?"
+        android:textAlignment="center"
+        android:textColor="#100101"
+        android:textSize="25sp"
+        android:textStyle="normal"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/Home1"
+        android:layout_width="370dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/agbalumoreg"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        android:text="  Currently adding description"
+        android:textAlignment="center"
+        android:textColor="#100101"
+        android:textSize="25sp"
+        android:textStyle="normal"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/Home2"
+        android:layout_width="370dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/agbalumoreg"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        android:text="Currently adding tag"
+        android:textAlignment="center"
+        android:textColor="#100101"
+        android:textSize="25sp"
+        android:textStyle="normal"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageButton
         android:id="@+id/back_button"
         android:layout_width="60dp"
         android:layout_height="50dp"
-        android:src="@drawable/backbuttoninblack"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@null"
         android:padding="0dp"
         android:scaleType="fitStart"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="4dp"
+        android:src="@drawable/backbuttoninblack"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@null"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/imageEdit"
@@ -89,10 +129,10 @@
         android:layout_width="190dp"
         android:layout_height="60dp"
         android:background="@drawable/rounded_button"
-        android:textOff="Description"
+        android:textOff="Add a tag?"
         android:textAllCaps="false"
-        android:textOn="Tags"
-        android:textSize="30dp"
+        android:textOn="Back to description?"
+        android:textSize="20dp"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
