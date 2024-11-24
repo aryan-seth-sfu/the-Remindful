@@ -7,7 +7,17 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     tools:ignore="ExtraText">
-
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bgoflaunch" />
     <!-- Parent ViewPager2 for Horizontal Swiping -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/parentViewPager"
@@ -30,7 +40,7 @@
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/colorAccent"
+        android:background="#CBDEE5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -40,7 +50,7 @@
         android:layout_height="44dp"
         android:id="@+id/Home"
         android:layout_marginTop="5dp"
-        android:fontFamily="@font/trade_winds"
+        android:fontFamily="@font/agbalumoreg"
         android:padding="0dp"
         android:scaleType="fitCenter"
         android:text="Remindful"
@@ -54,26 +64,33 @@
 
     <ImageButton
         android:id="@+id/menu_button"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:contentDescription="Menu Icon"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:src="@drawable/baseline_menu_20"
-        app:layout_constraintEnd_toEndOf="@+id/view"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        android:layout_marginStart="300dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/black"/>
+        android:visibility="visible"
+        android:background="@null"
+
+        />
 
     <ImageButton
         android:id="@+id/back_button"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
         android:src="@drawable/baseline_arrow_back_20"
-        app:layout_constraintEnd_toStartOf="@+id/menu_button"
+        android:padding="0dp"
+        android:scaleType="fitStart"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/black"/>
+        android:background="@null"/>
 
     <View
         android:id="@+id/musicView"
@@ -99,15 +116,15 @@
         android:id="@+id/playPauseButtonMiniView"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/playicon"
-        android:padding="0dp"
-        android:scaleType="fitCenter"
         android:layout_marginStart="150dp"
         android:layout_marginTop="10dp"
+        android:background="@null"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/playicon"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view"
-    android:visibility="visible"
-    android:background="@null" />
+        app:layout_constraintTop_toBottomOf="@id/view" />
 
 
 
@@ -171,18 +188,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:src="@drawable/ic_task_book"
+        app:backgroundTint="#7F7F7F"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/ic_task_book" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/instruction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="100dp"
         android:layout_marginBottom="16dp"
+        android:src="@drawable/instructions"
+        app:backgroundTint="#7E7E7E"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/instructions" />
+
+        app:rippleColor="#0D0101" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -193,6 +215,17 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:text="Daily Tasks"
+        android:textColor="#120101"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 
 
 
