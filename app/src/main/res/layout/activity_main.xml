@@ -187,9 +187,11 @@
         android:id="@+id/fabTaskBook"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="30dp"
         android:src="@drawable/ic_task_book"
         app:backgroundTint="#7F7F7F"
+        app:maxImageSize="50dp"
+        app:fabCustomSize="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -197,10 +199,12 @@
         android:id="@+id/instruction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="100dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginRight="280dp"
+        android:layout_marginBottom="30dp"
         android:src="@drawable/instructions"
+        app:fabCustomSize="100dp"
         app:backgroundTint="#7E7E7E"
+        app:maxImageSize="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
 
@@ -209,9 +213,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="90dp"
+        android:layout_marginRight="270dp"
         android:text="Instructions"
         android:textColor="#120101"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -219,10 +224,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="30dp"
         android:text="Daily Tasks"
         android:textColor="#120101"
+        android:layout_marginBottom="5dp"
         android:textStyle="bold"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
