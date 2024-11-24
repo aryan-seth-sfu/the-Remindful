@@ -357,11 +357,17 @@ public class photo_view extends AppCompatActivity{
 
         // Save metadata
         MetadataUtils.saveImageMetadata(this, file.getAbsolutePath(), selectedTags);
+
+        // aryan code
+        MediaManager mm = new MediaManager(this);
+        mm.addImage(newImageUri, selectedTags , null);
+
         // Return to the main screen
         Intent intent = new Intent(photo_view.this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         Log.d("saveImageAndReturn", "Image saved successfully: " + filename);
+
         finish();
     }
 
@@ -381,47 +387,51 @@ public class photo_view extends AppCompatActivity{
         editor.apply();
     }
     public static String getImageDescriptionByPath(Context context, String imagePath) {
-        BufferedReader reader = null;
+        MediaManager mm = new MediaManager(context);
+        return mm.getDescription(imagePath);
 
-        try {
-            File metadataFile = new File(context.getFilesDir(), IMAGES_METADATA_FILE_NAME);
-            if (!metadataFile.exists()) {
-                Log.e("ImageMetadata", "Metadata file does not exist.");
-                return null;
-            }
-
-            FileInputStream inputStream = new FileInputStream(metadataFile);
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-            StringBuilder jsonBuilder = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                jsonBuilder.append(line);
-            }
-
-            // Parse the JSON
-            JSONObject rootObject = new JSONObject(jsonBuilder.toString());
-            JSONArray imagesArray = rootObject.getJSONArray("images");
-
-            // Find the image with the specified path
-            for (int i = 0; i < imagesArray.length(); i++) {
-                JSONObject imageObject = imagesArray.getJSONObject(i);
-                if (imageObject.getString("path").equals(imagePath)) {
-                    return imageObject.getString("description");
-                }
-            }
-
-        } catch (IOException | JSONException e) {
-            Log.e("ImageMetadata", "Error reading metadata file", e);
-        } finally {
-            try {
-                if (reader != null) reader.close();
-            } catch (IOException e) {
-                Log.e("ImageMetadata", "Error closing reader", e);
-            }
-        }
-
-        // Return null if the image is not found
-        return null;
+//
+//        BufferedReader reader = null;
+//
+//        try {
+//            File metadataFile = new File(context.getFilesDir(), IMAGES_METADATA_FILE_NAME);
+//            if (!metadataFile.exists()) {
+//                Log.e("ImageMetadata", "Metadata file does not exist.");
+//                return null;
+//            }
+//
+//            FileInputStream inputStream = new FileInputStream(metadataFile);
+//            reader = new BufferedReader(new InputStreamReader(inputStream));
+//            StringBuilder jsonBuilder = new StringBuilder();
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                jsonBuilder.append(line);
+//            }
+//
+//            // Parse the JSON
+//            JSONObject rootObject = new JSONObject(jsonBuilder.toString());
+//            JSONArray imagesArray = rootObject.getJSONArray("images");
+//
+//            // Find the image with the specified path
+//            for (int i = 0; i < imagesArray.length(); i++) {
+//                JSONObject imageObject = imagesArray.getJSONObject(i);
+//                if (imageObject.getString("path").equals(imagePath)) {
+//                    return imageObject.getString("description");
+//                }
+//            }
+//
+//        } catch (IOException | JSONException e) {
+//            Log.e("ImageMetadata", "Error reading metadata file", e);
+//        } finally {
+//            try {
+//                if (reader != null) reader.close();
+//            } catch (IOException e) {
+//                Log.e("ImageMetadata", "Error closing reader", e);
+//            }
+//        }
+//
+//        // Return null if the image is not found
+//        return null;
     }
     public static void editImageDescription(Context context, String imagePath, String newDescription) {
         File jsonFile = new File(context.getFilesDir(), IMAGES_METADATA_FILE_NAME);

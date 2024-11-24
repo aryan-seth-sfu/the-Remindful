@@ -585,8 +585,14 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                 Log.e("addNewTheme", "Error closing reader", e);
             }
         }
+        _addNewTheme(context, newTheme);
+        Log.d("_addNewTheme", "_New theme added successfully: " + newTheme);
     }
 
 
-
+    // aryan database functions
+    private static void _addNewTheme(Context ctx, String newTheme) {
+        MediaManager mediaManager = new MediaManager(ctx);
+        mediaManager.addTheme(newTheme);
+    }
 }
