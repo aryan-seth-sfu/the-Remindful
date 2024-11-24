@@ -165,6 +165,7 @@ public class MediaManager {
     private Context context;
 
     public MediaManager(Context context) {
+
         this.context = context;
         this.db = DatabaseHelper.getInstance(context);
     }
