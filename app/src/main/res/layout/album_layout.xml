@@ -9,69 +9,78 @@
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/black"
+        android:background="#CBDEE5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/Home"
-        android:layout_width="70dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="20dp"
-        android:text="Remindful"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="170dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/agbalumoreg"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        android:text="Images"
+        android:textAlignment="center"
+        android:textColor="#100101"
+        android:textSize="30sp"
         android:textStyle="normal"
-        android:fontFamily="sans-serif-medium" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"  />
 
-    <ImageButton
-        android:id="@+id/menu_button"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:contentDescription="Menu Icon"
-        android:src="@drawable/baseline_menu_20"
-        app:layout_constraintEnd_toEndOf="@+id/view"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/black"/>
+<!--    <ImageButton-->
+<!--        android:id="@+id/menu_button"-->
+<!--        android:layout_width="20dp"-->
+<!--        android:layout_height="20dp"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:layout_marginEnd="20dp"-->
+<!--        android:contentDescription="Menu Icon"-->
+<!--        android:src="@drawable/baseline_menu_20"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/view"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        android:background="@color/black"/>-->
 
     <ImageButton
         android:id="@+id/back_button"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:src="@drawable/baseline_arrow_back_20"
-        app:layout_constraintEnd_toStartOf="@+id/menu_button"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:src="@drawable/backbuttoninblack"
+        android:padding="0dp"
+        android:scaleType="fitStart"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/black"/>
+        android:background="@null"/>
     <!-- add photo to button -->
+    <!-- edit button -->
+
+    <!-- photos in album -->
     <ImageButton
         android:id="@+id/AlbumAddPhoto"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="52dp"
         android:background="@drawable/rounded_button"
         android:src="@drawable/baseline_add_24"
         app:layout_constraintEnd_toEndOf="@id/editButton"
-        app:layout_constraintTop_toBottomOf="@+id/view"
-        android:layout_marginRight="40dp"/>
-    <!-- edit button -->
+        app:layout_constraintTop_toBottomOf="@+id/view" />
+
     <ImageButton
         android:id="@+id/editButton"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="43dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="12dp"
         android:background="@android:color/transparent"
         android:src="@drawable/baseline_create_24"
-        app:layout_constraintTop_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="@id/view"
 
-        />
+        app:layout_constraintTop_toBottomOf="@+id/view" />
 
-    <!-- photos in album -->
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/AlbumPhoto"
         android:layout_width="412dp"
@@ -102,18 +111,20 @@
 
     <TextView
         android:id="@+id/AlbumName"
-        android:layout_width="100dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="5dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view"
+        android:layout_width="190dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/rounded_button"
+        android:fontFamily="sans-serif-medium"
         android:text="Album Name"
         android:textAlignment="center"
+        android:textColor="#1E1F22"
+        android:textSize="30dp"
         android:textStyle="bold"
-        android:fontFamily="sans-serif-medium"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.452"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <Button
         android:id="@+id/editAlbumName"

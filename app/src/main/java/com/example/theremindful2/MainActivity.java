@@ -111,6 +111,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        ImageButton backButton = findViewById(R.id.theback_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         // Daily Task Feature
         FloatingActionButton fabTaskBook = findViewById(R.id.fabTaskBook);

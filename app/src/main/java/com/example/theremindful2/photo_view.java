@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.util.Log;
@@ -48,6 +49,7 @@ import androidx.appcompat.app.AlertDialog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 public class photo_view extends AppCompatActivity{
     private static final String IMAGES_METADATA_FILE_NAME = "image_only_metadata.json";
@@ -65,6 +67,8 @@ public class photo_view extends AppCompatActivity{
         setContentView(R.layout.photo_view);
 
         TextView Home = findViewById(R.id.Home);
+        TextView Home1 = findViewById(R.id.Home1);
+        TextView Home2 = findViewById(R.id.Home2);
         Home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,6 +112,7 @@ public class photo_view extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 showEditTagsDialog();
+
             }
         });
 
@@ -122,10 +127,15 @@ public class photo_view extends AppCompatActivity{
                 descTagsToggle.setVisibility(View.VISIBLE);
                 saveButton.setVisibility(View.VISIBLE);
                 descriptionView.setVisibility(View.INVISIBLE);
+                Home.setVisibility(View.INVISIBLE);
+                Home1.setVisibility(View.VISIBLE);
                 if (descTagsToggle.isChecked()) {
+
                     addTagToPhoto.setVisibility(View.VISIBLE);
+
                 } else {
                     editDescription.setVisibility(View.VISIBLE);
+
                 }
             }
         });
@@ -147,6 +157,8 @@ public class photo_view extends AppCompatActivity{
                 if (descTagsToggle.isChecked()) {
                     addTagToPhoto.setVisibility(View.VISIBLE);
                     editDescription.setVisibility(View.INVISIBLE);
+                    Home2.setVisibility(View.VISIBLE);
+                    Home1.setVisibility(View.INVISIBLE);
                     //tags
                     tagsContainer.setVisibility(View.VISIBLE);
                     tagsContainer.removeAllViews();
@@ -154,10 +166,13 @@ public class photo_view extends AppCompatActivity{
 
 
                 } else {
+
                     editDescription.setVisibility(View.VISIBLE);
                     addTagToPhoto.setVisibility(View.INVISIBLE);
                     //description
                     tagsContainer.setVisibility(View.INVISIBLE);
+                    Home1.setVisibility(View.VISIBLE);
+                    Home2.setVisibility(View.INVISIBLE);
                 }
             }
         });
