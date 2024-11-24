@@ -80,7 +80,7 @@
         />
 
     <ImageButton
-        android:id="@+id/back_button"
+        android:id="@+id/theback_button"
         android:layout_width="60dp"
         android:layout_height="50dp"
         android:src="@drawable/backbuttoninblack"

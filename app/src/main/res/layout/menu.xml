@@ -107,7 +107,10 @@
         android:layout_height="79dp"
         android:background="@drawable/roundstyle"
         android:fontFamily="sans-serif-medium"
-        android:text="Images    "
+        android:text="Upload
+           Images    "
+        android:paddingStart="30dp"
+        android:paddingEnd="50dp"
         android:stateListAnimator="@animator/button_press_animation"
         android:textAllCaps="false"
         android:textStyle="bold"
