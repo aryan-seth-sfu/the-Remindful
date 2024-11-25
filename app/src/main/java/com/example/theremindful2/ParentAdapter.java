@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
@@ -30,7 +31,6 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentView
     @Override
     public void onBindViewHolder(@NonNull ParentViewHolder holder, int position) {
         if (themes.isEmpty()) {
-            // Handle the case when themes list is empty
             Toast.makeText(context, "No themes available", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -57,14 +57,18 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentView
         public void bind(Theme theme) {
             List<String> photos = theme.getPhotos();
             if (photos == null || photos.isEmpty()) {
-                // Handle empty photo list
                 Toast.makeText(context, "No photos available for this theme", Toast.LENGTH_SHORT).show();
                 childViewPager.setAdapter(null); // Avoid crashes by setting no adapter
                 return;
             }
 
+            // Log theme interaction
+            DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
+            long themeId = dbHelper.addTheme(theme.getName());
+            dbHelper.logThemeInteraction(themeId);
+
             // Pass theme name to the ChildAdapter along with photos
-            childViewPager.setAdapter(new ChildAdapter(photos, theme.getName(),context));
+            childViewPager.setAdapter(new ChildAdapter(photos, theme.getName(), context));
             childViewPager.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
 
             // Start at a middle position to enable infinite scrolling
