@@ -748,6 +748,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + "FOREIGN KEY(" + KEY_THEME_ID + ") REFERENCES " + TABLE_THEME + "(" + KEY_ID + ")"
                     + ")";
 
+    // SQL for creating theme interaction table
+    private static final String CREATE_THEME_INTERACTION_TABLE =
+            "CREATE TABLE theme_interaction (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "theme_id INTEGER, " +
+                    "interaction_count INTEGER DEFAULT 0, " +
+                    "FOREIGN KEY(theme_id) REFERENCES themes(id))";
+
+    // SQL for creating photo interaction table
+    private static final String CREATE_PHOTO_INTERACTION_TABLE =
+            "CREATE TABLE photo_interaction (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "media_id INTEGER, " +
+                    "interaction_count INTEGER DEFAULT 0, " +
+                    "FOREIGN KEY(media_id) REFERENCES media_items(id))";
+
+
     private DatabaseHelper(Context context) {
         super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
         ctx = context.getApplicationContext();
@@ -765,6 +782,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_MEDIA_TABLE);
         db.execSQL(CREATE_THEME_TABLE);
         db.execSQL(CREATE_MEDIA_THEME_TABLE);
+        db.execSQL(CREATE_THEME_INTERACTION_TABLE);
+        db.execSQL(CREATE_PHOTO_INTERACTION_TABLE);
     }
 
     @Override
@@ -772,6 +791,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEDIA_THEME);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEDIA);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_THEME);
+        db.execSQL("DROP TABLE IF EXISTS theme_interaction");
+        db.execSQL("DROP TABLE IF EXISTS photo_interaction");
         onCreate(db);
     }
 
@@ -1140,6 +1161,91 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return themesList;
     }
+
+    public void logThemeInteraction(long themeId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Check if theme interaction exists
+        Cursor cursor = db.query("theme_interaction", new String[]{"interaction_count"},
+                "theme_id=?", new String[]{String.valueOf(themeId)},
+                null, null, null);
+
+        if (cursor.moveToFirst()) {
+            // Update interaction count
+            int currentCount = cursor.getInt(0);
+            ContentValues values = new ContentValues();
+            values.put("interaction_count", currentCount + 1);
+            db.update("theme_interaction", values, "theme_id=?", new String[]{String.valueOf(themeId)});
+        } else {
+            // Insert new interaction record
+            ContentValues values = new ContentValues();
+            values.put("theme_id", themeId);
+            values.put("interaction_count", 1);
+            db.insert("theme_interaction", null, values);
+        }
+        cursor.close();
+    }
+
+    public void logPhotoInteraction(long mediaId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Check if photo interaction exists
+        Cursor cursor = db.query("photo_interaction", new String[]{"interaction_count"},
+                "media_id=?", new String[]{String.valueOf(mediaId)},
+                null, null, null);
+
+        if (cursor.moveToFirst()) {
+            // Update interaction count
+            int currentCount = cursor.getInt(0);
+            ContentValues values = new ContentValues();
+            values.put("interaction_count", currentCount + 1);
+            db.update("photo_interaction", values, "media_id=?", new String[]{String.valueOf(mediaId)});
+        } else {
+            // Insert new interaction record
+            ContentValues values = new ContentValues();
+            values.put("media_id", mediaId);
+            values.put("interaction_count", 1);
+            db.insert("photo_interaction", null, values);
+        }
+        cursor.close();
+    }
+
+    public List<String> getMostViewedThemes() {
+        List<String> themes = new ArrayList<>();
+        String query = "SELECT t.name, ti.interaction_count " +
+                "FROM theme_interaction ti " +
+                "JOIN themes t ON t.id = ti.theme_id " +
+                "ORDER BY ti.interaction_count DESC " +
+                "LIMIT 5";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        while (cursor.moveToNext()) {
+            themes.add(cursor.getString(0) + " (" + cursor.getInt(1) + " views)");
+        }
+        cursor.close();
+        return themes;
+    }
+
+    public List<String> getMostViewedPhotos() {
+        List<String> photos = new ArrayList<>();
+        String query = "SELECT m.file_path, pi.interaction_count " +
+                "FROM photo_interaction pi " +
+                "JOIN media_items m ON m.id = pi.media_id " +
+                "ORDER BY pi.interaction_count DESC " +
+                "LIMIT 5";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        while (cursor.moveToNext()) {
+            photos.add(cursor.getString(0) + " (" + cursor.getInt(1) + " views)");
+        }
+        cursor.close();
+        return photos;
+    }
+
 
     // Theme class to hold theme information
 //    public static class Theme {

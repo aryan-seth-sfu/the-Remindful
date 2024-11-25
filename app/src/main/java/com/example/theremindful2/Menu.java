@@ -65,6 +65,14 @@ public class Menu extends AppCompatActivity {
                 taskDialog.show(getSupportFragmentManager(), "TaskDialog");
             }
         });
+
+        Button analyticsButton = findViewById(R.id.analyticsButton);
+        analyticsButton.setOnClickListener(view -> {
+            // Navigate to the Analytics Screen
+            Intent intent = new Intent(this, AnalyticsActivity.class);
+            startActivity(intent);
+        });
+
         audioPickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), audioReturned-> {
 

@@ -12,9 +12,12 @@
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/bgoflaunch" />
+
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
@@ -25,9 +28,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/Home"
         android:layout_width="170dp"
         android:layout_height="44dp"
-        android:id="@+id/Home"
         android:layout_marginTop="5dp"
         android:fontFamily="@font/agbalumoreg"
         android:padding="0dp"
@@ -45,49 +48,49 @@
         android:id="@+id/menu_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/taskbarblack"
-        android:padding="0dp"
-        android:scaleType="fitCenter"
         android:layout_marginStart="300dp"
         android:layout_marginTop="0dp"
+        android:background="@null"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/taskbarblack"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="visible"
-        android:background="@null"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/back_button"
         android:layout_width="60dp"
         android:layout_height="50dp"
-        android:src="@drawable/backbuttoninblack"
-        android:padding="0dp"
-        android:scaleType="fitStart"
         android:layout_marginStart="40dp"
         android:layout_marginTop="4dp"
+        android:background="@null"
+        android:padding="0dp"
+        android:scaleType="fitStart"
+        android:src="@drawable/backbuttoninblack"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@null"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:backgroundTint="@color/light_gray"
         android:id="@+id/musicSettingButton"
-        android:layout_height="79dp"
         android:layout_width="217dp"
+        android:layout_height="79dp"
+        android:background="@drawable/roundstyle"
+        android:backgroundTint="@color/light_gray"
+        android:fontFamily="sans-serif-medium"
+        android:stateListAnimator="@animator/button_press_animation"
+        android:text="Music      "
+        android:textAllCaps="false"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/roundstyle"
-        android:stateListAnimator="@animator/button_press_animation"
         app:layout_constraintTop_toBottomOf="@+id/view"
-        android:text="Music      "
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:fontFamily="sans-serif-medium"
-        android:textAllCaps="false"
-        android:visibility="visible"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/musiciconView2"
         android:layout_width="89dp"
@@ -106,21 +109,23 @@
         android:layout_width="217dp"
         android:layout_height="79dp"
         android:background="@drawable/roundstyle"
+        android:backgroundTint="@color/light_gray"
         android:fontFamily="sans-serif-medium"
-        android:text="Upload
-           Images    "
         android:paddingStart="30dp"
         android:paddingEnd="50dp"
         android:stateListAnimator="@animator/button_press_animation"
+        android:text="Upload
+           Images    "
         android:textAllCaps="false"
-        android:textStyle="bold"
         android:textSize="30sp"
-        android:backgroundTint="@color/light_gray"
+        android:textStyle="bold"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/musicSettingButton"
-        app:layout_constraintTop_toBottomOf="@+id/view"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="visible"/>
+        app:layout_constraintHorizontal_bias="0.515"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view"
+        app:layout_constraintVertical_bias="0.673" />
 
     <ImageView
         android:id="@+id/imageiconView"
@@ -133,6 +138,7 @@
         app:layout_constraintStart_toStartOf="@id/imageSettingButton"
         app:layout_constraintTop_toTopOf="@id/imageSettingButton"
         app:srcCompat="@drawable/imagesicon" />
+
 
     <Button
         android:id="@+id/taskSettingButton"
@@ -149,9 +155,29 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/musicSettingButton"
-        app:layout_constraintVertical_bias="0.396" />
+        app:layout_constraintVertical_bias="0.801" />
+
+    <Button
+        android:id="@+id/analyticsButton"
+        android:layout_width="217dp"
+        android:layout_height="79dp"
+        android:background="@drawable/roundstyle"
+        android:backgroundTint="@color/light_gray"
+        android:fontFamily="sans-serif-medium"
+        android:stateListAnimator="@animator/button_press_animation"
+        android:text="Analytics"
+        android:textAllCaps="false"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.515"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/taskSettingButton"
+        app:layout_constraintVertical_bias="0.294" />
 
     <ImageView
         android:id="@+id/taskiconView2"
@@ -165,4 +191,25 @@
         app:layout_constraintTop_toTopOf="@id/taskSettingButton"
         app:layout_constraintVertical_bias="0.518"
         app:srcCompat="@drawable/taskicon" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="analyticsButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>

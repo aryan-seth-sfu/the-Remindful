@@ -30,13 +30,18 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- MainActivity Declaration -->
+        </activity>
+        <!-- MainActivity Declaration -->
         <activity
             android:name=".MainActivity"
             android:exported="false"/>
         <activity android:name=".photo_view"
 
-        /> <!-- photo preview Declaration-->
+        />
+        <!-- AnalyticsActivity Declaration -->
+        <activity android:name=".AnalyticsActivity" />
+
+        <!-- photo preview Declaration-->
         <activity android:name=".LauncherActivity" />
         <activity android:name=".album"
 
