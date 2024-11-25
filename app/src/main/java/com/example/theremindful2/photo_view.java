@@ -133,8 +133,10 @@ public class photo_view extends AppCompatActivity{
 
                     addTagToPhoto.setVisibility(View.VISIBLE);
 
+
                 } else {
                     editDescription.setVisibility(View.VISIBLE);
+                    showEditDescriptionDialog();
 
                 }
             }
@@ -155,6 +157,7 @@ public class photo_view extends AppCompatActivity{
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (descTagsToggle.isChecked()) {
+                    showEditTagsDialog();
                     addTagToPhoto.setVisibility(View.VISIBLE);
                     editDescription.setVisibility(View.INVISIBLE);
                     Home2.setVisibility(View.VISIBLE);
