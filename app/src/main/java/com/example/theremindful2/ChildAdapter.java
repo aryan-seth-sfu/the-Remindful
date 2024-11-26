@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -69,33 +68,42 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
             });
 
             imageView.setOnClickListener(view -> {
-                String description = MetadataUtils.getDescriptionForImage((String) imageView.getTag(), context);
-                Log.d("getTag", (String) imageView.getTag());
-                Log.d("context", String.valueOf(context));
-                Log.d("description", description != null ? description : "No description found");
+                String photoFilePath = (String) imageView.getTag();
+                if (photoFilePath != null) {
+                    String description = MetadataUtils.getDescriptionForImage(photoFilePath, context);
+                    Log.d("ChildAdapter", "Photo description: " + (description != null ? description : "No description found"));
 
-                imageView.setVisibility(View.GONE);
-                textDescription.setVisibility(View.VISIBLE);
-                textDescription.setText(description);
-                textDescription.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    imageView.setVisibility(View.GONE);
+                    textDescription.setVisibility(View.VISIBLE);
+                    textDescription.setText(description);
+                    textDescription.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-                // Log photo interaction
-                DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
-                long mediaId = dbHelper.addMediaItem((String) imageView.getTag(), description, "image");
-                dbHelper.logPhotoInteraction(mediaId);
+                    // Log photo interaction
+                    DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
+                    long mediaId = dbHelper.getMediaIdByFilePath(photoFilePath); // Get mediaId by filePath
+                    if (mediaId != -1) {
+                        dbHelper.logPhotoInteraction(mediaId); // Log interaction using mediaId
+                    } else {
+                        Log.e("ChildAdapter", "Media ID not found for file path: " + photoFilePath);
+                    }
+                } else {
+                    Log.e("ChildAdapter", "No photo tag found for image.");
+                }
             });
+
 
             likeButton.setOnClickListener(view -> {
                 DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
                 String photoFilePath = (String) imageView.getTag();
 
                 if (photoFilePath != null) {
-                    Log.d("ChildAdapter", "Photo liked: " + photoFilePath);
-
-                    // Increment the "likes" count in the database
-                    String description = MetadataUtils.getDescriptionForImage(photoFilePath, context);
-                    long mediaId = dbHelper.addMediaItem(photoFilePath, description, "image");
-                    dbHelper.incrementLikeCount(mediaId);
+                    if (likeButton.isChecked()) {
+                        dbHelper.likePhoto(photoFilePath); // Increment likes
+                        Log.d("ChildAdapter", "Photo liked: " + photoFilePath);
+                    } else {
+                        dbHelper.unlikePhoto(photoFilePath); // Decrement likes
+                        Log.d("ChildAdapter", "Photo unliked: " + photoFilePath);
+                    }
                 } else {
                     Log.e("ChildAdapter", "Like button clicked, but no photo tag found.");
                 }
@@ -108,8 +116,13 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
                 imageView.setTag(photoFilePath);
                 Uri imageUri = Uri.fromFile(imageFile);
                 imageView.setImageURI(imageUri);
+
+                // Fetch current like status
+                DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
+                int likes = dbHelper.getLikesForPhoto(photoFilePath);
+                likeButton.setChecked(likes > 0); // Checked if liked, unchecked otherwise
             } else {
-                Log.e("bind", "Image file not found: " + photoFilePath);
+                Log.e("ChildAdapter", "Image file not found: " + photoFilePath);
                 imageView.setImageResource(R.drawable.ic_launcher_foreground); // Fallback to a placeholder image
             }
 

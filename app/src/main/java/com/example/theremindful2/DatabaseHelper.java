@@ -1,680 +1,3 @@
-//package com.example.theremindful2;
-//
-//import android.content.ContentValues;
-//import android.content.Context;
-//import android.database.Cursor;
-//import android.database.sqlite.SQLiteDatabase;
-//import android.database.sqlite.SQLiteOpenHelper;
-//import android.net.Uri;
-//import android.util.Log;
-//
-//import java.io.File;
-//import java.io.FileOutputStream;
-//import java.io.IOException;
-//import java.io.InputStream;
-//import java.io.OutputStream;
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//public class DatabaseHelper extends SQLiteOpenHelper {
-//    private static final String DATABASE_NAME = "theremindful_db";
-//    private static final int DATABASE_VERSION = 1;
-//
-//    // Table Names
-//    private static final String TABLE_MEDIA = "media_items";
-//    private static final String TABLE_THEME = "themes";
-//    private static final String TABLE_MEDIA_THEME = "media_theme";
-//
-//    // Common Columns
-//    private static final String KEY_ID = "id";
-//    private static final String KEY_CREATED_AT = "created_at";
-//
-//    // Media table columns
-//    private static final String KEY_FILE_PATH = "file_path";
-//    private static final String KEY_DESCRIPTION = "description";
-//    private static final String KEY_TYPE = "type"; // "image" or "audio"
-//
-//    // Theme table columns
-//    private static final String KEY_THEME_NAME = "name";
-//
-//    // Media_Theme junction table columns
-//    private static final String KEY_MEDIA_ID = "media_id";
-//    private static final String KEY_THEME_ID = "theme_id";
-//
-//    // Singleton instance and context
-//    private static DatabaseHelper instance;
-//    private static Context ctx;
-//
-//    // Create table SQL queries
-//    private static final String CREATE_MEDIA_TABLE =
-//            "CREATE TABLE " + TABLE_MEDIA + "("
-//                    + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-//                    + KEY_FILE_PATH + " TEXT,"
-//                    + KEY_DESCRIPTION + " TEXT,"
-//                    + KEY_TYPE + " TEXT,"
-//                    + KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP"
-//                    + ")";
-//
-//    private static final String CREATE_THEME_TABLE =
-//            "CREATE TABLE " + TABLE_THEME + "("
-//                    + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-//                    + KEY_THEME_NAME + " TEXT UNIQUE,"
-//                    + KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP"
-//                    + ")";
-//
-//    private static final String CREATE_MEDIA_THEME_TABLE =
-//            "CREATE TABLE " + TABLE_MEDIA_THEME + "("
-//                    + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-//                    + KEY_MEDIA_ID + " INTEGER,"
-//                    + KEY_THEME_ID + " INTEGER,"
-//                    + KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP,"
-//                    + "FOREIGN KEY(" + KEY_MEDIA_ID + ") REFERENCES " + TABLE_MEDIA + "(" + KEY_ID + "),"
-//                    + "FOREIGN KEY(" + KEY_THEME_ID + ") REFERENCES " + TABLE_THEME + "(" + KEY_ID + ")"
-//                    + ")";
-//
-//    private DatabaseHelper(Context context) {
-//        super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
-//        ctx = context.getApplicationContext();
-//    }
-//
-//    public static synchronized DatabaseHelper getInstance(Context context) {
-//        if (instance == null) {
-//            instance = new DatabaseHelper(context.getApplicationContext());
-//        }
-//        return instance;
-//    }
-//
-//    @Override
-//    public void onCreate(SQLiteDatabase db) {
-//        db.execSQL(CREATE_MEDIA_TABLE);
-//        db.execSQL(CREATE_THEME_TABLE);
-//        db.execSQL(CREATE_MEDIA_THEME_TABLE);
-//    }
-//
-//    @Override
-//    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEDIA_THEME);
-//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEDIA);
-//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_THEME);
-//        onCreate(db);
-//    }
-//
-//    // Add a new media item
-//    public long addMediaItem(String filePath, String description, String type) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        ContentValues values = new ContentValues();
-//        values.put(KEY_FILE_PATH, filePath);
-//        values.put(KEY_DESCRIPTION, description);
-//        values.put(KEY_TYPE, type);
-//        return db.insert(TABLE_MEDIA, null, values);
-//    }
-//
-//    // Add a new theme
-//    public long addTheme(String themeName) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        ContentValues values = new ContentValues();
-//        values.put(KEY_THEME_NAME, themeName);
-//        return db.insert(TABLE_THEME, null, values);
-//    }
-//
-//    // Associate media with theme
-//    public void addMediaTheme(long mediaId, long themeId) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        ContentValues values = new ContentValues();
-//        values.put(KEY_MEDIA_ID, mediaId);
-//        values.put(KEY_THEME_ID, themeId);
-//        db.insert(TABLE_MEDIA_THEME, null, values);
-//    }
-//
-//    // Get all images for a specific theme
-//    public List<String> getImagesByTheme(String theme) {
-//        List<String> imageList = new ArrayList<>();
-//        String selectQuery = "SELECT m." + KEY_FILE_PATH +
-//                " FROM " + TABLE_MEDIA + " m" +
-//                " INNER JOIN " + TABLE_MEDIA_THEME + " mt ON m." + KEY_ID + " = mt." + KEY_MEDIA_ID +
-//                " INNER JOIN " + TABLE_THEME + " t ON mt." + KEY_THEME_ID + " = t." + KEY_ID +
-//                " WHERE t." + KEY_THEME_NAME + " = ?" +
-//                " AND m." + KEY_TYPE + " = 'image'" +
-//                " ORDER BY m." + KEY_CREATED_AT + " DESC";
-//
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursor = db.rawQuery(selectQuery, new String[]{theme});
-//
-//        if (cursor.moveToFirst()) {
-//            do {
-//                imageList.add(cursor.getString(0));
-//            } while (cursor.moveToNext());
-//        }
-//        cursor.close();
-//        return imageList;
-//    }
-//
-//    // Get all audio files for a specific theme
-//    public List<String> getAudioByTheme(String theme) {
-//        List<String> audioList = new ArrayList<>();
-//        String selectQuery = "SELECT m." + KEY_FILE_PATH +
-//                " FROM " + TABLE_MEDIA + " m" +
-//                " INNER JOIN " + TABLE_MEDIA_THEME + " mt ON m." + KEY_ID + " = mt." + KEY_MEDIA_ID +
-//                " INNER JOIN " + TABLE_THEME + " t ON mt." + KEY_THEME_ID + " = t." + KEY_ID +
-//                " WHERE t." + KEY_THEME_NAME + " = ?" +
-//                " AND m." + KEY_TYPE + " = 'audio'" +
-//                " ORDER BY m." + KEY_CREATED_AT + " DESC";
-//
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursor = db.rawQuery(selectQuery, new String[]{theme});
-//
-//        if (cursor.moveToFirst()) {
-//            do {
-//                audioList.add(cursor.getString(0));
-//            } while (cursor.moveToNext());
-//        }
-//        cursor.close();
-//        return audioList;
-//    }
-//
-//    // Add an Image with multiple themes
-//    public boolean addImage(Context context, Uri imageUri, List<String> themes, String description) {
-//        if (context == null || imageUri == null || themes == null || themes.isEmpty()) {
-//            return false;
-//        }
-//
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        boolean success = false;
-//        db.beginTransaction();
-//
-//        try {
-//            // First, save the image file
-//            File baseDir = new File(context.getFilesDir(), "images");
-//            baseDir.mkdirs();
-//            String fileName = "img_" + System.currentTimeMillis() + ".jpg";
-//            File imageFile = new File(baseDir, fileName);
-//            String filePath = imageFile.getAbsolutePath();
-//
-//            // Copy image file
-//            try (InputStream is = context.getContentResolver().openInputStream(imageUri);
-//                 OutputStream os = new FileOutputStream(imageFile)) {
-//                byte[] buffer = new byte[1024];
-//                int length;
-//                while ((length = is.read(buffer)) > 0) {
-//                    os.write(buffer, 0, length);
-//                }
-//            }
-//
-//            // Add media entry
-//            long mediaId = addMediaItem(filePath, description, "image");
-//            if (mediaId == -1) {
-//                throw new Exception("Failed to insert media entry");
-//            }
-//
-//            // Add or get themes and create associations
-//            for (String themeName : themes) {
-//                // Get or create theme
-//                long themeId;
-//                Cursor themeCursor = db.query(TABLE_THEME, new String[]{KEY_ID},
-//                        KEY_THEME_NAME + "=?", new String[]{themeName}, null, null, null);
-//                if (themeCursor.moveToFirst()) {
-//                    themeId = themeCursor.getLong(0);
-//                } else {
-//                    themeId = addTheme(themeName);
-//                }
-//                themeCursor.close();
-//
-//                if (themeId == -1) {
-//                    throw new Exception("Failed to process theme: " + themeName);
-//                }
-//
-//                // Create association
-//                addMediaTheme(mediaId, themeId);
-//            }
-//
-//            db.setTransactionSuccessful();
-//            success = true;
-//        } catch (Exception e) {
-//            Log.e("DatabaseHelper", "Error in addImage: " + e.getMessage());
-//        } finally {
-//            db.endTransaction();
-//        }
-//
-//        return success;
-//    }
-//
-//
-
-
-
-
-
-//    private static final String DATABASE_NAME = "theremindful_db";
-//    private static final int DATABASE_VERSION = 1;
-//
-//    // Table Names
-//    private static final String TABLE_MEDIA = "media_items";
-//
-//    // Common Columns
-//    private static final String KEY_ID = "id";
-//    private static final String KEY_THEME = "theme";
-//    private static final String KEY_FILE_PATH = "file_path";
-//    private static final String KEY_DESCRIPTION = "description";
-//    private static final String KEY_TYPE = "type"; // "image" or "audio"
-//    private static final String KEY_CREATED_AT = "created_at";
-//
-//    // Singleton instance
-//    private static DatabaseHelper instance;
-//
-//    // Context
-//    private static Context ctx;
-//
-//    // Create table SQL query
-//    private static final String CREATE_MEDIA_TABLE =
-//            "CREATE TABLE " + TABLE_MEDIA + "("
-//                    + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-//                    + KEY_THEME + " TEXT,"
-//                    + KEY_FILE_PATH + " TEXT,"
-//                    + KEY_DESCRIPTION + " TEXT,"
-//                    + KEY_TYPE + " TEXT,"
-//                    + KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP"
-//                    + ")";
-//
-//    // Private constructor to prevent direct instantiation
-//    private DatabaseHelper(Context context) {
-//        super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
-//        ctx = context.getApplicationContext();
-//    }
-//
-//    // Public method to get database instance
-//    public static synchronized DatabaseHelper getInstance(Context context) {
-//        if (instance == null) {
-//            instance = new DatabaseHelper(context.getApplicationContext());
-//        }
-//        return instance;
-//    }
-//
-//    @Override
-//    public void onCreate(SQLiteDatabase db) {
-//        Log.d("Database", "Creating database for first time");
-//        db.execSQL(CREATE_MEDIA_TABLE);
-//    }
-//
-//    @Override
-//    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//        Log.d("Database", "Upgrading database from " + oldVersion + " to " + newVersion);
-//        // Drop older table if existed
-//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEDIA);
-//        // Create tables again
-//        onCreate(db);
-//    }
-//
-//    // Add new media item (image or audio)
-//    public long addMediaItem(String theme, String filePath, String description, String type) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//
-//        ContentValues values = new ContentValues();
-//        values.put(KEY_THEME, theme);
-//        values.put(KEY_FILE_PATH, filePath);
-//        values.put(KEY_DESCRIPTION, description);
-//        values.put(KEY_TYPE, type);
-//
-//        long id = -1;
-//        try {
-//            id = db.insert(TABLE_MEDIA, null, values);
-//            Log.d("Database", "Added new media" +
-//                    " item with ID: " + id);
-//        } catch (Exception e) {
-//            Log.e("Database", "Error adding media item: " + e.getMessage());
-//        }
-//        return id;
-//    }
-//
-//    // Get all images for a specific theme
-//    public List<String> getImagesByTheme(String theme) {
-//        List<String> imageList = new ArrayList<>();
-//
-//        String selectQuery = "SELECT " + KEY_FILE_PATH + " FROM " + TABLE_MEDIA +
-//                " WHERE " + KEY_THEME + " = ?" +
-//                " AND " + KEY_TYPE + " = 'image'" +
-//                " ORDER BY " + KEY_CREATED_AT + " DESC";
-//
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursor = db.rawQuery(selectQuery, new String[]{theme});
-//
-//        if (cursor.moveToFirst()) {
-//            do {
-//                imageList.add(cursor.getString(0));
-//            } while (cursor.moveToNext());
-//        }
-//
-//        cursor.close();
-//        return imageList;
-//    }
-//    // Get all audio files for a specific theme
-//    public List<String> getAudioByTheme(String theme) {
-//        List<String> audioList = new ArrayList<>();
-//
-//        String selectQuery = "SELECT " + KEY_FILE_PATH + " FROM " + TABLE_MEDIA +
-//                " WHERE " + KEY_THEME + " = ?" +
-//                " AND " + KEY_TYPE + " = 'audio'" +
-//                " ORDER BY " + KEY_CREATED_AT + " DESC";
-//
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursor = db.rawQuery(selectQuery, new String[]{theme});
-//
-//        if (cursor.moveToFirst()) {
-//            do {
-//                audioList.add(cursor.getString(0));
-//            } while (cursor.moveToNext());
-//        }
-//
-//        cursor.close();
-//        return audioList;
-//    }
-//
-//    // Get description for a specific file
-//    public String getDescription(String filePath) {
-//        String description = null;
-//
-//        String selectQuery = "SELECT " + KEY_DESCRIPTION + " FROM " + TABLE_MEDIA +
-//                " WHERE " + KEY_FILE_PATH + " = ?";
-//
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursor = db.rawQuery(selectQuery, new String[]{filePath});
-//
-//        if (cursor.moveToFirst()) {
-//            description = cursor.getString(0);
-//        }
-//
-//        cursor.close();
-//        return description;
-//    }
-//
-//    // Get all themes
-//    public List<String> getAllThemes() {
-//        List<String> themes = new ArrayList<>();
-//
-//        String selectQuery = "SELECT DISTINCT " + KEY_THEME + " FROM " + TABLE_MEDIA +
-//                " ORDER BY " + KEY_THEME + " ASC";
-//
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursor = db.rawQuery(selectQuery, null);
-//
-//        if (cursor.moveToFirst()) {
-//            do {
-//                themes.add(cursor.getString(0));
-//            } while (cursor.moveToNext());
-//        }
-//
-//        cursor.close();
-//        return themes;
-//    }
-//
-//    // Update description
-//    public int updateDescription(String filePath, String newDescription) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//
-//        ContentValues values = new ContentValues();
-//        values.put(KEY_DESCRIPTION, newDescription);
-//
-//        return db.update(TABLE_MEDIA, values, KEY_FILE_PATH + " = ?",
-//                new String[]{filePath});
-//    }
-//
-//    // Delete media item
-//    public void deleteMediaItem(String filePath) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        db.delete(TABLE_MEDIA, KEY_FILE_PATH + " = ?", new String[]{filePath});
-//    }
-//
-//    // Get all themes with images
-//    public List<Theme> getAllThemesWithImages() {
-//        List<Theme> themeList = new ArrayList<>();
-//
-//        // First get all unique themes
-//        String selectThemesQuery = "SELECT DISTINCT " + KEY_THEME + " FROM " + TABLE_MEDIA +
-//                " ORDER BY " + KEY_THEME + " ASC";
-//
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor themeCursor = db.rawQuery(selectThemesQuery, null);
-//
-//        if (themeCursor.moveToFirst()) {
-//            do {
-//                String themeName = themeCursor.getString(0);
-//
-//                // For each theme, get its images
-//                List<String> photos = getImagesByTheme(themeName);
-//
-//                // Create Theme object and add to list
-//                Theme theme = new Theme(themeName, photos);
-//                themeList.add(theme);
-//
-//            } while (themeCursor.moveToNext());
-//        }
-//
-//        themeCursor.close();
-//        return themeList;
-//    }
-//
-//    // Get all themes that contain a specific image
-//    public List<Theme> filterThemesByImagePath(String imagePath) {
-//        List<Theme> filteredThemes = new ArrayList<>();
-//
-//        // Get all themes that contain this image
-//        String selectQuery =
-//                "SELECT DISTINCT t." + KEY_THEME +
-//                        " FROM " + TABLE_MEDIA + " m" +
-//                        " WHERE m." + KEY_FILE_PATH + " = ?" +
-//                        " AND m." + KEY_TYPE + " = 'image'";
-//
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursor = db.rawQuery(selectQuery, new String[]{imagePath});
-//
-//        try {
-//            if (cursor.moveToFirst()) {
-//                do {
-//                    String themeName = cursor.getString(0);
-//                    // For each theme that has this image, get all images in that theme
-//                    List<String> themeImages = getImagesByTheme(themeName);
-//                    // Create Theme object and add to filtered list
-//                    filteredThemes.add(new Theme(themeName, themeImages));
-//                } while (cursor.moveToNext());
-//            }
-//        } catch (Exception e) {
-//            Log.e("DatabaseHelper", "Error filtering themes: " + e.getMessage());
-//        } finally {
-//            cursor.close();
-//        }
-//
-//        return filteredThemes;
-//    }
-//
-//    // Remove Image from a theme
-//    public boolean removeImageFromTheme(String imagePath, String themeName) {
-//        if (imagePath == null || themeName == null) {
-//            Log.e("DatabaseHelper", "Invalid image path or theme name");
-//            return false;
-//        }
-//
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        boolean success = false;
-//        db.beginTransaction();
-//
-//        try {
-//            // First check if image exists in this theme
-//            Cursor checkCursor = db.query(TABLE_MEDIA,
-//                    new String[]{KEY_ID},
-//                    KEY_FILE_PATH + " = ? AND " + KEY_THEME + " = ?",
-//                    new String[]{imagePath, themeName},
-//                    null, null, null);
-//
-//            if (!checkCursor.moveToFirst()) {
-//                Log.d("DatabaseHelper", "Image not found in theme: " + themeName);
-//                checkCursor.close();
-//                return false;
-//            }
-//            checkCursor.close();
-//
-//            // Delete the record
-//            int rowsAffected = db.delete(TABLE_MEDIA,
-//                    KEY_FILE_PATH + " = ? AND " + KEY_THEME + " = ?",
-//                    new String[]{imagePath, themeName});
-//
-//            if (rowsAffected > 0) {
-//                // Check if image exists in other themes
-//                Cursor remainingCursor = db.query(TABLE_MEDIA,
-//                        new String[]{KEY_FILE_PATH},
-//                        KEY_FILE_PATH + " = ?",
-//                        new String[]{imagePath},
-//                        null, null, null);
-//
-//                if (!remainingCursor.moveToFirst()) {
-//                    // Image doesn't exist in any theme, delete the file
-//                    File imageFile = new File(imagePath);
-//                    if (imageFile.exists()) {
-//                        boolean fileDeleted = imageFile.delete();
-//                        Log.d("DatabaseHelper", "Image file deleted: " + fileDeleted);
-//                    }
-//                }
-//                remainingCursor.close();
-//
-//                // Get remaining images count in theme
-//                Cursor themeImagesCursor = db.query(TABLE_MEDIA,
-//                        new String[]{"COUNT(*)"},
-//                        KEY_THEME + " = ?",
-//                        new String[]{themeName},
-//                        null, null, null);
-//
-//                if (themeImagesCursor.moveToFirst()) {
-//                    int remainingImages = themeImagesCursor.getInt(0);
-//                    Log.d("DatabaseHelper", "Theme " + themeName +
-//                            " has " + remainingImages + " images remaining");
-//                }
-//                themeImagesCursor.close();
-//
-//                success = true;
-//            }
-//
-//            db.setTransactionSuccessful();
-//        } catch (Exception e) {
-//            Log.e("DatabaseHelper", "Error in removeImageFromTheme: " + e.getMessage());
-//            e.printStackTrace();
-//        } finally {
-//            db.endTransaction();
-//        }
-//
-//        return success;
-//    }
-//
-//    // Add an Image with multiple tags
-//    public boolean addImage(Context context, Uri newImageUri, List<String> selectedTags, String description) {
-//        if (context == null || newImageUri == null || selectedTags == null || selectedTags.isEmpty()) {
-//            Log.e("DatabaseHelper", "Invalid parameters provided to addImage");
-//            return false;
-//        }
-//
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        boolean success = false;
-//        String timestamp = String.valueOf(System.currentTimeMillis());
-//
-//        db.beginTransaction();
-//
-//        try {
-//            // For each theme, create a separate copy of the image
-//            int successfulInserts = 0;
-//
-//            for (String themeName : selectedTags) {
-//                // Create theme-specific directory
-//                File themeDir = new File(context.getFilesDir(), "images/" + themeName);
-//                themeDir.mkdirs();
-//
-//                // Create unique filename for this theme
-//                String fileName = "img_" + timestamp + "_" + themeName + ".jpg";
-//                File destinationFile = new File(themeDir, fileName);
-//                String filePath = destinationFile.getAbsolutePath();
-//
-//                // Copy image file for this theme
-//                try (InputStream is = context.getContentResolver().openInputStream(newImageUri);
-//                     OutputStream os = new FileOutputStream(destinationFile)) {
-//
-//                    if (is == null) {
-//                        Log.e("DatabaseHelper", "Failed to open input stream for theme: " + themeName);
-//                        continue;
-//                    }
-//
-//                    // Copy file
-//                    byte[] buffer = new byte[1024];
-//                    int length;
-//                    while ((length = is.read(buffer)) > 0) {
-//                        os.write(buffer, 0, length);
-//                    }
-//                    os.flush();
-//
-//                    Log.d("DatabaseHelper", "Image saved for theme " + themeName + " at: " + filePath);
-//
-//                    // Add database entry for this theme
-//                    ContentValues values = new ContentValues();
-//                    values.put(KEY_THEME, themeName);
-//                    values.put(KEY_FILE_PATH, filePath);
-//                    values.put(KEY_DESCRIPTION, description);
-//                    values.put(KEY_TYPE, "image");
-//                    values.put(KEY_CREATED_AT, timestamp);
-//
-//                    long id = db.insert(TABLE_MEDIA, null, values);
-//
-//                    if (id != -1) {
-//                        successfulInserts++;
-//                        Log.d("DatabaseHelper", "Added to theme: " + themeName + " with ID: " + id);
-//                    } else {
-//                        Log.e("DatabaseHelper", "Failed to add database entry for theme: " + themeName);
-//                        // If database insert fails, delete the copied file
-//                        destinationFile.delete();
-//                    }
-//
-//                } catch (IOException e) {
-//                    Log.e("DatabaseHelper", "Error saving image for theme " + themeName + ": " + e.getMessage());
-//                    // Clean up file if copy failed
-//                    if (destinationFile.exists()) {
-//                        destinationFile.delete();
-//                    }
-//                }
-//            }
-//
-//            // Check if all operations were successful
-//            if (successfulInserts == selectedTags.size()) {
-//                db.setTransactionSuccessful();
-//                success = true;
-//                Log.d("DatabaseHelper", "Successfully added image to all " + successfulInserts + " themes");
-//            } else {
-//                Log.w("DatabaseHelper", "Only " + successfulInserts + " out of " +
-//                        selectedTags.size() + " theme additions were successful");
-//            }
-//
-//        } catch (Exception e) {
-//            Log.e("DatabaseHelper", "Error in addImage: " + e.getMessage());
-//            e.printStackTrace();
-//
-//            // If any error occurs, we'll let the transaction rollback
-//            // and cleanup will happen in finally block
-//        } finally {
-//            db.endTransaction();
-//
-//            // If overall operation failed, clean up any created files
-//            if (!success) {
-//                for (String themeName : selectedTags) {
-//                    String fileName = "img_" + timestamp + "_" + themeName + ".jpg";
-//                    File themeDir = new File(context.getFilesDir(), "images/" + themeName);
-//                    File imageFile = new File(themeDir, fileName);
-//                    if (imageFile.exists()) {
-//                        imageFile.delete();
-//                    }
-//                }
-//            }
-//        }
-//
-//        return success;
-//    }
-//
-//
-//}
-
-
 package com.example.theremindful2;
 
 import android.content.ContentValues;
@@ -693,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+    private static final String TAG = "DatabaseHelper";
     private static final String DATABASE_NAME = "theremindful_db";
     private static final int DATABASE_VERSION = 2;
 
@@ -710,6 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_FILE_PATH = "file_path";
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_TYPE = "type"; // "image" or "audio"
+    private static final String KEY_LIKES = "likes";
 
     // Theme table columns
     private static final String KEY_THEME_NAME = "name";
@@ -724,13 +49,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Create table SQL queries
     private static final String CREATE_MEDIA_TABLE =
-            "CREATE TABLE " + TABLE_MEDIA + "("
+            "CREATE TABLE IF NOT EXISTS " + TABLE_MEDIA + "("
                     + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + KEY_FILE_PATH + " TEXT,"
                     + KEY_DESCRIPTION + " TEXT,"
                     + KEY_TYPE + " TEXT,"
+                    + KEY_LIKES + " INTEGER DEFAULT 0, "
                     + KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP"
                     + ")";
+
 
     private static final String CREATE_THEME_TABLE =
             "CREATE TABLE " + TABLE_THEME + "("
@@ -766,6 +93,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "FOREIGN KEY(media_id) REFERENCES media_items(id))";
 
 
+
     private DatabaseHelper(Context context) {
         super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
         ctx = context.getApplicationContext();
@@ -785,19 +113,49 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_MEDIA_THEME_TABLE);
         db.execSQL(CREATE_THEME_INTERACTION_TABLE);
         db.execSQL(CREATE_PHOTO_INTERACTION_TABLE);
+
+        logTableSchema(db, TABLE_MEDIA);
+    }
+
+    private void logTableSchema(SQLiteDatabase db, String tableName) {
+        try (Cursor cursor = db.rawQuery("PRAGMA table_info(" + tableName + ")", null)) {
+            while (cursor.moveToNext()) {
+                String columnName = cursor.getString(1);
+                String columnType = cursor.getString(2);
+                Log.d(TAG, "Table " + tableName + " has column: " + columnName + " of type " + columnType);
+            }
+        }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.d(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
+
         if (oldVersion < 2) {
-            db.execSQL("ALTER TABLE media_items ADD COLUMN likes INTEGER DEFAULT 0;");
+            try {
+                db.execSQL("ALTER TABLE " + TABLE_MEDIA + " ADD COLUMN " + KEY_LIKES + " INTEGER DEFAULT 0;");
+            } catch (Exception e) {
+                Log.e(TAG, "Error adding 'likes' column, recreating table: " + e.getMessage());
+                // Drop the old table and recreate it if adding the column fails
+                recreateMediaTable(db);
+            }
         }
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEDIA_THEME);
+
+        if (oldVersion < 3) {
+            db.execSQL(CREATE_MEDIA_THEME_TABLE); // Add media_theme table if not present
+        }
+    }
+
+    private void recreateMediaTable(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEDIA);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_THEME);
-        db.execSQL("DROP TABLE IF EXISTS theme_interaction");
-        db.execSQL("DROP TABLE IF EXISTS photo_interaction");
-        onCreate(db);
+        db.execSQL(CREATE_MEDIA_TABLE);
+    }
+
+    // Ensure all tables exist
+    private void ensureTablesExist(SQLiteDatabase db) {
+        db.execSQL(CREATE_MEDIA_TABLE);
+        db.execSQL(CREATE_THEME_TABLE);
+        db.execSQL(CREATE_MEDIA_THEME_TABLE);
     }
 
     // Add a new media item
@@ -807,6 +165,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_FILE_PATH, filePath);
         values.put(KEY_DESCRIPTION, description);
         values.put(KEY_TYPE, type);
+        values.put(KEY_LIKES, 0);
         return db.insert(TABLE_MEDIA, null, values);
     }
 
@@ -1262,12 +621,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public int getLikesForPhoto(String filePath) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT likes FROM media_items WHERE file_path = ?", new String[]{filePath});
         int likes = 0;
-        if (cursor.moveToFirst()) {
-            likes = cursor.getInt(0);
+
+        try (Cursor cursor = db.rawQuery("SELECT likes FROM " + TABLE_MEDIA + " WHERE file_path = ?", new String[]{filePath})) {
+            if (cursor.moveToFirst()) {
+                likes = cursor.getInt(0);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting likes for photo: " + e.getMessage());
         }
-        cursor.close();
+
         return likes;
     }
 
@@ -1275,6 +638,98 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("UPDATE media_items SET likes = likes + ? WHERE id = ?", new Object[]{increment, mediaId});
     }
+
+    public long getMediaIdByFilePath(String filePath) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        long mediaId = -1;
+
+        Cursor cursor = db.query(TABLE_MEDIA, new String[]{KEY_ID},
+                KEY_FILE_PATH + " = ?", new String[]{filePath}, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            mediaId = cursor.getLong(0);
+        }
+        cursor.close();
+        return mediaId;
+    }
+
+    // Get most liked photos
+    public List<String> getMostLikedPhotos(int limit) {
+        List<String> photos = new ArrayList<>();
+        String query = "SELECT file_path FROM media_items " +
+                "WHERE likes > 0 " +
+                "ORDER BY likes DESC " +
+                "LIMIT ?";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(limit)});
+
+        while (cursor.moveToNext()) {
+            photos.add(cursor.getString(0));
+        }
+        cursor.close();
+        return photos;
+    }
+
+    // Get least liked photos (or unliked photos)
+    public List<String> getLeastLikedPhotos(int limit) {
+        List<String> photos = new ArrayList<>();
+        String query = "SELECT file_path FROM media_items " +
+                "ORDER BY likes ASC " +
+                "LIMIT ?";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(limit)});
+
+        while (cursor.moveToNext()) {
+            photos.add(cursor.getString(0));
+        }
+        cursor.close();
+        return photos;
+    }
+
+    // Get likes count for themes
+    public List<String> getLikesCountForThemes() {
+        List<String> themesWithLikes = new ArrayList<>();
+        String query = "SELECT t.name, SUM(m.likes) AS total_likes " +
+                "FROM themes t " +
+                "JOIN media_theme mt ON t.id = mt.theme_id " +
+                "JOIN media_items m ON mt.media_id = m.id " +
+                "GROUP BY t.name " +
+                "ORDER BY total_likes DESC";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        while (cursor.moveToNext()) {
+            String themeName = cursor.getString(0);
+            int totalLikes = cursor.getInt(1);
+            themesWithLikes.add(themeName + " (" + totalLikes + " likes)");
+        }
+        cursor.close();
+        return themesWithLikes;
+    }
+
+    // Get likes count for photos
+    public List<String> getLikesCountForPhotos() {
+        List<String> photosWithLikes = new ArrayList<>();
+        String query = "SELECT m.file_path, m.likes " +
+                "FROM media_items m " +
+                "WHERE m.type = 'image' " +
+                "ORDER BY m.likes DESC";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        while (cursor.moveToNext()) {
+            String photoPath = cursor.getString(0);
+            int likes = cursor.getInt(1);
+            photosWithLikes.add(photoPath + " (" + likes + " likes)");
+        }
+        cursor.close();
+        return photosWithLikes;
+    }
+
+
+
 
 
     // Theme class to hold theme information
