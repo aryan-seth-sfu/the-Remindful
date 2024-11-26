@@ -2,6 +2,7 @@ package com.example.theremindful2;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -46,6 +47,15 @@ public class album extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_layout);
+
+        TextView Home = findViewById(R.id.Home);
+        Home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(album.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         FlexboxLayout photoTap = findViewById(R.id.AlbumPhoto);
 

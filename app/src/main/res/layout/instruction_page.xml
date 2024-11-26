@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bgoflaunch" />
+    <TextView
+        android:id="@+id/instructionView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="INSTRUCTIONS"
+        android:textSize="33sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
+
+
+
+    <TextView
+        android:id="@+id/firstView"
+        android:layout_width="343dp"
+        android:layout_height="352dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginLeft="30dp"
+        android:text="When in the upload image view, images you've previously selected should appear. You can press go to albums to view pre-existing albums. You can also press the plus to add more images to the gallery.   "
+        android:visibility="visible"
+
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.154"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/seventhview"
+        android:layout_width="263dp"
+        android:layout_height="352dp"
+        android:layout_marginTop="120dp"
+        android:text="The task bar located at the top right allows you to access buttons that open the music player, upload images and the daily task feature.
+"        android:visibility="invisible"
+
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.154"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/fifthView"
+        android:layout_width="350dp"
+        android:layout_height="352dp"
+        android:layout_marginTop="130dp"
+        android:text="You can select a pre-existing tag or make your own custom tag. Then press save once finished
+"        android:visibility="invisible"
+android:layout_marginLeft="30dp"
+        android:textSize="27sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.154"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/taskBarView"
+        android:layout_width="350dp"
+        android:layout_height="352dp"
+        android:layout_marginTop="120dp"
+        android:text="When you go to the task bar and click images, you will be lead to this screen.Images already selected will appear. Press the plus to upload a image.
+"        android:visibility="invisible"
+
+        android:textSize="27sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.154"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/otherView"
+        android:visibility="invisible"
+
+        android:layout_width="263dp"
+        android:layout_height="352dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginLeft="50dp"
+        android:text="When you click on the music player you will have the option to select audio which will allow you to upload your music files
+"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.154"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/musicinsView"
+        android:visibility="invisible"
+
+        android:layout_width="263dp"
+        android:layout_height="352dp"
+        android:layout_marginTop="120dp"
+        android:text="When you click on the music player you will have the option to select audio which will allow you to upload your music files
+"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.154"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/secondView"
+        android:visibility="invisible"
+
+        android:layout_width="323dp"
+        android:layout_height="352dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginLeft="60dp"
+        android:text="Clicking on your selected images will take you to this view. To add a description of the image press edit
+"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.154"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/thirdView"
+        android:visibility="invisible"
+
+        android:layout_width="343dp"
+        android:layout_height="352dp"
+        android:layout_marginTop="102dp"
+        android:layout_marginLeft="50dp"
+        android:text="After selecting a description, you can press the edit icon to alter it. You can also  add a tag by pressing the tag button. A tag is a word to categorize the image
+"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.154"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/buttonmusic"
+        android:visibility="invisible"
+
+        android:layout_width="263dp"
+        android:layout_height="352dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginLeft="50dp"
+        android:text="Click pause, play, skip and backwards in order to pause, play the song, and change the song
+"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.154"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/buttonInstructions"
+        android:visibility="invisible"
+
+        android:layout_width="370dp"
+        android:layout_height="352dp"
+        android:layout_marginTop="450dp"
+        android:text="  Backwards     Play       Pause           Skip
+"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.154"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/playPauseButtonMiniView"
+        android:layout_width="346dp"
+        android:layout_height="151dp"
+        android:layout_marginTop="340dp"
+        android:background="@null"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:srcCompat="@drawable/musicinstructions" />
+    <ImageView
+        android:id="@+id/descrptions"
+        android:layout_width="346dp"
+        android:layout_height="151dp"
+        android:layout_marginTop="340dp"
+        android:background="@null"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:srcCompat="@drawable/descriptioninstructions" />
+
+    <ImageView
+        android:id="@+id/imageFifth"
+        android:layout_width="346dp"
+        android:layout_height="281dp"
+        android:layout_marginTop="270dp"
+        android:background="@null"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:srcCompat="@drawable/tagview" />
+    <ImageView
+        android:id="@+id/instrucimage"
+        android:layout_width="346dp"
+        android:layout_height="151dp"
+        android:layout_marginTop="340dp"
+        android:background="@null"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:srcCompat="@drawable/addingimagesinstruction" />
+
+    <ImageView
+        android:id="@+id/ss2"
+        android:layout_width="285dp"
+        android:layout_height="90dp"
+        android:layout_marginTop="420dp"
+        android:layout_marginRight="60dp"
+        android:background="@null"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.846"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:srcCompat="@drawable/ss1" />
+
+    <Button
+        android:id="@+id/nextbutton"
+        android:layout_width="160dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="578dp"
+        android:text="NEXT"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.467"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <Button
+        android:id="@+id/donebutton"
+        android:layout_width="160dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="578dp"
+        android:text="DONE"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.467"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="276dp"
+        android:layout_height="434dp"
+        android:layout_marginTop="200dp"
+        android:background="@null"
+        android:layout_marginRight="70dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.895"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/imagesinstruction" />
+    <ImageView
+        android:id="@+id/ss1"
+        android:layout_width="366dp"
+        android:layout_height="281dp"
+        android:layout_marginTop="280dp"
+        android:background="@null"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:srcCompat="@drawable/adddescriptioninstruction" />
+    <ImageView
+        android:id="@+id/tagpt1"
+        android:layout_width="366dp"
+        android:layout_height="281dp"
+        android:layout_marginTop="280dp"
+        android:background="@null"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:srcCompat="@drawable/descriptionpagetotaginstruction" />
+    <ImageView
+        android:id="@+id/imagebrowse"
+        android:layout_width="366dp"
+        android:layout_height="291dp"
+        android:layout_marginTop="300dp"
+        android:background="@null"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:srcCompat="@drawable/imagebrowsingins" />
+    <TextView
+        android:id="@+id/imageText"
+        android:visibility="invisible"
+
+        android:layout_width="350dp"
+        android:layout_height="352dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginLeft="50dp"
+        android:text="Browse through images by swiping left and right. If an image causes reminscient feelings swipe up/down to see similar images
+"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.154"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/dailytaskText"
+        android:visibility="invisible"
+
+        android:layout_width="350dp"
+        android:layout_height="352dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginLeft="50dp"
+        android:text="When clicking on the daily task if you choose to do it now, a camera will open up where you'll take a photo that follows the prompt. Once taken it will be added to gallery
+"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.154"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/dailytaskimage"
+        android:layout_width="366dp"
+        android:layout_height="291dp"
+        android:layout_marginTop="300dp"
+        android:background="@null"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:srcCompat="@drawable/dailytaskins" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

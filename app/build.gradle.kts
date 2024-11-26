@@ -28,7 +28,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-
     }
     buildFeatures {
         viewBinding = true
@@ -36,21 +35,25 @@ android {
 }
 
 dependencies {
-
+    implementation (libs.material.v190)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.navigation.ui)
-    implementation(libs.camera.core)
-    implementation(libs.camera.view)
-    implementation(libs.camera.lifecycle)
+    implementation(libs.firebase.crashlytics.buildtools)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(libs.activity.ktx)
     implementation(libs.activity.compose)
+    implementation(libs.biometric)
+    implementation(libs.flexbox)
+    implementation(libs.gson)
     implementation (libs.androidx.camera.core)
     implementation (libs.androidx.camera.camera2)
     implementation (libs.androidx.camera.lifecycle)
     implementation (libs.androidx.camera.view)
     implementation (libs.androidx.camera.extensions)
+    implementation(libs.camera.core)
+    implementation(libs.camera.view)
+    implementation(libs.camera.lifecycle)
 }
