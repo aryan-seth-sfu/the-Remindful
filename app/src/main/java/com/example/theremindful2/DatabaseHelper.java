@@ -694,10 +694,11 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "theremindful_db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Table Names
     private static final String TABLE_MEDIA = "media_items";
+
     private static final String TABLE_THEME = "themes";
     private static final String TABLE_MEDIA_THEME = "media_theme";
 
@@ -788,6 +789,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion < 2) {
+            db.execSQL("ALTER TABLE media_items ADD COLUMN likes INTEGER DEFAULT 0;");
+        }
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEDIA_THEME);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEDIA);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_THEME);
@@ -1244,6 +1248,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return photos;
+    }
+
+    public void likePhoto(String filePath) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE media_items SET likes = likes + 1 WHERE file_path = ?", new Object[]{filePath});
+    }
+
+    public void unlikePhoto(String filePath) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE media_items SET likes = likes - 1 WHERE file_path = ?", new Object[]{filePath});
+    }
+
+    public int getLikesForPhoto(String filePath) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT likes FROM media_items WHERE file_path = ?", new String[]{filePath});
+        int likes = 0;
+        if (cursor.moveToFirst()) {
+            likes = cursor.getInt(0);
+        }
+        cursor.close();
+        return likes;
+    }
+
+    public void updateLikes(long mediaId, int increment) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE media_items SET likes = likes + ? WHERE id = ?", new Object[]{increment, mediaId});
     }
 
 

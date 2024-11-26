@@ -6,8 +6,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -52,12 +54,14 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
         private final ImageView imageView;
         private final TextView textViewTheme;
         private final TextView textDescription;
+        private final ToggleButton likeButton;
 
         public ChildViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
             textViewTheme = itemView.findViewById(R.id.textViewTheme);
             textDescription = itemView.findViewById(R.id.textDescription);
+            likeButton = itemView.findViewById(R.id.likeButton);
 
             textDescription.setOnClickListener(view -> {
                 imageView.setVisibility(View.VISIBLE);
@@ -79,6 +83,22 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
                 DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
                 long mediaId = dbHelper.addMediaItem((String) imageView.getTag(), description, "image");
                 dbHelper.logPhotoInteraction(mediaId);
+            });
+
+            likeButton.setOnClickListener(view -> {
+                DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
+                String photoFilePath = (String) imageView.getTag();
+
+                if (photoFilePath != null) {
+                    Log.d("ChildAdapter", "Photo liked: " + photoFilePath);
+
+                    // Increment the "likes" count in the database
+                    String description = MetadataUtils.getDescriptionForImage(photoFilePath, context);
+                    long mediaId = dbHelper.addMediaItem(photoFilePath, description, "image");
+                    dbHelper.incrementLikeCount(mediaId);
+                } else {
+                    Log.e("ChildAdapter", "Like button clicked, but no photo tag found.");
+                }
             });
         }
 
