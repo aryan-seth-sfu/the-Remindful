@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import android.app.AlertDialog;
@@ -79,39 +78,41 @@ public class TaskDialogFragment extends DialogFragment {
         // Set up the "Do it later" button to close the dialog
         doItLaterButton.setOnClickListener(v -> dismiss());
 
-        // Set up the "Okay!" button to open the CameraActivity
-        okayButton.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
-                    != PackageManager.PERMISSION_GRANTED) {
-                // Request camera permission
-                ActivityCompat.requestPermissions(requireActivity(),
-                        new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
-            } else {
-                // Open the camera if permission is already granted
-                openCamera();
-            }
-        });
+        // Set up the "Okay!" button to open the CameraActivity or request permission
+        okayButton.setOnClickListener(v -> handleCameraPermission());
 
         return builder.create();
     }
 
-    private void openCamera() {
-        Intent intent = new Intent(requireActivity(), CameraActivity.class);
-        startActivityForResult(intent, CAMERA_REQUEST_CODE);
+    private void handleCameraPermission() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Request camera permission using the fragment method
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+        } else {
+            // Open the camera if permission is already granted
+            openCamera();
+        }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, open the camera
+                // Permission granted, open the camera immediately
                 openCamera();
             } else {
                 // Permission denied, show a message
                 Toast.makeText(requireContext(), "Camera permission is required to take a picture", Toast.LENGTH_SHORT).show();
             }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    private void openCamera() {
+        Intent intent = new Intent(requireActivity(), CameraActivity.class);
+        startActivityForResult(intent, CAMERA_REQUEST_CODE);
     }
 
     @Override
