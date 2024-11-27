@@ -135,7 +135,7 @@ public class audioactivity extends AppCompatActivity {
                 if (audioReturned.getResultCode() == RESULT_OK) {
 
                     List<String> themes = new ArrayList<>();
-                    themes.add("audioPlaylist");
+                    themes.add(getString(R.string.AudioPlayList));
 
                     Intent datafile = audioReturned.getData();
                     if (datafile != null) {
@@ -154,7 +154,7 @@ public class audioactivity extends AppCompatActivity {
 
                         // after adding a new song save state and keep updated
                         saveState();
-                        Toast.makeText(this, "Song added!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.AddedSongSuccess), Toast.LENGTH_SHORT).show();
                          }
                     }
              }
@@ -163,7 +163,7 @@ public class audioactivity extends AppCompatActivity {
 
     private Handler handler = new Handler();
     private Runnable updateSeekBar;
-    private String AUDIO_PLAYLIST_NAME = "audioPlaylist";
+    private String AUDIO_PLAYLIST_NAME = getString(R.string.AudioPlayListName);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -368,19 +368,19 @@ public class audioactivity extends AppCompatActivity {
     private void openAudioPicker() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("audio/*");
+        intent.setType(getString(R.string.audioType));
         // get permissions and ensure you can still access file over activity switches
         intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-        audioPickerLauncher.launch(Intent.createChooser(intent, "Pick audio"));
+        audioPickerLauncher.launch(Intent.createChooser(intent, getString(R.string.PickAudioText)));
     }
 
 // play the song selected by user
     private void playCurrentSong() {
         // if playlist is empty then tell user
         if (playlistManage.allSongs().isEmpty()) {
-            Toast.makeText(this, "No songs available. Add more songs", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.SongQueueError), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -436,7 +436,7 @@ public class audioactivity extends AppCompatActivity {
             updateUIFromMediaPlayer();
 
         } catch (IOException e) {
-            Toast.makeText(this, "Error playing song: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.SongPlayerError) + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -553,7 +553,7 @@ public class audioactivity extends AppCompatActivity {
     private String formatDuration(int duration) {
         int minutes = (duration / 1000) / 60;
         int seconds = (duration / 1000) % 60;
-        return String.format(Locale.US, "%02d:%02d", minutes, seconds);
+        return String.format(Locale.US, getString(R.string.formatDuration), minutes, seconds);
     }
 
     @Override

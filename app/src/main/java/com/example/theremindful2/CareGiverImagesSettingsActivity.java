@@ -3,7 +3,6 @@ package com.example.theremindful2;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -76,7 +75,7 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                 metadataFile.createNewFile();
                 try {
                     // Define theme tags
-                    String[] tags = {"Nature", "Vacation", "Family", "Friends"};
+                    String[] tags = {getString(R.string.DefaultTag1), getString(R.string.DefaultTag2), getString(R.string.DefaultTag3), getString(R.string.DefaultTag4)};
 
                     // Create the root JSON object
                     JSONObject rootObject = new JSONObject();
@@ -85,21 +84,19 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                     // Add themes with empty image arrays
                     for (String tag : tags) {
                         JSONObject themeObject = new JSONObject();
-                        themeObject.put("tag", tag);
-                        themeObject.put("images", new JSONArray()); // Empty images array
+                        themeObject.put(getString(R.string.tagText), tag);
+                        themeObject.put(getString(R.string.images), new JSONArray()); // Empty images array
                         themesArray.put(themeObject);
                     }
 
                     // Add the themes array to the root object
-                    rootObject.put("themes", themesArray);
+                    rootObject.put(getString(R.string.themeText), themesArray);
 
                     // Write the JSON to the specified file
                     try (FileWriter writer = new FileWriter(metadataFile)) {
                         writer.write(rootObject.toString(4)); // Indented with 4 spaces
                         writer.flush();
                     }
-
-                    System.out.println("JSON file created successfully: " + metadataFile.getAbsolutePath());
                 } catch (IOException | org.json.JSONException e) {
                     e.printStackTrace();
                 }
@@ -121,16 +118,16 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
 
                 // Parse the JSON
                 JSONObject rootObject = new JSONObject(jsonBuilder.toString());
-                JSONArray themesArray = rootObject.getJSONArray("themes");
+                JSONArray themesArray = rootObject.getJSONArray(getString(R.string.themeText));
 
                 for (int i = 0; i < themesArray.length(); i++) {
                     JSONObject themeObject = themesArray.getJSONObject(i);
 
                     // Extract the tag (theme name)
-                    String tag = themeObject.getString("tag");
+                    String tag = themeObject.getString(getString(R.string.tagText));
 
                     // Extract the first image path, if available
-                    JSONArray imagesArray = themeObject.getJSONArray("images");
+                    JSONArray imagesArray = themeObject.getJSONArray(getString(R.string.images));
                     String firstImagePath = imagesArray.length() > 0 ? imagesArray.getString(0) : null;
 
                     // Add theme name and first image path to the list
@@ -148,14 +145,14 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                         reader.close();
                     }
                 } catch (IOException e) {
-                    Log.e("getThemeNames", "Error closing reader", e);
+                    Log.e("getThemeNames", getString(R.string.CloseReaderError), e);
                 }
             }
         }
 
         if (files != null) {
             for (File file : files) {
-                if (file.isFile() && file.getName().endsWith(".jpg")) { // Or any extension you're using
+                if (file.isFile() && file.getName().endsWith(getString(R.string.imageFileType))) { // Or any extension you're using
                     Uri imageUri = Uri.fromFile(file);
                     imageUriList.add(imageUri);
 
@@ -176,7 +173,7 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         Intent intent = new Intent(CareGiverImagesSettingsActivity.this, photo_view.class);
                         Object Tag = view.getTag();
-                        intent.putExtra("Uri", Tag.toString());
+                        intent.putExtra(getString(R.string.UriText), Tag.toString());
                         startActivity(intent);
 
                     }
@@ -194,7 +191,6 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
-                    Log.d("toggle", "Checked: " + isChecked);
                     toggleButton.setTextColor(getResources().getColor(R.color.white));
                     toggleButton.getBackground().setTint(getResources().getColor(R.color.dark_gray)); // Background tint
                     imageAlbumLayout.removeAllViews();
@@ -209,7 +205,7 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                                 public void onClick(View view) {
                                     Intent intent = new Intent(CareGiverImagesSettingsActivity.this, photo_view.class);
                                     Object Tag = view.getTag();
-                                    intent.putExtra("Uri", Tag.toString());
+                                    intent.putExtra(getString(R.string.UriText), Tag.toString());
                                     startActivity(intent);
 
                                 }
@@ -217,7 +213,6 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                         }
                     }
                 } else {
-                    Log.d("toggle", "Checked: " + isChecked);
                     toggleButton.setTextColor(getResources().getColor(R.color.black)); // Change text color
                     toggleButton.getBackground().setTint(getResources().getColor(R.color.light_gray)); // Background tint
                     imageAlbumLayout.removeAllViews();
@@ -290,8 +285,7 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                                         if (LinearLayOut.getChildAt(0) instanceof ImageView){
                                             Intent intent = new Intent(CareGiverImagesSettingsActivity.this, album.class);
                                             Object album = LinearLayOut.getChildAt(0).getTag();
-                                            Log.d("album extra", album.toString());
-                                            intent.putExtra("album", album.toString());
+                                            intent.putExtra(getString(R.string.album), album.toString());
                                             startActivity(intent);
                                         }
 
@@ -315,19 +309,16 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
                                 byte[] imageBytes = byteArrayOutputStream.toByteArray();
-                                String imageFilename = UUID.randomUUID().toString() + ".jpg";
+                                String imageFilename = UUID.randomUUID().toString() + getString(R.string.imageFileType);
                                 Uri savedImageUri = StorageUtils.saveImageFile(getApplicationContext(), imageFilename, imageBytes);
-                                //TODO: add saved image json file for quick lookup of saved tags and descriptions -> make necessary changes
-
                                 if (savedImageUri != null) {
                                     addImageToFlexBoxLayout(savedImageUri, imageAlbumLayout);
-                                    Toast.makeText(CareGiverImagesSettingsActivity.this, "Image saved successfully", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CareGiverImagesSettingsActivity.this, getString(R.string.ImageSaveSuccess), Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(CareGiverImagesSettingsActivity.this, "Failed to save image", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CareGiverImagesSettingsActivity.this, getString(R.string.ImageSaveFail), Toast.LENGTH_SHORT).show();
                                 }
                             } catch (IOException e) {
-                                Log.e("CaregiverSettingsActivity", "Error processing image: " + e.getMessage());
-                                Toast.makeText(CareGiverImagesSettingsActivity.this, "Error processing image", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CareGiverImagesSettingsActivity.this, getString(R.string.ProcessImageError), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -342,13 +333,12 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                         Intent i = new Intent(CareGiverImagesSettingsActivity.this, FilePicker.class);
                         FilePickerLauncher.launch(i);
                         } catch (Exception e) {
-                        Log.e("MainActivity", "Error starting FilePickerActivity: " + e.getMessage());
-                        Toast.makeText(CareGiverImagesSettingsActivity.this, "Error opening file picker", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CareGiverImagesSettingsActivity.this, getString(R.string.OpeningFilePickerError), Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     //create new album
                     JSONObject albumInfo = new JSONObject();
-                    String albumName = "new album";
+                    String albumName = getString(R.string.DefaultNewAlbum);
 
                     addNewTheme(CareGiverImagesSettingsActivity.this, albumName);
 
@@ -366,8 +356,7 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             Intent intent = new Intent(CareGiverImagesSettingsActivity.this, album.class);
-                            Toast.makeText(CareGiverImagesSettingsActivity.this, "album Button Pressed" + thumbnailView.getTag(), Toast.LENGTH_SHORT).show();
-                            intent.putExtra("album", thumbnailView.getTag().toString());
+                            intent.putExtra(getString(R.string.album), thumbnailView.getTag().toString());
                             startActivity(intent);
                         }
                     });
@@ -407,135 +396,15 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
         // Add the ImageView to the FlexboxLayout
         flexBox.addView(imageView);
     }
-    public static void addImageToMetadataFile(Context context, String imagePath, String description) {
-        File jsonFile = new File(context.getFilesDir(), "images_metadata.json");
-        BufferedReader reader = null;
 
-        try {
-            JSONObject rootObject;
-            JSONArray imagesArray;
-
-            // Check if the JSON file exists
-            if (!jsonFile.exists()) {
-                // If the file does not exist, create it with an empty "images" array
-                rootObject = new JSONObject();
-                imagesArray = new JSONArray();
-                rootObject.put("images", imagesArray);
-
-                try (FileWriter writer = new FileWriter(jsonFile)) {
-                    writer.write(rootObject.toString(4)); // Create initial JSON file
-                }
-            } else {
-                // Read existing JSON file
-                FileInputStream inputStream = new FileInputStream(jsonFile);
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-                StringBuilder jsonBuilder = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    jsonBuilder.append(line);
-                }
-
-                // Parse JSON
-                rootObject = new JSONObject(jsonBuilder.toString());
-                imagesArray = rootObject.getJSONArray("images");
-            }
-
-            // Add the new image object
-            JSONObject newImageObject = new JSONObject();
-            // Use the image path as it is without concatenation
-            newImageObject.put("path", imagePath);
-            newImageObject.put("description", description);
-            imagesArray.put(newImageObject);
-
-            // Write updated JSON back to the file
-            try (FileWriter writer = new FileWriter(jsonFile)) {
-                writer.write(rootObject.toString(4)); // Pretty print JSON with 4-space indentation
-                writer.flush();
-            }
-
-            Log.d("addImage", "Image added successfully to JSON metadata file.");
-        } catch (JSONException | IOException e) {
-            Log.e("addImage", "Error updating image metadata file", e);
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e) {
-                Log.e("addImage", "Error closing reader", e);
-            }
-        }
-    }
-
-    public static void createMetadataFileIfNotExists(Context context) {
-        File metadataFile = new File(context.getFilesDir(), IMAGES_METADATA_FILE_NAME);
-
-        if (!metadataFile.exists()) {
-            try (FileWriter writer = new FileWriter(metadataFile)) {
-                // Initialize the file with an empty "images" array
-                JSONObject rootObject = new JSONObject();
-                rootObject.put("images", new JSONArray());
-                writer.write(rootObject.toString(4)); // Pretty-print with 4 spaces
-                writer.flush();
-                Log.d("Metadata", "Metadata file created successfully.");
-            } catch (IOException | JSONException e) {
-                Log.e("Metadata", "Error creating metadata file", e);
-            }
-        } else {
-            Log.d("Metadata", "Metadata file already exists.");
-        }
-    }
-    public static String getImageDescriptionByPath(Context context, String imagePath) {
-        BufferedReader reader = null;
-
-        try {
-            File metadataFile = new File(context.getFilesDir(), IMAGES_METADATA_FILE_NAME);
-            if (!metadataFile.exists()) {
-                Log.e("ImageMetadata", "Metadata file does not exist.");
-                return null;
-            }
-
-            FileInputStream inputStream = new FileInputStream(metadataFile);
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-            StringBuilder jsonBuilder = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                jsonBuilder.append(line);
-            }
-
-            // Parse the JSON
-            JSONObject rootObject = new JSONObject(jsonBuilder.toString());
-            JSONArray imagesArray = rootObject.getJSONArray("images");
-
-            // Find the image with the specified path
-            for (int i = 0; i < imagesArray.length(); i++) {
-                JSONObject imageObject = imagesArray.getJSONObject(i);
-                if (imageObject.getString("path").equals(imagePath)) {
-                    return imageObject.getString("description");
-                }
-            }
-
-        } catch (IOException | JSONException e) {
-            Log.e("ImageMetadata", "Error reading metadata file", e);
-        } finally {
-            try {
-                if (reader != null) reader.close();
-            } catch (IOException e) {
-                Log.e("ImageMetadata", "Error closing reader", e);
-            }
-        }
-
-        // Return null if the image is not found
-        return null;
-    }
-    public static void addNewTheme(Context context, String newTheme) {
+    public void addNewTheme(Context context, String newTheme) {
         File jsonFile = new File(context.getFilesDir(), METADATA_FILE_NAME);
         BufferedReader reader = null;
 
         try {
             // Check if the file exists
             if (!jsonFile.exists()) {
-                Log.e("addNewTheme", "Themes metadata file does not exist.");
+                Log.e("addNewTheme", getString(R.string.MetaDataFileDoesNotExists));
                 return;
             }
 
@@ -550,21 +419,21 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
 
             // Parse the JSON
             JSONObject rootObject = new JSONObject(jsonBuilder.toString());
-            JSONArray themesArray = rootObject.getJSONArray("themes");
+            JSONArray themesArray = rootObject.getJSONArray(getString(R.string.themeText));
 
             // Check if the theme already exists
             for (int i = 0; i < themesArray.length(); i++) {
                 JSONObject themeObject = themesArray.getJSONObject(i);
-                if (themeObject.getString("tag").equalsIgnoreCase(newTheme)) {
-                    Log.e("addNewTheme", "Theme already exists: " + newTheme);
+                if (themeObject.getString(getString(R.string.tagText)).equalsIgnoreCase(newTheme)) {
+                    Log.e(getString(R.string.addNewThemeLog), getString(R.string.ThemeExistError) + newTheme);
                     return; // Exit if the theme exists
                 }
             }
 
             // Add the new theme
             JSONObject newThemeObject = new JSONObject();
-            newThemeObject.put("tag", newTheme);
-            newThemeObject.put("images", new JSONArray()); // Empty images array
+            newThemeObject.put(getString(R.string.tagText), newTheme);
+            newThemeObject.put(getString(R.string.images), new JSONArray()); // Empty images array
             themesArray.put(newThemeObject);
 
             // Write the updated JSON back to the file
@@ -573,20 +442,20 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                 writer.flush();
             }
 
-            Log.d("addNewTheme", "New theme added successfully: " + newTheme);
+            Log.d(getString(R.string.addNewThemeLog), getString(R.string.AddNewThemeSuccess) + newTheme);
         } catch (JSONException | IOException e) {
-            Log.e("addNewTheme", "Error adding new theme", e);
+            Log.e(getString(R.string.addNewThemeLog), getString(R.string.AddNewThemeError), e);
         } finally {
             try {
                 if (reader != null) {
                     reader.close();
                 }
             } catch (IOException e) {
-                Log.e("addNewTheme", "Error closing reader", e);
+                Log.e(getString(R.string.addNewThemeLog), getString(R.string.CloseReaderError), e);
             }
         }
         _addNewTheme(context, newTheme);
-        Log.d("_addNewTheme", "_New theme added successfully: " + newTheme);
+        Log.d(getString(R.string.addNewThemeLog), getString(R.string.AddNewThemeSuccess) + newTheme);
     }
 
 

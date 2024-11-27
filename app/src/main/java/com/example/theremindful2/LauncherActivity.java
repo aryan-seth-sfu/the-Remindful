@@ -36,7 +36,7 @@ public class LauncherActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 DialogFragment taskDialog = new TaskDialogFragment();
-                taskDialog.show(getSupportFragmentManager(), "TaskDialog");
+                taskDialog.show(getSupportFragmentManager(), getString(R.string.taskDialogTag));
             }
         });
 

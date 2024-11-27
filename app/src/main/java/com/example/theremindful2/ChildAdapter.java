@@ -41,7 +41,7 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
     @Override
     public void onBindViewHolder(@NonNull ChildViewHolder holder, int position) {
         if (photos == null || photos.isEmpty()) {
-            Log.e("ChildAdapter", "No photos available to display.");
+            //Log.e("ChildAdapter", "No photos available to display.");
             return;
         }
         int actualPosition = position % photos.size();
@@ -87,9 +87,6 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
                     @Override
                     public void onClick(View view) {
                         String description = MetadataUtils.getDescriptionForImage((String) imageView.getTag(),context);
-                        Log.d("getTag", (String) imageView.getTag());
-                        Log.d("context", String.valueOf(context));
-                        Log.d("description", description != null ? description : "No description found");
 
                         // Make the ImageView invisible
                         imageView.setVisibility(View.GONE);
@@ -100,7 +97,7 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
                 });
             } else {
                 // If the image file doesn't exist, set a placeholder
-                Log.e("bind", "Image file not found: " + photoFilePath);
+                //Log.e("bind", "Image file not found: " + photoFilePath);
                 imageView.setImageResource(R.drawable.ic_launcher_foreground); // Fallback to a placeholder image
             }
 

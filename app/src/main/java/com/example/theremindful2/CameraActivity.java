@@ -54,7 +54,7 @@ public class CameraActivity extends AppCompatActivity {
         Button captureButton = findViewById(R.id.camera_capture_button);
         Button switchCameraButton = findViewById(R.id.switch_camera_button);
 
-        outputDirectory = getExternalFilesDir(null) + "/Reminiscences";
+        outputDirectory = getExternalFilesDir(null) + getString(R.string.Reminisceneces);
         File directory = new File(outputDirectory);
         if (!directory.exists()) {
             directory.mkdirs();
@@ -73,7 +73,7 @@ public class CameraActivity extends AppCompatActivity {
                 cameraProvider = cameraProviderFuture.get();
                 bindCameraUseCases();
             } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "Error starting camera: ", e);
+                Log.e(TAG, getString(R.string.CameraStartUpError), e);
             }
         }, ContextCompat.getMainExecutor(this));
     }
@@ -101,8 +101,8 @@ public class CameraActivity extends AppCompatActivity {
     private void takePhoto() {
         if (imageCapture == null) return;
 
-        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(System.currentTimeMillis());
-        photoFile = new File(outputDirectory, "IMG_" + timestamp + ".jpg");
+        String timestamp = new SimpleDateFormat(getString(R.string.DateFormat), Locale.getDefault()).format(System.currentTimeMillis());
+        photoFile = new File(outputDirectory, getString(R.string.beginningImageFileName)+ timestamp + getString(R.string.imageFileType));
 
         ImageCapture.OutputFileOptions outputOptions = new ImageCapture.OutputFileOptions.Builder(photoFile).build();
 
@@ -116,17 +116,17 @@ public class CameraActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(@NonNull ImageCaptureException exception) {
-                        Log.e(TAG, "Photo capture failed: " + exception.getMessage(), exception);
-                        Toast.makeText(CameraActivity.this, "Error taking photo", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, getString(R.string.PhotoCaptureError) + exception.getMessage(), exception);
+                        Toast.makeText(CameraActivity.this, getString(R.string.PhotoCaptureError), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
     private void showSatisfactionDialog() {
         new AlertDialog.Builder(this)
-                .setTitle("Are you satisfied with this photo?")
-                .setPositiveButton("Yes", (dialog, which) -> saveImageToAlbum(photoFile))
-                .setNegativeButton("Retake", (dialog, which) -> {
+                .setTitle(getString(R.string.SatifactionDialogTitle))
+                .setPositiveButton(getString(R.string.SatifactionDialogPosButton), (dialog, which) -> saveImageToAlbum(photoFile))
+                .setNegativeButton(getString(R.string.SatifactionDialogRetake), (dialog, which) -> {
                     // Allow the user to retake the photo
                     dialog.dismiss();
                 })
@@ -136,8 +136,8 @@ public class CameraActivity extends AppCompatActivity {
     private void saveImageToAlbum(File photoFile) {
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.DISPLAY_NAME, photoFile.getName());
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-        values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Reminiscences");
+        values.put(MediaStore.Images.Media.MIME_TYPE, getString(R.string.MIME_TYPE));
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, getString(R.string.RELATIVE_PATH));
 
         Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
@@ -146,18 +146,18 @@ public class CameraActivity extends AppCompatActivity {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     getContentResolver().openOutputStream(uri).write(Files.readAllBytes(photoFile.toPath()));
                 }
-                Toast.makeText(this, "Photo saved to album", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.PhotoSavedToAlbumSuccess), Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
-                Log.e(TAG, "Error saving photo to album: ", e);
-                Toast.makeText(this, "Failed to save photo", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, getString(R.string.SavingPhotoToAlbumError), e);
+                Toast.makeText(this, getString(R.string.SavingPhotoError), Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(this, "Failed to save photo to album", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.SavingPhotoToAlbumError), Toast.LENGTH_SHORT).show();
         }
 
         // Return the file path to TaskDialogFragment
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("photo_path", photoFile.getAbsolutePath());
+        resultIntent.putExtra(getString(R.string.PhotoPath), photoFile.getAbsolutePath());
         setResult(RESULT_OK, resultIntent);
         finish();
     }
