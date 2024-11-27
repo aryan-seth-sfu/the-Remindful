@@ -336,6 +336,7 @@ public class photo_view extends AppCompatActivity{
         builder.show();
     }
     private void saveImageAndReturn() {
+        String DefaultTag = "Nature";
         Log.d("Tags Selected", selectedTags.toString());
         Intent intentSelf = getIntent();
         String uriString = intentSelf.getStringExtra("Uri");
@@ -367,9 +368,9 @@ public class photo_view extends AppCompatActivity{
         File file = new File(directory, filename);
 
         // Gather selected tags
-        if (tagsList == null || tagsList.isEmpty()) {
-            Toast.makeText(this, "No tags selected", Toast.LENGTH_SHORT).show();
-            return;
+        if (selectedTags == null || selectedTags.isEmpty()) {
+            assert selectedTags != null;
+            selectedTags.add(DefaultTag);
         }
 
 
