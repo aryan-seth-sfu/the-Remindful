@@ -57,4 +57,7 @@ dependencies {
     implementation(libs.camera.view)
     implementation(libs.camera.lifecycle)
     implementation(libs.androidx.recyclerview)
+    implementation(libs.glide)
+    annotationProcessor(libs.glideCompiler)
+    implementation(libs.mpandroidchart)
 }

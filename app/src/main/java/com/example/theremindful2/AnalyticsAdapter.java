@@ -2,6 +2,7 @@ package com.example.theremindful2;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +10,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.util.List;
 
-public class AnalyticsAdapter extends RecyclerView.Adapter<AnalyticsAdapter.ViewHolder> {
+public class AnalyticsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final int VIEW_TYPE_HEADER = 0;
+    private static final int VIEW_TYPE_ITEM = 1;
+    private static final String TAG = "AnalyticsAdapter";
 
     private final List<AnalyticsItem> analyticsData; // Data source for the RecyclerView
     private final Context context;
@@ -25,60 +33,69 @@ public class AnalyticsAdapter extends RecyclerView.Adapter<AnalyticsAdapter.View
         this.context = context;
     }
 
-    // ViewHolder: Represents a single item view in the RecyclerView
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    // ViewHolder for Header
+    public static class HeaderViewHolder extends RecyclerView.ViewHolder {
+        public final TextView sectionHeaderTextView;
+
+        public HeaderViewHolder(View itemView) {
+            super(itemView);
+            sectionHeaderTextView = itemView.findViewById(R.id.sectionHeaderTextView);
+        }
+    }
+
+    // ViewHolder for Item
+    public static class ItemViewHolder extends RecyclerView.ViewHolder {
         public final TextView analyticsTextView;
         public final ImageView analyticsImageView;
 
-        public ViewHolder(View itemView) {
+        public ItemViewHolder(View itemView) {
             super(itemView);
-            analyticsTextView = itemView.findViewById(R.id.analyticsTextView); // Reference to the TextView
-            analyticsImageView = itemView.findViewById(R.id.analyticsImageView); // Reference to the ImageView
+            analyticsTextView = itemView.findViewById(R.id.analyticsTextView);
+            analyticsImageView = itemView.findViewById(R.id.analyticsImageView);
         }
     }
 
-    // Inflate the item layout and return a new ViewHolder
+    @Override
+    public int getItemViewType(int position) {
+        AnalyticsItem item = analyticsData.get(position);
+        return item.getImageResId() == 0 ? VIEW_TYPE_HEADER : VIEW_TYPE_ITEM;
+    }
+
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflate the layout for individual items (e.g., item_analytics.xml)
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_analytics, parent, false);
-        return new ViewHolder(view);
-    }
-
-    // Bind data to the views in the ViewHolder
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        // Get the data at the current position
-        AnalyticsItem item = analyticsData.get(position);
-
-        // Set description text
-        holder.analyticsTextView.setText(item.getDescription());
-
-        // Handle either file paths or drawable resources for images
-        if (item.getImageResId() != 0) {
-            // If a drawable resource is set
-            holder.analyticsImageView.setImageResource(item.getImageResId());
-            holder.analyticsImageView.setVisibility(View.VISIBLE);
-        } else if (item.getFilePath() != null) {
-            // If a file path is set
-            File imageFile = new File(item.getFilePath());
-            if (imageFile.exists()) {
-                Uri imageUri = Uri.fromFile(imageFile);
-                holder.analyticsImageView.setImageURI(imageUri);
-                holder.analyticsImageView.setVisibility(View.VISIBLE);
-            } else {
-                holder.analyticsImageView.setImageResource(R.drawable.ic_placeholder); // Fallback placeholder
-                holder.analyticsImageView.setVisibility(View.VISIBLE);
-            }
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == VIEW_TYPE_HEADER) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_analytics_section_header, parent, false);
+            return new HeaderViewHolder(view);
         } else {
-            // Hide the ImageView if no image is available
-            holder.analyticsImageView.setVisibility(View.GONE);
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_analytics, parent, false);
+            return new ItemViewHolder(view);
         }
     }
 
-    // Return the size of the dataset
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        AnalyticsItem item = analyticsData.get(position);
+
+        if (holder instanceof HeaderViewHolder) {
+            ((HeaderViewHolder) holder).sectionHeaderTextView.setText(item.getDescription());
+        } else if (holder instanceof ItemViewHolder) {
+            ItemViewHolder itemHolder = (ItemViewHolder) holder;
+            itemHolder.analyticsTextView.setText(item.getDescription());
+
+            if (item.getImageResId() != 0) {
+                // If a drawable resource is set
+                itemHolder.analyticsImageView.setImageResource(item.getImageResId());
+                itemHolder.analyticsImageView.setVisibility(View.VISIBLE);
+            } else {
+                // Hide the ImageView if no image is available
+                itemHolder.analyticsImageView.setVisibility(View.GONE);
+            }
+        }
+    }
+
     @Override
     public int getItemCount() {
         return analyticsData.size();

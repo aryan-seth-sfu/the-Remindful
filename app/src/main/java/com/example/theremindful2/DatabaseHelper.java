@@ -563,15 +563,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues values = new ContentValues();
             values.put("interaction_count", currentCount + 1);
             db.update("photo_interaction", values, "media_id=?", new String[]{String.valueOf(mediaId)});
+            Log.d(TAG, "logPhotoInteraction: Updated interaction count for mediaId " + mediaId + " to " + (currentCount + 1));
         } else {
             // Insert new interaction record
             ContentValues values = new ContentValues();
             values.put("media_id", mediaId);
             values.put("interaction_count", 1);
             db.insert("photo_interaction", null, values);
+            Log.d(TAG, "logPhotoInteraction: Inserted new interaction for mediaId " + mediaId);
         }
         cursor.close();
     }
+
 
     public List<String> getMostViewedThemes() {
         List<String> themes = new ArrayList<>();
@@ -602,12 +605,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
+        Log.d(TAG, "getMostViewedPhotos: Number of rows retrieved: " + cursor.getCount());
+
         while (cursor.moveToNext()) {
-            photos.add(cursor.getString(0) + " (" + cursor.getInt(1) + " views)");
+            String filePath = cursor.getString(0);
+            int interactionCount = cursor.getInt(1);
+            photos.add(filePath + " (" + interactionCount + " views)");
+            Log.d(TAG, "getMostViewedPhotos: File path " + filePath + " with " + interactionCount + " views");
         }
         cursor.close();
         return photos;
     }
+
 
     public void likePhoto(String filePath) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -727,27 +736,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return photosWithLikes;
     }
-
-
-
-
-
-    // Theme class to hold theme information
-//    public static class Theme {
-//        private String name;
-//        private List<String> mediaPaths;
-//
-//        public Theme(String name, List<String> mediaPaths) {
-//            this.name = name;
-//            this.mediaPaths = mediaPaths;
-//        }
-//
-//        public String getName() {
-//            return name;
-//        }
-//
-//        public List<String> getMediaPaths() {
-//            return mediaPaths;
-//        }
-//    }
 }

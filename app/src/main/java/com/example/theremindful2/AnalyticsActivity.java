@@ -1,23 +1,42 @@
 package com.example.theremindful2;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import java.util.Random;
+import android.graphics.Color;
+
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager2.widget.ViewPager2;
+
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AnalyticsActivity extends AppCompatActivity {
 
+    private static final int PERMISSION_REQUEST_CODE = 100;
+
     private DatabaseHelper databaseHelper;
-    private RecyclerView recyclerView;
-    private ProgressBar progressBar;
-    private AnalyticsAdapter adapter;
+    private ViewPager2 viewPager;
+    private TabLayout tabLayout;
+    private AnalyticsFragmentAdapter pagerAdapter;
+    private BarChart barChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,88 +46,145 @@ public class AnalyticsActivity extends AppCompatActivity {
         // Initialize database helper
         databaseHelper = DatabaseHelper.getInstance(this);
 
-        // Setup RecyclerView and ProgressBar
-        recyclerView = findViewById(R.id.analyticsRecyclerView);
-        progressBar = findViewById(R.id.analyticsProgressBar);
+        // Initialize UI components
+        viewPager = findViewById(R.id.analyticsViewPager);
+        tabLayout = findViewById(R.id.analyticsTabLayout);
+        barChart = findViewById(R.id.barChart);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // Set up ViewPager and TabLayout
+        pagerAdapter = new AnalyticsFragmentAdapter(this);
+        viewPager.setAdapter(pagerAdapter);
 
-        // Fetch and display analytics data
-        loadAnalyticsData();
+        // Connect TabLayout with ViewPager
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            if (position == 0) tab.setText("Most Viewed");
+            else tab.setText("Likes");
+        }).attach();
+
+        // Check permissions and load data
+        checkAndRequestPermissions();
     }
 
-    // Method to load analytics data
-    private void loadAnalyticsData() {
-        // Show ProgressBar
-        progressBar.setVisibility(View.VISIBLE);
-        recyclerView.setVisibility(View.GONE);
-
-        // Simulate data loading (use background threads or async tasks for real-world apps)
-        recyclerView.postDelayed(() -> {
-            List<AnalyticsAdapter.AnalyticsItem> analyticsData = getAnalyticsData();
-
-            if (analyticsData.isEmpty()) {
-                Toast.makeText(this, "No analytics data available", Toast.LENGTH_SHORT).show();
+    private void checkAndRequestPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, PERMISSION_REQUEST_CODE);
             } else {
-                // Set adapter with data
-                adapter = new AnalyticsAdapter(analyticsData, this);
-                recyclerView.setAdapter(adapter);
+                loadAnalyticsData();
             }
-
-            // Hide ProgressBar and show RecyclerView
-            progressBar.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-        }, 1000); // Simulated delay for data loading
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+            } else {
+                loadAnalyticsData();
+            }
+        } else {
+            loadAnalyticsData();
+        }
     }
 
-    // Fetch analytics data
-    private List<AnalyticsAdapter.AnalyticsItem> getAnalyticsData() {
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            loadAnalyticsData();
+        } else {
+            Toast.makeText(this, "Permission denied. Unable to load images.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadAnalyticsData() {
+        ArrayList<AnalyticsAdapter.AnalyticsItem> mostViewedData = new ArrayList<>(getMostViewedAnalyticsData());
+        ArrayList<AnalyticsAdapter.AnalyticsItem> likesData = new ArrayList<>(getLikesAnalyticsData());
+
+        pagerAdapter.setFragments(
+                MostViewedFragment.newInstance(mostViewedData),
+                LikesFragment.newInstance(likesData)
+        );
+
+        setupChart();
+    }
+
+    private List<AnalyticsAdapter.AnalyticsItem> getMostViewedAnalyticsData() {
         List<AnalyticsAdapter.AnalyticsItem> analyticsData = new ArrayList<>();
-
-        // Most Viewed Themes
-        List<String> mostViewedThemes = databaseHelper.getMostViewedThemes();
-        if (!mostViewedThemes.isEmpty()) {
-            analyticsData.add(new AnalyticsAdapter.AnalyticsItem("Most Viewed Themes", 0)); // Section header
-            for (String theme : mostViewedThemes) {
-                analyticsData.add(new AnalyticsAdapter.AnalyticsItem(theme, R.drawable.ic_theme));
-            }
-        } else {
-            analyticsData.add(new AnalyticsAdapter.AnalyticsItem("No themes viewed yet", R.drawable.ic_placeholder));
-        }
-
-        // Most Viewed Photos
-        List<String> mostViewedPhotos = databaseHelper.getMostViewedPhotos();
-        if (!mostViewedPhotos.isEmpty()) {
-            analyticsData.add(new AnalyticsAdapter.AnalyticsItem("Most Viewed Photos", 0)); // Section header
-            for (String photo : mostViewedPhotos) {
-                analyticsData.add(new AnalyticsAdapter.AnalyticsItem(photo, R.drawable.ic_photo));
-            }
-        } else {
-            analyticsData.add(new AnalyticsAdapter.AnalyticsItem("No photos viewed yet", R.drawable.ic_placeholder));
-        }
-
-        // Likes Count for Themes
-        List<String> likedThemes = databaseHelper.getLikesCountForThemes();
-        if (!likedThemes.isEmpty()) {
-            analyticsData.add(new AnalyticsAdapter.AnalyticsItem("Likes Count for Themes", 0)); // Section header
-            for (String theme : likedThemes) {
-                analyticsData.add(new AnalyticsAdapter.AnalyticsItem(theme, R.drawable.ic_theme));
-            }
-        } else {
-            analyticsData.add(new AnalyticsAdapter.AnalyticsItem("No likes data for themes", R.drawable.ic_placeholder));
-        }
-
-        // Likes Count for Photos
-        List<String> likedPhotos = databaseHelper.getLikesCountForPhotos();
-        if (!likedPhotos.isEmpty()) {
-            analyticsData.add(new AnalyticsAdapter.AnalyticsItem("Likes Count for Photos", 0)); // Section header
-            for (String photo : likedPhotos) {
-                analyticsData.add(new AnalyticsAdapter.AnalyticsItem(photo, R.drawable.ic_photo));
-            }
-        } else {
-            analyticsData.add(new AnalyticsAdapter.AnalyticsItem("No likes data for photos", R.drawable.ic_placeholder));
-        }
-
+        addAnalyticsSection(analyticsData, "Most Viewed Themes", databaseHelper.getMostViewedThemes(), R.drawable.ic_theme, "No themes viewed yet");
         return analyticsData;
     }
+
+    private List<AnalyticsAdapter.AnalyticsItem> getLikesAnalyticsData() {
+        List<AnalyticsAdapter.AnalyticsItem> analyticsData = new ArrayList<>();
+        addAnalyticsSection(analyticsData, "Likes Count for Themes", databaseHelper.getLikesCountForThemes(), R.drawable.ic_theme, "No likes data for themes");
+        addAnalyticsSection(analyticsData, "Likes Count for Photos", databaseHelper.getLikesCountForPhotos(), R.drawable.ic_photo, "No likes data for photos");
+        return analyticsData;
+    }
+
+    private void addAnalyticsSection(List<AnalyticsAdapter.AnalyticsItem> analyticsData, String header, List<String> items, int drawableResId, String emptyMessage) {
+        if (items != null && !items.isEmpty()) {
+            analyticsData.add(new AnalyticsAdapter.AnalyticsItem(header, 0));
+            for (String item : items) {
+                analyticsData.add(new AnalyticsAdapter.AnalyticsItem(item, drawableResId));
+            }
+        } else {
+            analyticsData.add(new AnalyticsAdapter.AnalyticsItem(header, 0));
+            analyticsData.add(new AnalyticsAdapter.AnalyticsItem(emptyMessage, R.drawable.ic_placeholder));
+        }
+    }
+
+    private void setupChart() {
+        List<BarEntry> entries = new ArrayList<>();
+        List<String> mostViewedThemes = databaseHelper.getMostViewedThemes();
+        List<String> labels = new ArrayList<>();
+
+        for (int i = 0; i < mostViewedThemes.size(); i++) {
+            String[] split = mostViewedThemes.get(i).split(" \\(");
+            String themeName = split[0];
+            int count = Integer.parseInt(split[1].replace(" views)", ""));
+            entries.add(new BarEntry(i, count));
+            labels.add(themeName);
+        }
+
+        BarDataSet dataSet = new BarDataSet(entries, "Most Viewed Themes");
+
+        // Dynamically generate colors for the bars
+        List<Integer> dynamicColors = new ArrayList<>();
+        for (int i = 0; i < labels.size(); i++) {
+            dynamicColors.add(getRandomColor());
+        }
+        dataSet.setColors(dynamicColors); // Apply generated colors
+        dataSet.setValueTextSize(10f);
+
+        BarData barData = new BarData(dataSet);
+        barChart.setData(barData);
+
+        // Configure the X-axis
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels)); // Set theme names as labels
+        xAxis.setGranularity(1f); // Ensure one label per bar
+        xAxis.setGranularityEnabled(true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTextSize(12f);
+
+        // Disable the right Y-axis
+        barChart.getAxisRight().setEnabled(false);
+
+        // Configure the left Y-axis
+        barChart.getAxisLeft().setTextSize(12f);
+
+        // Disable legend and description (optional)
+        barChart.getDescription().setEnabled(false);
+        barChart.getLegend().setEnabled(false);
+
+        // Animate the chart
+        barChart.animateY(1000);
+
+        // Refresh the chart
+        barChart.invalidate();
+    }
+
+    private int getRandomColor() {
+        // Generate a random color
+        Random random = new Random();
+        return Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+    }
+
 }
