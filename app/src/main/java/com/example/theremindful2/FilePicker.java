@@ -38,6 +38,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.UUID;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -52,7 +53,6 @@ public class FilePicker extends AppCompatActivity {
     private RecyclerView selectedFilesRecyclerView;
     private TextView selectedFileTextView;
     private static final String IMAGES_METADATA_FILE_NAME = "image_only_metadata.json";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +98,8 @@ public class FilePicker extends AppCompatActivity {
                 confirmButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        URI u;
+
                         // Handle confirmation (e.g., save file URI, return to previous activity)
 //                        Intent resultIntent = new Intent();
 //                        i.setData(selectedFileUri);
@@ -109,6 +111,7 @@ public class FilePicker extends AppCompatActivity {
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
+
                         if (bitmap != null) {
                             try {
                                 String fileName = "image_" + UUID.randomUUID().toString() + getString(R.string.imageFileType);
@@ -122,6 +125,7 @@ public class FilePicker extends AppCompatActivity {
 
                                 // Open a file output stream to save the image
                                 FileOutputStream fos = new FileOutputStream(file);
+                                u = file.toURI();
 
                                 // Compress the bitmap and write to the output stream
                                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
@@ -131,16 +135,26 @@ public class FilePicker extends AppCompatActivity {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
+
+
                         }
 
+                        Intent intent = new Intent(FilePicker.this, photo_view.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        intent.putExtra("Uri", selectedFileUri);
+                        setResult(RESULT_OK, intent);
 
-                        Intent i = new Intent(FilePicker.this, CareGiverImagesSettingsActivity.class);
-                        setResult(RESULT_OK, i);
+                        startActivity(intent);
 
-//                        i.putExtra("filePATH",FileAbsPath);
-                        startActivity(i);
 
-                        finish();
+
+//                        Intent i = new Intent(FilePicker.this, CareGiverImagesSettingsActivity.class);
+//                        setResult(RESULT_OK, i);
+////
+//////                        i.putExtra("filePATH",FileAbsPath);
+//                        startActivity(i);
+//
+//                        finish();
                     }
                 });
             } else {

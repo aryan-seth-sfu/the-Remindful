@@ -59,7 +59,10 @@ public class photo_view extends AppCompatActivity{
     private Set<String> tagsList;
     private List<String> selectedTags;
     private Uri imageUri;
+    private Uri newImageUri;
+
     private String imagePath;
+
 
     @Override
     protected void onCreate(Bundle savedInstaceState) {
@@ -89,8 +92,14 @@ public class photo_view extends AppCompatActivity{
         selectedTags = new ArrayList<>();
 
         Intent intent = getIntent();
-        String UriString = intent.getStringExtra("Uri");
-        Uri imageUri = Uri.parse(UriString);
+//        String UriString = intent.getStringExtra("Uri");
+//        Uri imageUri = Uri.parse(UriString);
+//if (imageUri == null) {
+    imageUri = intent.getParcelableExtra("Uri");
+
+
+//}
+
 
         imagePath = resolveImagePathFromUri(this, String.valueOf(imageUri));
 
@@ -107,7 +116,7 @@ public class photo_view extends AppCompatActivity{
         String description = getImageDescriptionByPath(this, imagePath);
         descriptionView.setText(description);
         descriptionView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
+        showEditTagsDialog();
         addTagToPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -315,6 +324,8 @@ public class photo_view extends AppCompatActivity{
             }
 
             Toast.makeText(photo_view.this, "Selected Tags: " + selectedTags.toString(), Toast.LENGTH_SHORT).show();
+            showEditDescriptionDialog();
+
         });
         builder.setNeutralButton("Cancel", (dialog, which) -> dialog.cancel());
         builder.show();
@@ -344,8 +355,9 @@ public class photo_view extends AppCompatActivity{
         String DefaultTag = tagsArray[0];
         Log.d("Tags Selected", selectedTags.toString());
         Intent intentSelf = getIntent();
-        String uriString = intentSelf.getStringExtra("Uri");
-        Uri newImageUri = Uri.parse(uriString);
+//        String uriString = intentSelf.getStringExtra("Uri");
+//        Uri newImageUri = Uri.parse(uriString);
+        newImageUri = intentSelf.getParcelableExtra("Uri");
 
         if (newImageUri == null) {
             Toast.makeText(this, "Image URI is invalid", Toast.LENGTH_SHORT).show();
@@ -564,6 +576,5 @@ public class photo_view extends AppCompatActivity{
 
 
 }
-
 
 
