@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentViewHolder> {
@@ -18,6 +20,8 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentView
     public ParentAdapter(Context context) {
         this.context = context;
         this.themes = MetadataUtils.loadThemesFromStorage(context);
+        //randomizes the themes display order
+        Collections.shuffle(themes);
     }
 
     @NonNull

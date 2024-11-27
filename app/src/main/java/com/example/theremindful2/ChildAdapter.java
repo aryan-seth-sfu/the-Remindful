@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,6 +27,8 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
         this.photos = photos;
         this.themeName = themeName;
         this.context = context;
+        //randomizes photos display order
+        Collections.shuffle(this.photos);
     }
 
     @NonNull
