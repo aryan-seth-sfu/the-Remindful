@@ -340,7 +340,8 @@ public class photo_view extends AppCompatActivity{
         builder.show();
     }
     private void saveImageAndReturn() {
-        String DefaultTag = "Nature";
+        String[] tagsArray = tagsList.toArray(new String[0]);
+        String DefaultTag = tagsArray[0];
         Log.d("Tags Selected", selectedTags.toString());
         Intent intentSelf = getIntent();
         String uriString = intentSelf.getStringExtra("Uri");
