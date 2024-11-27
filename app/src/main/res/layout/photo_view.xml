@@ -144,12 +144,12 @@
         android:id="@+id/tagsContainer"
         android:layout_width="match_parent"
         android:layout_height="620dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageEdit"
+        android:layout_marginTop="68dp"
         android:visibility="invisible"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageEdit" />
     <ImageButton
         android:id="@+id/editDescription"
         android:layout_width="50dp"
@@ -195,7 +195,7 @@
         android:textSize="30dp"
         android:background="@drawable/rounded_button"
         android:id="@+id/savePhotoChangesButton"
-        android:visibility="invisible"
+        android:visibility="visible"
 
         />
 
