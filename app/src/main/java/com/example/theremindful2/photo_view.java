@@ -152,11 +152,13 @@ public class photo_view extends AppCompatActivity{
 
 
         FlexboxLayout tagsContainer = findViewById(R.id.tagsContainer);
+        TextView Description = findViewById(R.id.photoDescription);
 
         descTagsToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (descTagsToggle.isChecked()) {
+                    Description.setVisibility(View.INVISIBLE);
                     showEditTagsDialog();
                     addTagToPhoto.setVisibility(View.VISIBLE);
                     editDescription.setVisibility(View.INVISIBLE);
@@ -169,7 +171,7 @@ public class photo_view extends AppCompatActivity{
 
 
                 } else {
-
+                    Description.setVisibility(View.VISIBLE);
                     editDescription.setVisibility(View.VISIBLE);
                     addTagToPhoto.setVisibility(View.INVISIBLE);
                     //description
@@ -196,6 +198,7 @@ public class photo_view extends AppCompatActivity{
                 Log.d("description", newDescription);
                 Log.d("path", imagePath);
                 editImageDescription(photo_view.this, imagePath, newDescription);
+
             }
         });
     }
@@ -283,6 +286,7 @@ public class photo_view extends AppCompatActivity{
         builder.setPositiveButton("OK", (dialog, which) -> {
             String newDescription = input.getText().toString();
             description.setText(newDescription);
+            description.setVisibility(View.VISIBLE);
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
@@ -376,10 +380,14 @@ public class photo_view extends AppCompatActivity{
 
         // Save metadata
         MetadataUtils.saveImageMetadata(this, file.getAbsolutePath(), selectedTags);
+        Log.d("selected tags", selectedTags.toString());
+
+        TextView description = findViewById(R.id.photoDescription);
+        String newDescription = (String) description.getText();
 
         // aryan code
         MediaManager mm = new MediaManager(this);
-        mm.addImage(newImageUri, selectedTags , null);
+        mm.addImage(newImageUri, selectedTags , newDescription);
 
         // Return to the main screen
         Intent intent = new Intent(photo_view.this, MainActivity.class);

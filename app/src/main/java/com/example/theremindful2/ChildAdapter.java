@@ -73,23 +73,6 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
                 }
             });
 
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String description = MetadataUtils.getDescriptionForImage((String) imageView.getTag(),context);
-                    Log.d("getTag", (String) imageView.getTag());
-                    Log.d("context", String.valueOf(context));
-                    Log.d("description", description != null ? description : "No description found");
-
-                    // Make the ImageView invisible
-                    imageView.setVisibility(View.GONE);
-                    textDescription.setVisibility(View.VISIBLE);
-                    textDescription.setText(description);
-                    textDescription.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-
-                }
-            });
         }
 
         public void bind(String photoFilePath, String themeName) {
@@ -100,6 +83,21 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
                 imageView.setTag(photoFilePath);
                 Uri imageUri = Uri.fromFile(imageFile); // Create Uri from file path
                 imageView.setImageURI(imageUri);         // Set the image using the Uri
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String description = MetadataUtils.getDescriptionForImage((String) imageView.getTag(),context);
+                        Log.d("getTag", (String) imageView.getTag());
+                        Log.d("context", String.valueOf(context));
+                        Log.d("description", description != null ? description : "No description found");
+
+                        // Make the ImageView invisible
+                        imageView.setVisibility(View.GONE);
+                        textDescription.setVisibility(View.VISIBLE);
+                        textDescription.setText(description);
+                        textDescription.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    }
+                });
             } else {
                 // If the image file doesn't exist, set a placeholder
                 Log.e("bind", "Image file not found: " + photoFilePath);
