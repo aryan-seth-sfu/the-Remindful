@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class instructionPage extends AppCompatActivity {
 
+    int flag =1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,8 @@ public class instructionPage extends AppCompatActivity {
         View musicTextView = findViewById(R.id.buttonInstructions);
         View playPauseButtonMiniView = findViewById(R.id.playPauseButtonMiniView);
 
+        View analyticsview = findViewById(R.id.analyticsins);
+        View anaylticsView = findViewById(R.id.analyticsText);
         Button nextButton = findViewById(R.id.nextbutton);
         Button doneButton = findViewById(R.id.donebutton);
         doneButton.setOnClickListener(new View.OnClickListener() {
@@ -45,18 +48,30 @@ public class instructionPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (playPauseButtonMiniView.getVisibility() == View.VISIBLE){
+                 if (playPauseButtonMiniView.getVisibility() == View.VISIBLE){
                     musicTextView.setVisibility(View.INVISIBLE);
                     playPauseButtonMiniView.setVisibility(View.INVISIBLE);
                     musicView.setVisibility(View.INVISIBLE);
                     musicTextView.setVisibility(View.INVISIBLE);
                     dailytaskimage.setVisibility(View.VISIBLE);
                     dailyTaskText.setVisibility(View.VISIBLE);
-                    doneButton.setVisibility(View.VISIBLE);
-                    nextButton.setVisibility(View.INVISIBLE);
+                    flag = 0;
+                    return;
+//                    doneButton.setVisibility(View.VISIBLE);
+//                    nextButton.setVisibility(View.INVISIBLE);
 
 
                 }
+                else if (flag == 0) {
+                    analyticsview.setVisibility(View.VISIBLE);
+                    anaylticsView.setVisibility(View.VISIBLE);
+                    dailytaskimage.setVisibility(View.INVISIBLE);
+                    dailyTaskText.setVisibility(View.INVISIBLE);
+                    doneButton.setVisibility(View.VISIBLE);
+                    nextButton.setVisibility(View.INVISIBLE);
+                    return;
+                }
+
                 else if (selectaudio.getVisibility()==View.VISIBLE){
                     otherView.setVisibility(View.INVISIBLE);
                     selectaudio.setVisibility(View.INVISIBLE);

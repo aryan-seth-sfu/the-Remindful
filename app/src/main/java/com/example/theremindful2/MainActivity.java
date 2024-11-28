@@ -13,6 +13,8 @@ import android.os.IBinder;
 import android.content.Context;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
+
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -123,6 +125,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        Button addImage = findViewById(R.id.addimage);
+        addImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, CareGiverImagesSettingsActivity.class);
+                startActivity(intent);
+            }
+        });
 //        // Daily Task Feature
 //        FloatingActionButton fabTaskBook = findViewById(R.id.fabTaskBook);
 //        fabTaskBook.setOnClickListener(new View.OnClickListener() {

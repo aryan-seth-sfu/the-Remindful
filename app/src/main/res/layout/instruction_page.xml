@@ -373,4 +373,36 @@ android:layout_marginLeft="30dp"
         app:srcCompat="@drawable/dailytaskins" />
 
 
+    <TextView
+        android:id="@+id/analyticsText"
+        android:visibility="invisible"
+
+        android:layout_width="350dp"
+        android:layout_height="352dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginLeft="50dp"
+        android:text="*FOR CARETAKER* To View Analytics of User engagement go to anayltics icon in the image browsing screen"
+
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.154"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/analyticsins"
+        android:layout_width="366dp"
+        android:layout_height="291dp"
+        android:layout_marginTop="300dp"
+        android:background="@null"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:srcCompat="@drawable/gotoanalytics" />
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
