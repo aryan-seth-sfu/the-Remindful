@@ -163,7 +163,7 @@ public class audioactivity extends AppCompatActivity {
 
     private Handler handler = new Handler();
     private Runnable updateSeekBar;
-    private String AUDIO_PLAYLIST_NAME = getString(R.string.AudioPlayListName);
+    private String AUDIO_PLAYLIST_NAME = "audioPlaylist";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
