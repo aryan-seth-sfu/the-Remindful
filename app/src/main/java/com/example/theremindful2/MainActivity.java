@@ -115,7 +115,9 @@ public class MainActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+
+                Intent intent = new Intent(MainActivity.this, LauncherActivity.class);
+                startActivity(intent);
             }
         });
 

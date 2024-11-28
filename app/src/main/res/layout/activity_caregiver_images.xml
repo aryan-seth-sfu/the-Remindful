@@ -68,7 +68,7 @@
         android:background="@drawable/rounded_button"
         android:textAlignment="center"
         android:textAllCaps="false"
-        android:textOn="Go to albums?"
+        android:textOn="Albums"
         android:textOff="Albums"
 
         android:textSize="20dp"

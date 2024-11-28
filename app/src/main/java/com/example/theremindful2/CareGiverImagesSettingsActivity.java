@@ -160,6 +160,86 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
             }
         }
         FlexboxLayout imageAlbumLayout = findViewById(R.id.ImageAlbumLayout);
+        imageAlbumLayout.removeAllViews();
+        if(!albumsList.isEmpty()) {
+            for (Pair<String, String> theme : albumsList) {
+
+                // Create a horizontal LinearLayout for each image-text pair
+                LinearLayout itemLayout = new LinearLayout(CareGiverImagesSettingsActivity.this);
+                itemLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+                // Set layout parameters for the LinearLayout
+                FlexboxLayout.LayoutParams itemLayoutParams = new FlexboxLayout.LayoutParams(
+                        FlexboxLayout.LayoutParams.MATCH_PARENT,
+                        FlexboxLayout.LayoutParams.WRAP_CONTENT
+                );
+                itemLayout.setLayoutParams(itemLayoutParams);
+
+                ImageView image = new ImageView(CareGiverImagesSettingsActivity.this);
+                if(theme.second == null){
+                    image.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher_foreground,null));
+                }
+                else{
+                    File imageFile = new File(theme.second);
+                    Uri imageUri = Uri.fromFile(imageFile);
+                    image.setImageURI(imageUri);
+                }
+                image.setTag(theme.first);
+                // Set layout parameters to control the size
+                FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
+                        300,  // Width of the image, adjust as needed
+                        300   // Height of the image, adjust as needed
+                );
+                layoutParams.setMargins(16, 16, 16, 16); // Optional margin around each image
+                image.setLayoutParams(layoutParams);
+                // Add the ImageView to the FlexboxLayout
+
+
+                TextView textView = new TextView(CareGiverImagesSettingsActivity.this);
+                textView.setTextSize(16); // Optional: Set text size
+                textView.setTextColor(Color.BLACK); // Optional: Set text color
+                textView.setText(theme.first);
+                textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+                // Set layout parameters for the TextView
+                LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                textParams.setMargins(150, 100, 8, 8); // Optional margin around the text
+                textView.setLayoutParams(textParams);
+
+                // Center the text vertically
+                textView.setGravity(Gravity.CENTER_VERTICAL);
+
+                itemLayout.addView(image);
+                itemLayout.addView(textView);
+
+
+
+
+                imageAlbumLayout.addView(itemLayout);
+            }
+            for (int images = 0; images < imageAlbumLayout.getChildCount(); images++) {
+                View view = imageAlbumLayout.getChildAt(images);
+                if (view instanceof LinearLayout) {
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            LinearLayout LinearLayOut = (LinearLayout) view;
+                            if (LinearLayOut.getChildAt(0) instanceof ImageView){
+                                Intent intent = new Intent(CareGiverImagesSettingsActivity.this, album.class);
+                                Object album = LinearLayOut.getChildAt(0).getTag();
+                                Log.d("album extra", album.toString());
+                                intent.putExtra("album", album.toString());
+                                startActivity(intent);
+                            }
+
+                        }
+                    });
+                }
+            }
+        }
 
         for (Uri imageUri : imageUriList) {
             addImageToFlexBoxLayout(imageUri, imageAlbumLayout);
@@ -173,7 +253,7 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         Intent intent = new Intent(CareGiverImagesSettingsActivity.this, photo_view.class);
                         Object Tag = view.getTag();
-                        intent.putExtra(getString(R.string.UriText), Tag.toString());
+                        intent.putExtra("Uri", (Uri)Tag);
                         startActivity(intent);
 
                     }
@@ -190,111 +270,111 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    toggleButton.setTextColor(getResources().getColor(R.color.white));
-                    toggleButton.getBackground().setTint(getResources().getColor(R.color.dark_gray)); // Background tint
-                    imageAlbumLayout.removeAllViews();
-                    for (Uri imageUri : imageUriList) {
-                        addImageToFlexBoxLayout(imageUri, imageAlbumLayout);
-                    }
-                    for(int images = 0; images < imageAlbumLayout.getChildCount(); images++){
-                        View view = imageAlbumLayout.getChildAt(images);
-                        if(view instanceof ImageView){
-                            view.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Intent intent = new Intent(CareGiverImagesSettingsActivity.this, photo_view.class);
-                                    Object Tag = view.getTag();
-                                    intent.putExtra(getString(R.string.UriText), Tag.toString());
-                                    startActivity(intent);
-
-                                }
-                            });
-                        }
-                    }
-                } else {
-                    toggleButton.setTextColor(getResources().getColor(R.color.black)); // Change text color
-                    toggleButton.getBackground().setTint(getResources().getColor(R.color.light_gray)); // Background tint
-                    imageAlbumLayout.removeAllViews();
-                    if(!albumsList.isEmpty()) {
-                        for (Pair<String, String> theme : albumsList) {
-
-                            // Create a horizontal LinearLayout for each image-text pair
-                            LinearLayout itemLayout = new LinearLayout(CareGiverImagesSettingsActivity.this);
-                            itemLayout.setOrientation(LinearLayout.HORIZONTAL);
-
-                            // Set layout parameters for the LinearLayout
-                            FlexboxLayout.LayoutParams itemLayoutParams = new FlexboxLayout.LayoutParams(
-                                    FlexboxLayout.LayoutParams.MATCH_PARENT,
-                                    FlexboxLayout.LayoutParams.WRAP_CONTENT
-                            );
-                             itemLayout.setLayoutParams(itemLayoutParams);
-
-                            ImageView image = new ImageView(CareGiverImagesSettingsActivity.this);
-                            if(theme.second == null){
-                                image.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher_foreground,null));
-                            }
-                            else{
-                                File imageFile = new File(theme.second);
-                                Uri imageUri = Uri.fromFile(imageFile);
-                                image.setImageURI(imageUri);
-                            }
-                            image.setTag(theme.first);
-                            // Set layout parameters to control the size
-                            FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
-                                    300,  // Width of the image, adjust as needed
-                                    300   // Height of the image, adjust as needed
-                            );
-                            layoutParams.setMargins(16, 16, 16, 16); // Optional margin around each image
-                            image.setLayoutParams(layoutParams);
-                            // Add the ImageView to the FlexboxLayout
-
-
-                            TextView textView = new TextView(CareGiverImagesSettingsActivity.this);
-                            textView.setTextSize(16); // Optional: Set text size
-                            textView.setTextColor(Color.BLACK); // Optional: Set text color
-                            textView.setText(theme.first);
-                            textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-                            // Set layout parameters for the TextView
-                            LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
-                                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                                    LinearLayout.LayoutParams.WRAP_CONTENT
-                            );
-                            textParams.setMargins(150, 100, 8, 8); // Optional margin around the text
-                            textView.setLayoutParams(textParams);
-
-                            // Center the text vertically
-                            textView.setGravity(Gravity.CENTER_VERTICAL);
-
-                            itemLayout.addView(image);
-                            itemLayout.addView(textView);
-
-
-
-
-                            imageAlbumLayout.addView(itemLayout);
-                        }
-                        for (int images = 0; images < imageAlbumLayout.getChildCount(); images++) {
-                            View view = imageAlbumLayout.getChildAt(images);
-                            if (view instanceof LinearLayout) {
-                                view.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        LinearLayout LinearLayOut = (LinearLayout) view;
-                                        if (LinearLayOut.getChildAt(0) instanceof ImageView){
-                                            Intent intent = new Intent(CareGiverImagesSettingsActivity.this, album.class);
-                                            Object album = LinearLayOut.getChildAt(0).getTag();
-                                            intent.putExtra(getString(R.string.album), album.toString());
-                                            startActivity(intent);
-                                        }
-
-                                    }
-                                });
-                            }
-                        }
-                    }
-                }
+//                if (isChecked) {
+//                    toggleButton.setTextColor(getResources().getColor(R.color.white));
+//                    toggleButton.getBackground().setTint(getResources().getColor(R.color.dark_gray)); // Background tint
+//                    imageAlbumLayout.removeAllViews();
+//                    for (Uri imageUri : imageUriList) {
+//                        addImageToFlexBoxLayout(imageUri, imageAlbumLayout);
+//                    }
+//                    for(int images = 0; images < imageAlbumLayout.getChildCount(); images++){
+//                        View view = imageAlbumLayout.getChildAt(images);
+//                        if(view instanceof ImageView){
+//                            view.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    Intent intent = new Intent(CareGiverImagesSettingsActivity.this, photo_view.class);
+//                                    Object Tag = view.getTag();
+//                                    intent.putExtra(getString(R.string.UriText), Tag.toString());
+//                                    startActivity(intent);
+//
+//                                }
+//                            });
+//                        }
+//                    }
+//                } else {
+//                    toggleButton.setTextColor(getResources().getColor(R.color.black)); // Change text color
+//                    toggleButton.getBackground().setTint(getResources().getColor(R.color.light_gray)); // Background tint
+//                    imageAlbumLayout.removeAllViews();
+//                    if(!albumsList.isEmpty()) {
+//                        for (Pair<String, String> theme : albumsList) {
+//
+//                            // Create a horizontal LinearLayout for each image-text pair
+//                            LinearLayout itemLayout = new LinearLayout(CareGiverImagesSettingsActivity.this);
+//                            itemLayout.setOrientation(LinearLayout.HORIZONTAL);
+//
+//                            // Set layout parameters for the LinearLayout
+//                            FlexboxLayout.LayoutParams itemLayoutParams = new FlexboxLayout.LayoutParams(
+//                                    FlexboxLayout.LayoutParams.MATCH_PARENT,
+//                                    FlexboxLayout.LayoutParams.WRAP_CONTENT
+//                            );
+//                            itemLayout.setLayoutParams(itemLayoutParams);
+//
+//                            ImageView image = new ImageView(CareGiverImagesSettingsActivity.this);
+//                            if(theme.second == null){
+//                                image.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher_foreground,null));
+//                            }
+//                            else{
+//                                File imageFile = new File(theme.second);
+//                                Uri imageUri = Uri.fromFile(imageFile);
+//                                image.setImageURI(imageUri);
+//                            }
+//                            image.setTag(theme.first);
+//                            // Set layout parameters to control the size
+//                            FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
+//                                    300,  // Width of the image, adjust as needed
+//                                    300   // Height of the image, adjust as needed
+//                            );
+//                            layoutParams.setMargins(16, 16, 16, 16); // Optional margin around each image
+//                            image.setLayoutParams(layoutParams);
+//                            // Add the ImageView to the FlexboxLayout
+//
+//
+//                            TextView textView = new TextView(CareGiverImagesSettingsActivity.this);
+//                            textView.setTextSize(16); // Optional: Set text size
+//                            textView.setTextColor(Color.BLACK); // Optional: Set text color
+//                            textView.setText(theme.first);
+//                            textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+//
+//                            // Set layout parameters for the TextView
+//                            LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
+//                                    LinearLayout.LayoutParams.WRAP_CONTENT,
+//                                    LinearLayout.LayoutParams.WRAP_CONTENT
+//                            );
+//                            textParams.setMargins(150, 100, 8, 8); // Optional margin around the text
+//                            textView.setLayoutParams(textParams);
+//
+//                            // Center the text vertically
+//                            textView.setGravity(Gravity.CENTER_VERTICAL);
+//
+//                            itemLayout.addView(image);
+//                            itemLayout.addView(textView);
+//
+//
+//
+//
+//                            imageAlbumLayout.addView(itemLayout);
+//                        }
+//                        for (int images = 0; images < imageAlbumLayout.getChildCount(); images++) {
+//                            View view = imageAlbumLayout.getChildAt(images);
+//                            if (view instanceof LinearLayout) {
+//                                view.setOnClickListener(new View.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(View view) {
+//                                        LinearLayout LinearLayOut = (LinearLayout) view;
+//                                        if (LinearLayOut.getChildAt(0) instanceof ImageView){
+//                                            Intent intent = new Intent(CareGiverImagesSettingsActivity.this, album.class);
+//                                            Object album = LinearLayOut.getChildAt(0).getTag();
+//                                            intent.putExtra(getString(R.string.album), album.toString());
+//                                            startActivity(intent);
+//                                        }
+//
+//                                    }
+//                                });
+//                            }
+//                        }
+//                    }
+//                }
             }
         });
 
@@ -332,7 +412,7 @@ public class CareGiverImagesSettingsActivity extends AppCompatActivity {
                     try {
                         Intent i = new Intent(CareGiverImagesSettingsActivity.this, FilePicker.class);
                         FilePickerLauncher.launch(i);
-                        } catch (Exception e) {
+                    } catch (Exception e) {
                         Toast.makeText(CareGiverImagesSettingsActivity.this, getString(R.string.OpeningFilePickerError), Toast.LENGTH_SHORT).show();
                     }
                 } else {
