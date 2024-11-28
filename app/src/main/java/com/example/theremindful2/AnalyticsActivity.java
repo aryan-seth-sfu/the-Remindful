@@ -5,10 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
-
-import java.util.Random;
-import android.graphics.Color;
-
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,12 +13,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -36,7 +27,6 @@ public class AnalyticsActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
     private AnalyticsFragmentAdapter pagerAdapter;
-    private BarChart barChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +39,6 @@ public class AnalyticsActivity extends AppCompatActivity {
         // Initialize UI components
         viewPager = findViewById(R.id.analyticsViewPager);
         tabLayout = findViewById(R.id.analyticsTabLayout);
-        barChart = findViewById(R.id.barChart);
 
         // Set up ViewPager and TabLayout
         pagerAdapter = new AnalyticsFragmentAdapter(this);
@@ -101,8 +90,6 @@ public class AnalyticsActivity extends AppCompatActivity {
                 MostViewedFragment.newInstance(mostViewedData),
                 LikesFragment.newInstance(likesData)
         );
-
-        setupChart();
     }
 
     private List<AnalyticsAdapter.AnalyticsItem> getMostViewedAnalyticsData() {
@@ -114,77 +101,47 @@ public class AnalyticsActivity extends AppCompatActivity {
     private List<AnalyticsAdapter.AnalyticsItem> getLikesAnalyticsData() {
         List<AnalyticsAdapter.AnalyticsItem> analyticsData = new ArrayList<>();
         addAnalyticsSection(analyticsData, "Likes Count for Themes", databaseHelper.getLikesCountForThemes(), R.drawable.ic_theme, "No likes data for themes");
-        addAnalyticsSection(analyticsData, "Likes Count for Photos", databaseHelper.getLikesCountForPhotos(), R.drawable.ic_photo, "No likes data for photos");
+
+        // Log the photo likes data
+        List<String> photoLikes = databaseHelper.getLikesCountForPhotos();
+        Log.d("AnalyticsActivity", "Photo Likes Data: " + photoLikes);
+
+        addAnalyticsSection(analyticsData, "Likes Count for Photos", photoLikes, R.drawable.ic_photo, "No likes data for photos");
         return analyticsData;
     }
 
     private void addAnalyticsSection(List<AnalyticsAdapter.AnalyticsItem> analyticsData, String header, List<String> items, int drawableResId, String emptyMessage) {
-        if (items != null && !items.isEmpty()) {
-            analyticsData.add(new AnalyticsAdapter.AnalyticsItem(header, 0));
-            for (String item : items) {
-                analyticsData.add(new AnalyticsAdapter.AnalyticsItem(item, drawableResId));
+        if (header.equals("Likes Count for Photos")) {
+            if (items != null && !items.isEmpty()) {
+                analyticsData.add(new AnalyticsAdapter.AnalyticsItem(header, 0));
+                for (String item : items) {
+                    // Split item by the space before the parentheses
+                    int indexOfBracket = item.lastIndexOf(" (");
+                    if (indexOfBracket != -1) {
+                        String photoPath = item.substring(0, indexOfBracket).trim();
+                        String likesCount = item.substring(indexOfBracket + 2, item.length() - 1).replace(" likes", "").trim();
+
+                        // Add the parsed photo-like item
+                        analyticsData.add(new AnalyticsAdapter.AnalyticsItem(likesCount + " likes", photoPath));
+                    } else {
+                        Log.w("AnalyticsActivity", "Invalid photo-like item format: " + item);
+                    }
+                }
+            } else {
+                analyticsData.add(new AnalyticsAdapter.AnalyticsItem(header, 0));
+                analyticsData.add(new AnalyticsAdapter.AnalyticsItem(emptyMessage, R.drawable.ic_placeholder));
             }
         } else {
-            analyticsData.add(new AnalyticsAdapter.AnalyticsItem(header, 0));
-            analyticsData.add(new AnalyticsAdapter.AnalyticsItem(emptyMessage, R.drawable.ic_placeholder));
+            // Existing logic for other sections
+            if (items != null && !items.isEmpty()) {
+                analyticsData.add(new AnalyticsAdapter.AnalyticsItem(header, 0));
+                for (String item : items) {
+                    analyticsData.add(new AnalyticsAdapter.AnalyticsItem(item, drawableResId));
+                }
+            } else {
+                analyticsData.add(new AnalyticsAdapter.AnalyticsItem(header, 0));
+                analyticsData.add(new AnalyticsAdapter.AnalyticsItem(emptyMessage, R.drawable.ic_placeholder));
+            }
         }
     }
-
-    private void setupChart() {
-        List<BarEntry> entries = new ArrayList<>();
-        List<String> mostViewedThemes = databaseHelper.getMostViewedThemes();
-        List<String> labels = new ArrayList<>();
-
-        for (int i = 0; i < mostViewedThemes.size(); i++) {
-            String[] split = mostViewedThemes.get(i).split(" \\(");
-            String themeName = split[0];
-            int count = Integer.parseInt(split[1].replace(" views)", ""));
-            entries.add(new BarEntry(i, count));
-            labels.add(themeName);
-        }
-
-        BarDataSet dataSet = new BarDataSet(entries, "Most Viewed Themes");
-
-        // Dynamically generate colors for the bars
-        List<Integer> dynamicColors = new ArrayList<>();
-        for (int i = 0; i < labels.size(); i++) {
-            dynamicColors.add(getRandomColor());
-        }
-        dataSet.setColors(dynamicColors); // Apply generated colors
-        dataSet.setValueTextSize(10f);
-
-        BarData barData = new BarData(dataSet);
-        barChart.setData(barData);
-
-        // Configure the X-axis
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels)); // Set theme names as labels
-        xAxis.setGranularity(1f); // Ensure one label per bar
-        xAxis.setGranularityEnabled(true);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setTextSize(12f);
-
-        // Disable the right Y-axis
-        barChart.getAxisRight().setEnabled(false);
-
-        // Configure the left Y-axis
-        barChart.getAxisLeft().setTextSize(12f);
-
-        // Disable legend and description (optional)
-        barChart.getDescription().setEnabled(false);
-        barChart.getLegend().setEnabled(false);
-
-        // Animate the chart
-        barChart.animateY(1000);
-
-        // Refresh the chart
-        barChart.invalidate();
-    }
-
-    private int getRandomColor() {
-        // Generate a random color
-        Random random = new Random();
-        return Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256));
-    }
-
 }

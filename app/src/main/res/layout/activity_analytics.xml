@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".AnalyticsActivity">
 
-    <!-- TabLayout with improved appearance -->
+    <!-- TabLayout for navigation -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/analyticsTabLayout"
         android:layout_width="0dp"
@@ -31,15 +31,5 @@
         app:layout_constraintTop_toBottomOf="@id/analyticsTabLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/barChart" />
-
-    <!-- BarChart for analytics -->
-    <com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/barChart"
-        android:layout_width="0dp"
-        android:layout_height="300dp"
-        android:layout_margin="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
