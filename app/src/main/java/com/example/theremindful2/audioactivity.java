@@ -9,6 +9,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import android.content.Intent;
+import android.provider.MediaStore;
 import android.widget.Button;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -17,14 +18,24 @@ import android.widget.TextView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import android.widget.SeekBar;
+
+import java.io.File;
 import java.io.IOException;
 import android.os.Handler;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class audioactivity extends AppCompatActivity {
     private MusicService musicService;
@@ -36,6 +47,7 @@ public class audioactivity extends AppCompatActivity {
     private static MediaPlayer mediaPlayer;
     private static int currentSongIndex = 0;
     private static int currentPlaybackPosition = 0;
+    public MediaManager MediaManager;
 
     // constants used to save app state
     // names the preference file created where everything will be saved into
@@ -108,6 +120,10 @@ public class audioactivity extends AppCompatActivity {
     private TextView currentTime;
     private TextView totalTime;
     private int seekBarProgress = 0;
+//    MediaManager mm = new MediaManager(getApplicationContext());
+
+//    List<String> themes;
+
 
 
     // ActivityResultLauncher to start a launcer that gets a result (audio file) from it
@@ -117,6 +133,10 @@ public class audioactivity extends AppCompatActivity {
             new ActivityResultContracts.StartActivityForResult(), audioReturned -> {
                 // if properly fetched the file then set the datafile and save it
                 if (audioReturned.getResultCode() == RESULT_OK) {
+
+                    List<String> themes = new ArrayList<>();
+                    themes.add(getString(R.string.AudioPlayList));
+
                     Intent datafile = audioReturned.getData();
                     if (datafile != null) {
 
@@ -127,12 +147,14 @@ public class audioactivity extends AppCompatActivity {
 
                         Song newSong = new Song(audioUri);
                         playlistManage.addSong(newSong);
+                        MediaManager mm = new MediaManager(getApplicationContext());
+                        mm.addAudio(audioUri, themes , null);
 //                        playCurrentSong();
 //                        currentSongIndex++;
 
                         // after adding a new song save state and keep updated
                         saveState();
-                        Toast.makeText(this, "Song added!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.AddedSongSuccess), Toast.LENGTH_SHORT).show();
                          }
                     }
              }
@@ -141,9 +163,12 @@ public class audioactivity extends AppCompatActivity {
 
     private Handler handler = new Handler();
     private Runnable updateSeekBar;
-
+    private String AUDIO_PLAYLIST_NAME = getString(R.string.AudioPlayListName);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+//        themes.add("audioPlaylist");
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_audioactivity);
@@ -156,7 +181,13 @@ public class audioactivity extends AppCompatActivity {
             playlistManage.newPlaylist();
         }
 
+        try {
+
         loadState();
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         // startUpdatingUI();
         // if (!MediaPlayer.isPlaying()){
 
@@ -176,7 +207,7 @@ public class audioactivity extends AppCompatActivity {
         });
     }
 
-    private void loadState() {
+    private void loadState() throws JSONException {
         // loads the saved playback position
         SharedPreferences prefs = getSharedPreferences(PREFERENCE_NAME, MODE_PRIVATE);
         // if playback pos not found it sets to 0
@@ -184,7 +215,19 @@ public class audioactivity extends AppCompatActivity {
 
         // Load playlist json makes it readable
         String playlistJson = prefs.getString(thePlaylist, null);
+        MediaManager mm = new MediaManager(getApplicationContext());
+
+        List<String> lst = mm.getAudioForTheme(AUDIO_PLAYLIST_NAME);
+//        JSONArray temp = new JSONArray(playlistJson);
+
         // if playlist is not empty and playlist manage doesnt exist then create a new playlist manage and update
+
+        playlistManage = new AddRemoveSongs();
+        for (int i = 0; i < lst.size() ; i++){
+            File f = new File(lst.get(i));
+            Uri uri  = Uri.fromFile(f);
+            playlistManage.addSong(new Song(uri));
+        }
 
         if (playlistJson != null && playlistManage == null) {
             playlistManage = new AddRemoveSongs();
@@ -223,6 +266,12 @@ public class audioactivity extends AppCompatActivity {
         }
         // applies the changes within editor
         editor.apply();
+
+
+        // aryan code
+//        MediaManager mm = new MediaManager(getApplicationContext());
+
+
     }
 
 
@@ -319,19 +368,19 @@ public class audioactivity extends AppCompatActivity {
     private void openAudioPicker() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("audio/*");
+        intent.setType(getString(R.string.audioType));
         // get permissions and ensure you can still access file over activity switches
         intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-        audioPickerLauncher.launch(Intent.createChooser(intent, "Pick audio"));
+        audioPickerLauncher.launch(Intent.createChooser(intent, getString(R.string.PickAudioText)));
     }
 
 // play the song selected by user
     private void playCurrentSong() {
         // if playlist is empty then tell user
         if (playlistManage.allSongs().isEmpty()) {
-            Toast.makeText(this, "No songs available. Add more songs", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.SongQueueError), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -387,7 +436,7 @@ public class audioactivity extends AppCompatActivity {
             updateUIFromMediaPlayer();
 
         } catch (IOException e) {
-            Toast.makeText(this, "Error playing song: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.SongPlayerError) + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -504,7 +553,7 @@ public class audioactivity extends AppCompatActivity {
     private String formatDuration(int duration) {
         int minutes = (duration / 1000) / 60;
         int seconds = (duration / 1000) % 60;
-        return String.format(Locale.US, "%02d:%02d", minutes, seconds);
+        return String.format(Locale.US, getString(R.string.formatDuration), minutes, seconds);
     }
 
     @Override

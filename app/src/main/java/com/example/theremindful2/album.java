@@ -115,7 +115,6 @@ public class album extends AppCompatActivity{
 
 
                         if (imageUri != null) {
-                            Log.d("imageUriTest", String.valueOf(imageUri));
                             addImagePathToTheme(album.this, albumNameString, imageFile.getPath());
                             image.setImageURI(imageUri);
                             allPhotos.addView(image);
@@ -128,9 +127,6 @@ public class album extends AppCompatActivity{
                     Log.e("ImageLoadingError", "Error loading image", e);
                     e.printStackTrace();
                 }
-
-
-                Log.d("Image URI", imageFiles.toString());
                 clickableUpdate();
 
             }
@@ -272,7 +268,6 @@ public class album extends AppCompatActivity{
                         clickedImage.setImageDrawable(imageView.getDrawable());  // Copy the image
                         Uri clickedImageUri = ((Uri) view.getTag());
                         String imagePath = String.valueOf(clickedImageUri);
-                        Log.d("Image Uri", imagePath);
                         Uri imageUri = Uri.parse(imagePath);
                         // Set the same layout parameters (or modify them if necessary)
                         FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
@@ -289,7 +284,6 @@ public class album extends AppCompatActivity{
                             JSONObject newAlbumData = new JSONObject();
                             newAlbumData.put("images",String.valueOf(imageUri));
                             Intent intent = getIntent();
-                            Log.d("fileName", String.valueOf(intent.getStringExtra("album")));
                             addToJsonFile(album.this, String.valueOf(intent.getStringExtra("album")),newAlbumData);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);

@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import android.app.AlertDialog;
@@ -59,7 +58,7 @@ public class TaskDialogFragment extends DialogFragment {
         // Set up the dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setView(view)
-                .setTitle("Today's Task");
+                .setTitle(getString(R.string.todaysTask));
 
         // Initialize the task description TextView and buttons
         taskText = view.findViewById(R.id.taskTextView);
@@ -68,7 +67,7 @@ public class TaskDialogFragment extends DialogFragment {
 
         // Check if the task has already been completed today
         if (isTaskCompletedToday()) {
-            taskText.setText("You have completed today's task!\nGreat Job ;>");
+            taskText.setText(getString(R.string.taskText));
             hideButtons();
         } else {
             // Select a random task if it's a new day
@@ -79,39 +78,41 @@ public class TaskDialogFragment extends DialogFragment {
         // Set up the "Do it later" button to close the dialog
         doItLaterButton.setOnClickListener(v -> dismiss());
 
-        // Set up the "Okay!" button to open the CameraActivity
-        okayButton.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
-                    != PackageManager.PERMISSION_GRANTED) {
-                // Request camera permission
-                ActivityCompat.requestPermissions(requireActivity(),
-                        new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
-            } else {
-                // Open the camera if permission is already granted
-                openCamera();
-            }
-        });
+        // Set up the "Okay!" button to open the CameraActivity or request permission
+        okayButton.setOnClickListener(v -> handleCameraPermission());
 
         return builder.create();
+    }
+
+    private void handleCameraPermission() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Request camera permission using the fragment method
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+        } else {
+            // Open the camera if permission is already granted
+            openCamera();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, open the camera immediately
+                openCamera();
+            } else {
+                // Permission denied, show a message
+                Toast.makeText(requireContext(), getString(R.string.cameraPermissionRequired), Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     private void openCamera() {
         Intent intent = new Intent(requireActivity(), CameraActivity.class);
         startActivityForResult(intent, CAMERA_REQUEST_CODE);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, open the camera
-                openCamera();
-            } else {
-                // Permission denied, show a message
-                Toast.makeText(requireContext(), "Camera permission is required to take a picture", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     @Override
@@ -126,7 +127,7 @@ public class TaskDialogFragment extends DialogFragment {
 
             // Update the task text to only show the completion message
             if (taskText != null) {
-                taskText.setText("You have completed today's task!\nGreat Job ;>");
+                taskText.setText(getString(R.string.taskText));
             }
 
             // Hide the buttons
@@ -162,7 +163,7 @@ public class TaskDialogFragment extends DialogFragment {
 
     private String getSelectedTask() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(SELECTED_TASK_KEY, "Take a picture of something interesting!");
+        return sharedPreferences.getString(SELECTED_TASK_KEY, getString(R.string.TakeAPictureText));
     }
 
     private boolean isTaskCompletedToday() {
@@ -175,7 +176,7 @@ public class TaskDialogFragment extends DialogFragment {
     }
 
     private String getCurrentDate() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.simpleDateFormat), Locale.getDefault());
         return dateFormat.format(new Date());
     }
 }
