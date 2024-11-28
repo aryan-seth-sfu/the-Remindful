@@ -43,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
             serviceBound = true;
 
             if (playlistManager == null){
-                SharedPreferences prefs = getSharedPreferences("AudioPLayerPreferences", MODE_PRIVATE);
-                String playlistJson = prefs.getString("playlist", null);
+                SharedPreferences prefs = getSharedPreferences(getString(R.string.AudioPlayerPreferences), MODE_PRIVATE);
+                String playlistJson = prefs.getString(getString(R.string.playlistText), null);
                 if (playlistJson != null){
                     playlistManager = new AddRemoveSongs();
                     playlistManager.fromJson(playlistJson);
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             int startPosition = Integer.MAX_VALUE / 2;
             parentViewPager.setCurrentItem(startPosition - (startPosition % itemCount), false);
         } else {
-            Log.e("MainActivity", "Item count is zero, unable to set current item.");
+            Log.e(getString(R.string.MainActivity), getString(R.string.ItemCountError));
             // Optionally, handle empty list case or provide fallback behavior
         }
 
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Show the TaskDialogFragment
                 DialogFragment taskDialog = new TaskDialogFragment();
-                taskDialog.show(getSupportFragmentManager(), "TaskDialog");
+                taskDialog.show(getSupportFragmentManager(), getString(R.string.taskDialogTag));
             }
         });
         FloatingActionButton fabInstruction = findViewById(R.id.instruction);
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
 //                return;
 //            }
             if (playlistManager == null){
-                Toast.makeText(this, "No songs available", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.SongQueueError), Toast.LENGTH_SHORT).show();
                 return;
             }
             int currentIndex = musicService.getCurrentSongIndex();
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
             MediaPlayer player = musicService.getMediaPlayer();
 
             if (playlistManager == null){
-                Toast.makeText(this, "No songs available", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.SongQueueError), Toast.LENGTH_SHORT).show();
                 return;
             }
             int currentIndex = musicService.getCurrentSongIndex();

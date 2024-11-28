@@ -66,4 +66,23 @@
     <string name="description">description</string>
     <string name="ImageMetaData">ImageMetaData</string>
     <string name="taskDialogTag">TaskDialog</string>
+    <string name="AudioPlayerPreferences">AudioPLayerPreferences</string>
+    <string name="playlistText">playlist</string>
+    <string name="MainActivity">MainActivity</string>
+    <string name="ItemCountError">Item count is zero, unable to set current item</string>
+    <string name="editTags">Edit Tags</string>
+    <string name="AddCustomTag">Add Custom Tag</string>
+    <string name="selectedTags">Selected Tags: </string>
+    <string name="TagAddedSuccess">Tag added: </string>
+    <string name="TagAlreadyExistsErrorOrIsEmpty">Tag already exists or is empty</string>
+    <string name="ImageUriInvalidError">Image URI is invalid</string>
+    <string name="saveImageAndReturn">saveImageAndReturn</string>
+    <string name="editImage">editImage</string>
+    <string name="todaysTask">Today\'s Task</string>
+    <string name="taskText">You have completed today\'s task!\nGreat Jon ;></string>
+    <string name="cameraPermissionRequired">Camera permission is required to take a picture</string>
+    <string name="TakeAPictureText">Take a picture of something interesting!</string>
+    <string name="simpleDateFormat">yyyyMMdd</string>
+
+
 </resources>
