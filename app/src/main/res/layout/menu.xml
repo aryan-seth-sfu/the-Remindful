@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -53,11 +54,12 @@
         android:background="@null"
         android:padding="0dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/taskbarblack"
+        android:src="@drawable/analytics"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <ImageButton
         android:id="@+id/back_button"
@@ -72,93 +74,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/musicSettingButton"
-        android:layout_width="217dp"
-        android:layout_height="79dp"
-        android:background="@drawable/roundstyle"
-        android:backgroundTint="@color/light_gray"
-        android:fontFamily="sans-serif-medium"
-        android:stateListAnimator="@animator/button_press_animation"
-        android:text="Music      "
-        android:textAllCaps="false"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/musiciconView2"
-        android:layout_width="89dp"
-        android:layout_height="81dp"
-        android:background="@null"
-        app:layout_constraintBottom_toBottomOf="@id/musicSettingButton"
-        app:layout_constraintEnd_toEndOf="@id/musicSettingButton"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@id/musicSettingButton"
-        app:layout_constraintTop_toTopOf="@id/musicSettingButton"
-        app:layout_constraintVertical_bias="0.666"
-        app:srcCompat="@drawable/musiciconlaunch" />
-
-    <Button
-        android:id="@+id/imageSettingButton"
-        android:layout_width="217dp"
-        android:layout_height="79dp"
-        android:background="@drawable/roundstyle"
-        android:backgroundTint="@color/light_gray"
-        android:fontFamily="sans-serif-medium"
-        android:paddingStart="30dp"
-        android:paddingEnd="50dp"
-        android:stateListAnimator="@animator/button_press_animation"
-        android:text="Upload
-           Images    "
-        android:textAllCaps="false"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/musicSettingButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.515"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view"
-        app:layout_constraintVertical_bias="0.673" />
-
-    <ImageView
-        android:id="@+id/imageiconView"
-        android:layout_width="64dp"
-        android:layout_height="57dp"
-        android:background="@null"
-        app:layout_constraintBottom_toBottomOf="@id/imageSettingButton"
-        app:layout_constraintEnd_toEndOf="@id/imageSettingButton"
-        app:layout_constraintHorizontal_bias="0.968"
-        app:layout_constraintStart_toStartOf="@id/imageSettingButton"
-        app:layout_constraintTop_toTopOf="@id/imageSettingButton"
-        app:srcCompat="@drawable/imagesicon" />
-
-
-    <Button
-        android:id="@+id/taskSettingButton"
-        android:layout_width="217dp"
-        android:layout_height="79dp"
-        android:background="@drawable/roundstyle"
-        android:backgroundTint="@color/light_gray"
-        android:fontFamily="sans-serif-medium"
-        android:stateListAnimator="@animator/button_press_animation"
-        android:text="Tasks  "
-        android:textAllCaps="false"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.515"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/musicSettingButton"
-        app:layout_constraintVertical_bias="0.801" />
+<!--    <Button-->
+<!--        android:id="@+id/taskSettingButton"-->
+<!--        android:layout_width="217dp"-->
+<!--        android:layout_height="79dp"-->
+<!--        android:background="@drawable/roundstyle"-->
+<!--        android:backgroundTint="@color/light_gray"-->
+<!--        android:fontFamily="sans-serif-medium"-->
+<!--        android:stateListAnimator="@animator/button_press_animation"-->
+<!--        android:text="Tasks  "-->
+<!--        android:textAllCaps="false"-->
+<!--        android:textSize="30sp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:visibility="visible"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.515"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
 
     <Button
         android:id="@+id/analyticsButton"
@@ -176,21 +109,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/taskSettingButton"
-        app:layout_constraintVertical_bias="0.294" />
+        app:layout_constraintTop_toBottomOf="parent" />
 
-    <ImageView
-        android:id="@+id/taskiconView2"
-        android:layout_width="64dp"
-        android:layout_height="57dp"
-        android:background="@null"
-        app:layout_constraintBottom_toBottomOf="@id/taskSettingButton"
-        app:layout_constraintEnd_toEndOf="@id/taskSettingButton"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@id/taskSettingButton"
-        app:layout_constraintTop_toTopOf="@id/taskSettingButton"
-        app:layout_constraintVertical_bias="0.518"
-        app:srcCompat="@drawable/taskicon" />
+<!--    <ImageView-->
+<!--        android:id="@+id/taskiconView2"-->
+<!--        android:layout_width="64dp"-->
+<!--        android:layout_height="57dp"-->
+<!--        android:background="@null"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/taskSettingButton"-->
+<!--        app:layout_constraintEnd_toEndOf="@id/taskSettingButton"-->
+<!--        app:layout_constraintHorizontal_bias="1.0"-->
+<!--        app:layout_constraintStart_toStartOf="@id/taskSettingButton"-->
+<!--        app:layout_constraintTop_toTopOf="@id/taskSettingButton"-->
+<!--        app:layout_constraintVertical_bias="0.518"-->
+<!--        app:srcCompat="@drawable/taskicon" />-->
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

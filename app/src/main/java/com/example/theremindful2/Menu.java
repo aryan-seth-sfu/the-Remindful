@@ -31,40 +31,40 @@ public class Menu extends AppCompatActivity {
             }
         });
 
-        Button imagesSetting = findViewById(R.id.imageSettingButton);
-        imagesSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Menu.this, CareGiverImagesSettingsActivity.class);
-                startActivity(intent);
-            }
-        });
-        ImageButton backButton = findViewById(R.id.back_button);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+//        Button imagesSetting = findViewById(R.id.imageSettingButton);
+//        imagesSetting.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(Menu.this, CareGiverImagesSettingsActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+//        ImageButton backButton = findViewById(R.id.back_button);
+//        backButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                finish();
+//            }
+//        });
 
-        Button musicButton = findViewById(R.id.musicSettingButton);
-        musicButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Intent to start MusicUploadActivity
-                Intent intent = new Intent(Menu.this, audioactivity.class);
-                startActivity(intent);
-            }
-        });
-
-        Button taskButton = findViewById(R.id.taskSettingButton);
-        taskButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DialogFragment taskDialog = new TaskDialogFragment();
-                taskDialog.show(getSupportFragmentManager(), getString(R.string.taskDialogTag));
-            }
-        });
+//        Button musicButton = findViewById(R.id.musicSettingButton);
+//        musicButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                // Intent to start MusicUploadActivity
+//                Intent intent = new Intent(Menu.this, audioactivity.class);
+//                startActivity(intent);
+//            }
+//        });
+//
+//        Button taskButton = findViewById(R.id.taskSettingButton);
+//        taskButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                DialogFragment taskDialog = new TaskDialogFragment();
+//                taskDialog.show(getSupportFragmentManager(), getString(R.string.taskDialogTag));
+//            }
+//        });
 
         Button analyticsButton = findViewById(R.id.analyticsButton);
         analyticsButton.setOnClickListener(view -> {

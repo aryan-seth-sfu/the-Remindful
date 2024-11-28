@@ -107,7 +107,9 @@ public class MainActivity extends AppCompatActivity {
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, Menu.class);
+//                Intent intent = new Intent(MainActivity.this, Menu.class);
+//                startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, AnalyticsActivity.class);
                 startActivity(intent);
             }
         });
@@ -121,25 +123,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Daily Task Feature
-        FloatingActionButton fabTaskBook = findViewById(R.id.fabTaskBook);
-        fabTaskBook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Show the TaskDialogFragment
-                DialogFragment taskDialog = new TaskDialogFragment();
-                taskDialog.show(getSupportFragmentManager(), getString(R.string.taskDialogTag));
-            }
-        });
-        FloatingActionButton fabInstruction = findViewById(R.id.instruction);
-        fabInstruction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, instructionPage.class);
-                startActivity(intent);
-
-            }
-        });
+//        // Daily Task Feature
+//        FloatingActionButton fabTaskBook = findViewById(R.id.fabTaskBook);
+//        fabTaskBook.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Show the TaskDialogFragment
+//                DialogFragment taskDialog = new TaskDialogFragment();
+//                taskDialog.show(getSupportFragmentManager(), getString(R.string.taskDialogTag));
+//            }
+//        });
+//        FloatingActionButton fabInstruction = findViewById(R.id.instruction);
+//        fabInstruction.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivity.this, instructionPage.class);
+//                startActivity(intent);
+//
+//            }
+//        });
         TextView Home = findViewById(R.id.Home);
         Home.setOnClickListener(new View.OnClickListener() {
             @Override
