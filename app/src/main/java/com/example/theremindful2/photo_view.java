@@ -341,6 +341,8 @@ public class photo_view extends AppCompatActivity{
                 tagsList.add(newTag);
                 saveTagsToPreferences(); // Save the updated tags list
                 Toast.makeText(photo_view.this, getString(R.string.TagAddedSuccess) + newTag, Toast.LENGTH_SHORT).show();
+                showEditDescriptionDialog();
+
             } else {
                 Toast.makeText(photo_view.this, getString(R.string.TagAlreadyExistsErrorOrIsEmpty), Toast.LENGTH_SHORT).show();
             }
