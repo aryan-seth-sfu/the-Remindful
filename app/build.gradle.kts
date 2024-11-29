@@ -35,6 +35,10 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.annotation)
+    implementation("androidx.core:core-ktx:1.12.0") // For ContextCompat and core features
+    implementation("androidx.annotation:annotation:1.7.0") // For NonNull and other annotations
+    implementation("androidx.fragment:fragment-ktx:1.6.1") // For Fragment utilities
     implementation (libs.material.v190)
     implementation(libs.appcompat)
     implementation(libs.material)
