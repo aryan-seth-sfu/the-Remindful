@@ -15,6 +15,10 @@ cameraCore = "1.4.0"
 cameraView = "1.4.0"
 cameraLifecycle = "1.4.0"
 camerax = "1.2.3"
+room = "2.6.1"
+firebase-bom = "32.7.0"
+firebaseStorage = "21.0.1"
+google-services = "4.4.2"
 
 [libraries]
 biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
@@ -39,7 +43,16 @@ androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.r
 androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "camerax" }
 androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "camerax" }
 androidx-camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "camerax" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 

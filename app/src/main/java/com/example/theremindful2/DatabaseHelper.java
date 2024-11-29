@@ -677,20 +677,41 @@
 
 package com.example.theremindful2;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "theremindful_db";
@@ -937,14 +958,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Add an Image with multiple themes
-    public boolean addImage(Context context, Uri imageUri, List<String> themes, String description) {
+    public String addImage(Context context, Uri imageUri, List<String> themes, String description) {
         if (context == null || imageUri == null || themes == null || themes.isEmpty()) {
-            return false;
+            return "false";
         }
 
         SQLiteDatabase db = this.getWritableDatabase();
         boolean success = false;
         db.beginTransaction();
+        String to_ret = "";
 
         try {
             // First, save the image file
@@ -953,6 +975,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String fileName = "img_" + System.currentTimeMillis() + ".jpg";
             File imageFile = new File(baseDir, fileName);
             String filePath = imageFile.getAbsolutePath();
+            to_ret = filePath;
 
             // Copy image file
             try (InputStream is = context.getContentResolver().openInputStream(imageUri);
@@ -994,7 +1017,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.endTransaction();
         }
 
-        return success;
+        return to_ret;
     }
 
     // Get all themes for a specific media item
@@ -1141,6 +1164,211 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return themesList;
     }
 
+    // fetch function
+//    public void fetchAllFromFirebase(FetchCompleteCallback callback) {
+//
+//        ExecutorService executor = Executors.newSingleThreadExecutor();
+//        Handler handler = new Handler(Looper.getMainLooper());
+//        executor.execute(() -> {
+//            FirebaseDatabase database = FirebaseDatabase.getInstance();
+//            DatabaseReference mediaRef = database.getReference("media");
+//
+//
+//            mediaRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    System.out.println("inside the  on data change");
+//                    SQLiteDatabase db = getWritableDatabase();
+//                    db.beginTransaction();
+//
+//                    try {
+//                        // Clear all existing data
+//                        db.execSQL("DELETE FROM " + TABLE_MEDIA_THEME);
+//                        System.out.println("trying query");
+//                        db.execSQL("DELETE FROM " + TABLE_MEDIA);
+//                        db.execSQL("DELETE FROM " + TABLE_THEME);
+//
+//                        // Reset auto-increment counters
+//                        db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME='" + TABLE_MEDIA + "'");
+//                        db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME='" + TABLE_THEME + "'");
+//                        db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME='" + TABLE_MEDIA_THEME + "'");
+//
+//                        // Maps to keep track of Firebase to SQLite IDs
+//                        Map<String, Long> themeIdMap = new HashMap<>();
+//
+//                        for (DataSnapshot mediaSnapshot : snapshot.getChildren()) {
+//                            // Get media data
+//                            String localFilePath = mediaSnapshot.child("localFilePath").getValue(String.class);
+//                            String description = mediaSnapshot.child("description").getValue(String.class);
+//                            String type = mediaSnapshot.child("type").getValue(String.class);
+//
+//                            // Download the file if it doesn't exist locally
+//                            System.out.println("trying download");
+//                            File localFile = new File(localFilePath);
+//                            if (!localFile.exists()) {
+//                                System.out.println("making a new file");
+//                                String firebaseUrl = mediaSnapshot.child("firebaseUrl").getValue(String.class);
+//                                downloadFile(firebaseUrl, localFilePath);
+//                            }
+//
+//                            // Insert media item
+//                            System.out.println("trying insert");
+//                            ContentValues mediaValues = new ContentValues();
+//                            mediaValues.put(KEY_FILE_PATH, localFilePath);
+//                            mediaValues.put(KEY_DESCRIPTION, description);
+//                            mediaValues.put(KEY_TYPE, type);
+//                            long mediaId = db.insert(TABLE_MEDIA, null, mediaValues);
+//
+//                            // Process themes
+//                            DataSnapshot themesSnapshot = mediaSnapshot.child("themes");
+//                            if (themesSnapshot.exists()) {
+//                                for (DataSnapshot themeSnapshot : themesSnapshot.getChildren()) {
+//                                    String themeName = themeSnapshot.getValue(String.class);
+//
+//                                    // Get or create theme ID
+//                                    Long themeId = themeIdMap.get(themeName);
+//                                    if (themeId == null) {
+//                                        ContentValues themeValues = new ContentValues();
+//                                        themeValues.put(KEY_THEME_NAME, themeName);
+//                                        themeId = db.insert(TABLE_THEME, null, themeValues);
+//                                        themeIdMap.put(themeName, themeId);
+//                                    }
+//
+//                                    // Create media-theme association
+//                                    ContentValues mtValues = new ContentValues();
+//                                    mtValues.put(KEY_MEDIA_ID, mediaId);
+//                                    mtValues.put(KEY_THEME_ID, themeId);
+//                                    db.insert(TABLE_MEDIA_THEME, null, mtValues);
+//                                }
+//                            }
+//                        }
+//
+//                        db.setTransactionSuccessful();
+//                        callback.onComplete(true, null);
+//
+//                    } catch (Exception e) {
+//                        Log.e("DatabaseHelper", "Error in fetchAllFromFirebase: " + e.getMessage());
+//                        callback.onComplete(false, e.getMessage());
+//                    } finally {
+//                        db.endTransaction();
+//                    }
+//                }
+//
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//                    callback.onComplete(false, error.getMessage());
+//                }
+//
+//        });
+//
+////        FirebaseDatabase database = FirebaseDatabase.getInstance();
+////        DatabaseReference mediaRef = database.getReference("media");
+////
+////        mediaRef.addListenerForSingleValueEvent(new ValueEventListener() {
+////
+////            @Override
+////            public void onDataChange(@NonNull DataSnapshot snapshot) {
+////                System.out.println("inside the  on data change");
+////                SQLiteDatabase db = getWritableDatabase();
+////                db.beginTransaction();
+////
+////                try {
+////                    // Clear all existing data
+////                    db.execSQL("DELETE FROM " + TABLE_MEDIA_THEME);
+////                    System.out.println("trying query");
+////                    db.execSQL("DELETE FROM " + TABLE_MEDIA);
+////                    db.execSQL("DELETE FROM " + TABLE_THEME);
+////
+////                    // Reset auto-increment counters
+////                    db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME='" + TABLE_MEDIA + "'");
+////                    db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME='" + TABLE_THEME + "'");
+////                    db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME='" + TABLE_MEDIA_THEME + "'");
+////
+////                    // Maps to keep track of Firebase to SQLite IDs
+////                    Map<String, Long> themeIdMap = new HashMap<>();
+////
+////                    for (DataSnapshot mediaSnapshot : snapshot.getChildren()) {
+////                        // Get media data
+////                        String localFilePath = mediaSnapshot.child("localFilePath").getValue(String.class);
+////                        String description = mediaSnapshot.child("description").getValue(String.class);
+////                        String type = mediaSnapshot.child("type").getValue(String.class);
+////
+////                        // Download the file if it doesn't exist locally
+////                        System.out.println("trying download");
+////                        File localFile = new File(localFilePath);
+////                        if (!localFile.exists()) {
+////                            System.out.println("making a new file");
+////                            String firebaseUrl = mediaSnapshot.child("firebaseUrl").getValue(String.class);
+////                            downloadFile(firebaseUrl, localFilePath);
+////                        }
+////
+////                        // Insert media item
+////                        System.out.println("trying insert");
+////                        ContentValues mediaValues = new ContentValues();
+////                        mediaValues.put(KEY_FILE_PATH, localFilePath);
+////                        mediaValues.put(KEY_DESCRIPTION, description);
+////                        mediaValues.put(KEY_TYPE, type);
+////                        long mediaId = db.insert(TABLE_MEDIA, null, mediaValues);
+////
+////                        // Process themes
+////                        DataSnapshot themesSnapshot = mediaSnapshot.child("themes");
+////                        if (themesSnapshot.exists()) {
+////                            for (DataSnapshot themeSnapshot : themesSnapshot.getChildren()) {
+////                                String themeName = themeSnapshot.getValue(String.class);
+////
+////                                // Get or create theme ID
+////                                Long themeId = themeIdMap.get(themeName);
+////                                if (themeId == null) {
+////                                    ContentValues themeValues = new ContentValues();
+////                                    themeValues.put(KEY_THEME_NAME, themeName);
+////                                    themeId = db.insert(TABLE_THEME, null, themeValues);
+////                                    themeIdMap.put(themeName, themeId);
+////                                }
+////
+////                                // Create media-theme association
+////                                ContentValues mtValues = new ContentValues();
+////                                mtValues.put(KEY_MEDIA_ID, mediaId);
+////                                mtValues.put(KEY_THEME_ID, themeId);
+////                                db.insert(TABLE_MEDIA_THEME, null, mtValues);
+////                            }
+////                        }
+////                    }
+////
+////                    db.setTransactionSuccessful();
+////                    callback.onComplete(true, null);
+////
+////                } catch (Exception e) {
+////                    Log.e("DatabaseHelper", "Error in fetchAllFromFirebase: " + e.getMessage());
+////                    callback.onComplete(false, e.getMessage());
+////                } finally {
+////                    db.endTransaction();
+////                }
+////            }
+////
+////            @Override
+////            public void onCancelled(@NonNull DatabaseError error) {
+////                callback.onComplete(false, error.getMessage());
+////            }
+//        });
+//    }
+//
+//    private void downloadFile(String firebaseUrl, String localFilePath) throws Exception {
+//        FirebaseStorage storage = FirebaseStorage.getInstance();
+//        StorageReference fileRef = storage.getReferenceFromUrl(firebaseUrl);
+//
+//        File localFile = new File(localFilePath);
+//        localFile.getParentFile().mkdirs(); // Create directories if they don't exist
+//
+//        // Wait for download to complete
+//        Tasks.await(fileRef.getFile(localFile));
+//    }
+//
+//    public interface FetchCompleteCallback {
+//        void onComplete(boolean success, String error);
+//    }
+
     // Theme class to hold theme information
 //    public static class Theme {
 //        private String name;
@@ -1159,4 +1387,165 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //            return mediaPaths;
 //        }
 //    }
+
+
+    // new fetch with background tasks
+    public void fetchAllFromFirebase(FetchCompleteCallback callback) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        executor.execute(() -> {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference mediaRef = database.getReference("media");
+
+            mediaRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Log.d("Firebase", "Data fetch started");
+                    try {
+                        // Move database operations to background thread
+                        SQLiteDatabase db = getWritableDatabase();
+                        db.beginTransaction();
+
+                        try {
+                            // Clear existing data
+                            db.execSQL("DELETE FROM " + TABLE_MEDIA_THEME);
+                            db.execSQL("DELETE FROM " + TABLE_MEDIA);
+                            db.execSQL("DELETE FROM " + TABLE_THEME);
+                            Log.d("Firebase", "Cleared existing data");
+
+                            // Reset auto-increment counters
+                            db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME='" + TABLE_MEDIA + "'");
+                            db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME='" + TABLE_THEME + "'");
+                            db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME='" + TABLE_MEDIA_THEME + "'");
+                            Log.d("Firebase", "Reset counters");
+
+                            // Track Firebase to SQLite IDs
+                            Map<String, Long> themeIdMap = new HashMap<>();
+
+                            // Process all media items
+                            for (DataSnapshot mediaSnapshot : snapshot.getChildren()) {
+                                String localFilePath = mediaSnapshot.child("localFilePath").getValue(String.class);
+                                String description = mediaSnapshot.child("description").getValue(String.class);
+                                String type = mediaSnapshot.child("type").getValue(String.class);
+
+                                // Validate data
+                                if (localFilePath == null || type == null) {
+                                    Log.e("Firebase", "Invalid data in Firebase: missing required fields");
+                                    continue;
+                                }
+
+                                // Handle file download
+                                File localFile = new File(localFilePath);
+                                if (!localFile.exists()) {
+                                    Log.d("Firebase", "Downloading file: " + localFilePath);
+                                    String firebaseUrl = mediaSnapshot.child("firebaseUrl").getValue(String.class);
+                                    if (firebaseUrl != null) {
+                                        try {
+                                            downloadFile(firebaseUrl, localFilePath, type, handler, callback);
+                                            Log.d("Firebase", "File downloaded successfully");
+                                        } catch (Exception e) {
+                                            Log.e("Firebase", "Error downloading file: " + e.getMessage());
+                                            continue;
+                                        }
+                                    }
+                                }
+
+                                // Insert media item
+                                ContentValues mediaValues = new ContentValues();
+                                mediaValues.put(KEY_FILE_PATH, localFilePath);
+                                mediaValues.put(KEY_DESCRIPTION, description);
+                                mediaValues.put(KEY_TYPE, type);
+                                long mediaId = db.insert(TABLE_MEDIA, null, mediaValues);
+                                Log.d("Firebase", "Inserted media item: " + mediaId);
+
+                                // Process themes
+                                DataSnapshot themesSnapshot = mediaSnapshot.child("themes");
+                                if (themesSnapshot.exists()) {
+                                    for (DataSnapshot themeSnapshot : themesSnapshot.getChildren()) {
+                                        String themeName = themeSnapshot.getValue(String.class);
+                                        if (themeName != null) {
+                                            // Get or create theme ID
+                                            Long themeId = themeIdMap.get(themeName);
+                                            if (themeId == null) {
+                                                ContentValues themeValues = new ContentValues();
+                                                themeValues.put(KEY_THEME_NAME, themeName);
+                                                themeId = db.insert(TABLE_THEME, null, themeValues);
+                                                themeIdMap.put(themeName, themeId);
+                                                Log.d("Firebase", "Created new theme: " + themeName);
+                                            }
+
+                                            // Create media-theme association
+                                            ContentValues mtValues = new ContentValues();
+                                            mtValues.put(KEY_MEDIA_ID, mediaId);
+                                            mtValues.put(KEY_THEME_ID, themeId);
+                                            db.insert(TABLE_MEDIA_THEME, null, mtValues);
+                                        }
+                                    }
+                                }
+                            }
+
+                            db.setTransactionSuccessful();
+                            Log.d("Firebase", "Database transaction successful");
+
+                            // Post success on main thread
+                            handler.post(() -> callback.onComplete(true, null));
+
+                        } finally {
+                            db.endTransaction();
+                            executor.shutdown();
+                        }
+
+                    } catch (Exception e) {
+                        Log.e("Firebase", "Error in database operations: " + e.getMessage());
+                        // Post error on main thread
+                        handler.post(() -> callback.onComplete(false, e.getMessage()));
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e("Firebase", "Firebase operation cancelled: " + error.getMessage());
+                    // Post error on main thread
+                    handler.post(() -> callback.onComplete(false, error.getMessage()));
+                    executor.shutdown();
+                }
+            });
+        });
+    }
+
+    private void downloadFile(String firebaseUrl, String localFilePath, String type, Handler handler, FetchCompleteCallback callback) throws Exception {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference fileRef = storage.getReferenceFromUrl(firebaseUrl);
+
+        // Create appropriate directory based on type
+        File baseDir;
+        if ("audio".equals(type)) {
+            baseDir = new File(ctx.getFilesDir(), "audio");
+        } else {
+            baseDir = new File(ctx.getFilesDir(), "images");
+        }
+        baseDir.mkdirs();
+
+        File localFile = new File(localFilePath);
+        localFile.getParentFile().mkdirs();
+
+        // Wait for download and handle progress
+        Tasks.await(fileRef.getFile(localFile)
+                .addOnProgressListener(taskSnapshot -> {
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                    Log.d("Firebase", String.format("Download progress: %.1f%%", progress));
+                    if (progress == 100.0){
+                        Log.d("Firebase", "Download complete");
+                        handler.post(() -> callback.onComplete(true, null));
+                    }
+                })
+                .addOnFailureListener(exception -> {
+                    Log.e("Firebase", "Download failed: " + exception.getMessage());
+                }));
+    }
+
+    public interface FetchCompleteCallback {
+        void onComplete(boolean success, String error);
+    }
 }

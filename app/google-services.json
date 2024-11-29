@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "571655976955",
+    "project_id": "inspired-photon-443121-h6",
+    "storage_bucket": "inspired-photon-443121-h6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:571655976955:android:96280e5af71e0c67193d5e",
+        "android_client_info": {
+          "package_name": "com.example.theremindful2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdNcJwWOiB2NqvDicWlEu-VGB4IsZfyW8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
