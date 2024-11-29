@@ -43,31 +43,41 @@
 
         <ImageButton
             android:id="@+id/backwards"
-            android:layout_width="94dp"
-            android:layout_height="64dp"
+            android:layout_width="67dp"
+            android:layout_height="51dp"
+            android:padding="0dp"
+            android:layout_marginRight="20dp"
+            android:scaleType="fitCenter"
             app:srcCompat="@drawable/backwardsicon"
             android:background="@null"/>
 
         <ImageButton
             android:id="@+id/playicon"
-            android:layout_width="91dp"
-            android:layout_height="75dp"
+            android:layout_width="61dp"
+            android:layout_height="55dp"
+            android:padding="0dp"
+            android:layout_marginRight="20dp"
+            android:scaleType="fitCenter"
             app:srcCompat="@drawable/playicon"
             android:background="@null"
             />
 
         <ImageButton
             android:id="@+id/pause"
-            android:layout_width="91dp"
-            android:layout_height="75dp"
+            android:layout_width="61dp"
+            android:layout_height="55dp"
+            android:padding="0dp"
+            android:scaleType="fitCenter"
             app:srcCompat="@drawable/pauseicon"
             android:background="@null"/>
 
         <ImageButton
             android:id="@+id/skip"
-            android:layout_width="87dp"
-            android:layout_height="61dp"
-            android:layout_marginStart="8dp"
+            android:layout_width="67dp"
+            android:layout_height="51dp"
+            android:layout_marginStart="20dp"
+            android:padding="0dp"
+            android:scaleType="fitCenter"
             app:srcCompat="@drawable/skipicon"
             android:background="@null"/>
     </LinearLayout>
