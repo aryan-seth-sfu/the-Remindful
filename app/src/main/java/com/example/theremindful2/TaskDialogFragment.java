@@ -36,6 +36,36 @@ public class TaskDialogFragment extends DialogFragment {
 
     // List of tasks
     private final String[] tasks = {
+            "Take a picture of something red",
+            "Capture the reflection of yourself in a mirror or water",
+            "Find and photograph your favorite book or magazine",
+            "Take a picture of a cozy corner in your home",
+            "Capture a moment of sunlight streaming through a window",
+            "Photograph something that smells nice, like a flower or candle",
+            "Take a picture of something furry, like a pet or a stuffed animal",
+            "Capture an item that reminds you of a happy memory",
+            "Photograph your favorite piece of clothing",
+            "Find something that makes a soothing sound and take a picture of it",
+            "Take a picture of something you use every day",
+            "Capture an object that has your favorite color",
+            "Take a picture of a pair of shoes or slippers",
+            "Find and photograph something old and meaningful to you",
+            "Capture the cover of your favorite music album or movie",
+            "Take a picture of your favorite mug or glass",
+            "Photograph a piece of art or decoration in your home",
+            "Capture a sunrise or sunset if possible",
+            "Take a picture of something you’ve recently cleaned or organized",
+            "Find and photograph something with an interesting texture",
+            "Capture a memory by taking a picture of your favorite room",
+            "Take a picture of something you’ve written or drawn recently",
+            "Photograph a tool or item you use for cooking or baking",
+            "Take a picture of something you’d give as a gift",
+            "Capture a moment with a friend or family member (with their permission)",
+            "Take a picture of something you’d like to share with someone else",
+            "Find and photograph a clock or watch showing the current time",
+            "Take a picture of something you’ve recently enjoyed eating",
+            "Capture a flower or leaf you find outside",
+            "Photograph an object that you’d like to keep forever",
             "Take a picture of something blue",
             "Capture a smile from a loved one or friend",
             "Photograph your favorite item in the kitchen",
@@ -142,23 +172,64 @@ public class TaskDialogFragment extends DialogFragment {
         }
     }
 
-    private void selectRandomTask() {
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String currentDate = getCurrentDate();
-        String savedDate = sharedPreferences.getString(COMPLETION_DATE_KEY, "");
+    private String selectRandomTask() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("TaskPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        if (!currentDate.equals(savedDate)) {
-            // It's a new day, select a random task
+        // Get today's date as a simple string
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String todayDate = dateFormat.format(new Date());
+
+        // Get the last assigned date and task
+        String lastAssignedDate = sharedPreferences.getString("lastAssignedDate", "");
+        String taskDescription = sharedPreferences.getString("selectedTask", "");
+
+        // If the date has changed or no task is assigned, select a new task
+        if (!todayDate.equals(lastAssignedDate) || taskDescription.isEmpty()) {
+            String[] tasks = {
+                    "Take a picture of something red",
+                    "Capture the reflection of yourself in a mirror or water",
+                    "Find and photograph your favorite book or magazine",
+                    "Take a picture of a cozy corner in your home",
+                    "Capture a moment of sunlight streaming through a window",
+                    "Photograph something that smells nice, like a flower or candle",
+                    "Take a picture of something furry, like a pet or a stuffed animal",
+                    "Capture an item that reminds you of a happy memory",
+                    "Photograph your favorite piece of clothing",
+                    "Find something that makes a soothing sound and take a picture of it",
+                    "Take a picture of something you use every day",
+                    "Capture an object that has your favorite color",
+                    "Take a picture of a pair of shoes or slippers",
+                    "Find and photograph something old and meaningful to you",
+                    "Capture the cover of your favorite music album or movie",
+                    "Take a picture of your favorite mug or glass",
+                    "Photograph a piece of art or decoration in your home",
+                    "Capture a sunrise or sunset if possible",
+                    "Take a picture of something you’ve recently cleaned or organized",
+                    "Find and photograph something with an interesting texture",
+                    "Capture a memory by taking a picture of your favorite room",
+                    "Take a picture of something you’ve written or drawn recently",
+                    "Photograph a tool or item you use for cooking or baking",
+                    "Take a picture of something you’d give as a gift",
+                    "Capture a moment with a friend or family member (with their permission)",
+                    "Take a picture of something you’d like to share with someone else",
+                    "Find and photograph a clock or watch showing the current time",
+                    "Take a picture of something you’ve recently enjoyed eating",
+                    "Capture a flower or leaf you find outside",
+                    "Photograph an object that you’d like to keep forever"
+            };
+
+            // Select a random task
             Random random = new Random();
-            String randomTask = tasks[random.nextInt(tasks.length)];
+            taskDescription = tasks[random.nextInt(tasks.length)];
 
-            // Save the selected task and date
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(SELECTED_TASK_KEY, randomTask);
-            editor.putString(COMPLETION_DATE_KEY, currentDate);
-            editor.putBoolean(TASK_COMPLETED_KEY, false); // Reset task completion
+            // Save the new task and today's date
+            editor.putString("selectedTask", taskDescription);
+            editor.putString("lastAssignedDate", todayDate);
             editor.apply();
         }
+
+        return taskDescription;
     }
 
     private String getSelectedTask() {
