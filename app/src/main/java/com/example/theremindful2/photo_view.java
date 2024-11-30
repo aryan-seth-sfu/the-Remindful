@@ -337,8 +337,8 @@ public class photo_view extends AppCompatActivity{
         // Set up the buttons
         builder.setPositiveButton(getString(R.string.okText), (dialog, which) -> {
             String newTag = input.getText().toString().trim();
-            if (!newTag.isEmpty() && !tagsList.contains(newTag)) {
-                tagsList.add(newTag);
+            if (!newTag.isEmpty() && !selectedTags.contains(newTag)) {
+                selectedTags.add(newTag);
                 saveTagsToPreferences(); // Save the updated tags list
                 Toast.makeText(photo_view.this, getString(R.string.TagAddedSuccess) + newTag, Toast.LENGTH_SHORT).show();
                 showEditDescriptionDialog();
