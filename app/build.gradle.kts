@@ -66,4 +66,5 @@ dependencies {
     implementation(libs.glide)
     annotationProcessor(libs.glideCompiler)
     implementation(libs.mpandroidchart)
+    implementation(libs.work.runtime)
 }
