@@ -135,15 +135,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             try {
                 db.execSQL("ALTER TABLE " + TABLE_MEDIA + " ADD COLUMN " + KEY_LIKES + " INTEGER DEFAULT 0;");
             } catch (Exception e) {
-                Log.e(TAG, "Error adding 'likes' column, recreating table: " + e.getMessage());
-                // Drop the old table and recreate it if adding the column fails
-                recreateMediaTable(db);
+                Log.e(TAG, "Error adding 'likes' column to " + TABLE_MEDIA + ": " + e.getMessage());
+                recreateMediaTable(db); // Recreate table if ALTER fails
             }
         }
 
         if (oldVersion < 3) {
-            db.execSQL(CREATE_MEDIA_THEME_TABLE); // Add media_theme table if not present
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_MEDIA_THEME + " (" +
+                    KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    KEY_MEDIA_ID + " INTEGER, " +
+                    KEY_THEME_ID + " INTEGER, " +
+                    KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+                    "FOREIGN KEY(" + KEY_MEDIA_ID + ") REFERENCES " + TABLE_MEDIA + "(" + KEY_ID + "), " +
+                    "FOREIGN KEY(" + KEY_THEME_ID + ") REFERENCES " + TABLE_THEME + "(" + KEY_ID + ")" +
+                    ");");
         }
+
+        if (oldVersion < 4) {
+            db.execSQL(CREATE_THEME_INTERACTION_TABLE);
+            db.execSQL(CREATE_PHOTO_INTERACTION_TABLE);
+        }
+
+        ensureTablesExist(db); // Ensure all tables exist after upgrades
     }
 
     private void recreateMediaTable(SQLiteDatabase db) {
@@ -151,12 +164,58 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_MEDIA_TABLE);
     }
 
+    private void recreateMediaThemeTable(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEDIA_THEME);
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_MEDIA_THEME + " (" +
+                KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                KEY_MEDIA_ID + " INTEGER, " +
+                KEY_THEME_ID + " INTEGER, " +
+                KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+                "FOREIGN KEY(" + KEY_MEDIA_ID + ") REFERENCES " + TABLE_MEDIA + "(" + KEY_ID + "), " +
+                "FOREIGN KEY(" + KEY_THEME_ID + ") REFERENCES " + TABLE_THEME + "(" + KEY_ID + ")" +
+                ");");
+    }
+
+
     // Ensure all tables exist
     private void ensureTablesExist(SQLiteDatabase db) {
-        db.execSQL(CREATE_MEDIA_TABLE);
-        db.execSQL(CREATE_THEME_TABLE);
-        db.execSQL(CREATE_MEDIA_THEME_TABLE);
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_MEDIA + " (" +
+                KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                KEY_FILE_PATH + " TEXT, " +
+                KEY_DESCRIPTION + " TEXT, " +
+                KEY_TYPE + " TEXT, " +
+                KEY_LIKES + " INTEGER DEFAULT 0, " +
+                KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP" +
+                ");");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_THEME + " (" +
+                KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                KEY_THEME_NAME + " TEXT UNIQUE, " +
+                KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP" +
+                ");");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_MEDIA_THEME + " (" +
+                KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                KEY_MEDIA_ID + " INTEGER, " +
+                KEY_THEME_ID + " INTEGER, " +
+                KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+                "FOREIGN KEY(" + KEY_MEDIA_ID + ") REFERENCES " + TABLE_MEDIA + "(" + KEY_ID + "), " +
+                "FOREIGN KEY(" + KEY_THEME_ID + ") REFERENCES " + TABLE_THEME + "(" + KEY_ID + ")" +
+                ");");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS theme_interaction (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "theme_id INTEGER, " +
+                "interaction_count INTEGER DEFAULT 0, " +
+                "FOREIGN KEY(theme_id) REFERENCES themes(id));");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS photo_interaction (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "media_id INTEGER, " +
+                "interaction_count INTEGER DEFAULT 0, " +
+                "FOREIGN KEY(media_id) REFERENCES media_items(id));");
     }
+
 
     // Add a new media item
     public long addMediaItem(String filePath, String description, String type) {
