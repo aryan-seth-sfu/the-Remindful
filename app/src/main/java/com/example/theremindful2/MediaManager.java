@@ -171,7 +171,7 @@ public class MediaManager {
     }
 
     // Add an image with multiple themes
-    public void addImage(Uri sourceUri, List<String> themes, String description) {
+    public boolean addImage(Uri sourceUri, List<String> themes, String description) {
 
 
         if (db.addImage(context, sourceUri, themes, description)) {
@@ -179,6 +179,7 @@ public class MediaManager {
         } else {
             Log.e("MediaManager", "Error adding image");
         }
+        return false;
     }
 
     // Add audio file

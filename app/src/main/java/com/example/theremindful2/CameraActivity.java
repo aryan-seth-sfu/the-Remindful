@@ -1,7 +1,9 @@
 package com.example.theremindful2;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,11 +32,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 public class CameraActivity extends AppCompatActivity {
     private static final String TAG = "CameraActivity";
+    private static final String PREFS_NAME = "MyPrefsFile";
     private PreviewView previewView;
     private ImageView capturedImageView;
     private ImageCapture imageCapture;
@@ -44,6 +49,10 @@ public class CameraActivity extends AppCompatActivity {
     private ProcessCameraProvider cameraProvider;
     private CameraSelector cameraSelector;
     private boolean isBackCamera = true;
+    private static final String THEME_DAILY_TASK = "Daily Task";
+    private static final String DESCRIPTION_DAILY_TASK = "This photo was taken from a daily task";
+    private static final String METADATA_FILE_NAME = "themes_metadata.json";
+    private static final String IMAGES_METADATA_FILE_NAME = "image_only_metadata.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,6 +184,9 @@ public class CameraActivity extends AppCompatActivity {
                     getContentResolver().openOutputStream(uri).write(Files.readAllBytes(photoFile.toPath()));
                 }
                 Toast.makeText(this, getString(R.string.PhotoSavedToAlbumSuccess), Toast.LENGTH_SHORT).show();
+
+                // Save theme and description
+                saveThemeAndDescription(photoFile.getAbsolutePath(), THEME_DAILY_TASK, DESCRIPTION_DAILY_TASK);
             } catch (IOException e) {
                 Toast.makeText(this, getString(R.string.SavingPhotoToAlbumError), Toast.LENGTH_SHORT).show();
             }
@@ -183,11 +195,31 @@ public class CameraActivity extends AppCompatActivity {
         // Ensure the photo file path is passed back
         Intent resultIntent = new Intent();
         resultIntent.putExtra(getString(R.string.PhotoPath), photoFile.getAbsolutePath());
+        SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+        editor.putString("lastPhotoPath", photoFile.getAbsolutePath());
+        editor.apply();
         setResult(RESULT_OK, resultIntent);
         finish();
     }
 
+    private void saveThemeAndDescription(String imagePath, String theme, String description) {
+        // Use MediaManager to save theme and description
+        MediaManager mediaManager = new MediaManager(this);
+        Uri imageUri = Uri.fromFile(new File(imagePath));
+        ArrayList<String> tags = new ArrayList<>(Collections.singletonList(theme));
 
+        // Save the image and its metadata
+        boolean success = mediaManager.addImage(imageUri, tags, description);
+
+        if (success) {
+            Log.d(TAG, "Image saved successfully with theme and description");
+        } else {
+            Log.e(TAG, "Failed to save image with theme and description");
+        }
+
+        // Notify the system that a new image is available
+        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, imageUri));
+    }
 
     private void switchCamera() {
         // Toggle the camera mode
