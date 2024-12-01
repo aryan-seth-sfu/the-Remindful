@@ -16,7 +16,7 @@ public class TimeChangeReceiver extends BroadcastReceiver {
         // Re-schedule the notification
         long currentTimeMillis = System.currentTimeMillis();
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 20); // Set to 8 PM
+        calendar.set(Calendar.HOUR_OF_DAY, 13); // Set to 8 PM
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
 
