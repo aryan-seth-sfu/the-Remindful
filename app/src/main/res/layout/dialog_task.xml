@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/taskContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -8,38 +9,37 @@
 
     <!-- Task description centered and larger -->
     <TextView
-        android:id="@+id/taskTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Take a picture of a flower"
-        android:textSize="20sp"
-        android:textColor="@android:color/black"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:paddingBottom="24dp" />
+    android:id="@+id/taskTextView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textSize="20sp"
+    android:textColor="@android:color/black"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:paddingBottom="24dp" />
 
     <!-- Horizontal layout for the buttons -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center">
 
-        <!-- "Do it later" button on the left -->
-        <Button
-            android:id="@+id/doItLaterButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Do it later" />
+<!-- "Do it later" button on the left -->
+<Button
+    android:id="@+id/doItLaterButton"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:text="Do it later" />
 
-        <!-- "Okay!" button on the right -->
-        <Button
-            android:id="@+id/okayButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Okay!"
-            android:layout_marginStart="16dp" />
+<!-- "Okay!" button on the right -->
+<Button
+    android:id="@+id/okayButton"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:text="Okay!"
+    android:layout_marginStart="16dp" />
     </LinearLayout>
 </LinearLayout>

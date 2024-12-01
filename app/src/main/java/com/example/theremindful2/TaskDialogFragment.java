@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +17,8 @@ import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.text.SimpleDateFormat;
@@ -74,8 +77,7 @@ public class TaskDialogFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_task, null);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-        builder.setView(view)
-                .setTitle(getString(R.string.todaysTask));
+        builder.setView(view).setTitle(getString(R.string.todaysTask));
 
         taskText = view.findViewById(R.id.taskTextView);
         doItLaterButton = view.findViewById(R.id.doItLaterButton);
@@ -83,6 +85,10 @@ public class TaskDialogFragment extends DialogFragment {
 
         if (isTaskCompletedToday()) {
             taskText.setText(getString(R.string.taskText));
+            String photoPath = getLastPhotoPath();
+            if (photoPath != null) {
+                displayPhoto(photoPath, view); // Pass the inflated view
+            }
             hideButtons();
         } else {
             selectRandomTask();
@@ -93,6 +99,11 @@ public class TaskDialogFragment extends DialogFragment {
         okayButton.setOnClickListener(v -> handleCameraPermission());
 
         return builder.create();
+    }
+
+    private String getLastPhotoPath() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString("lastPhotoPath", null);
     }
 
     private void handleCameraPermission() {
@@ -125,18 +136,47 @@ public class TaskDialogFragment extends DialogFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(TASK_COMPLETED_KEY, true);
-            editor.putString(COMPLETION_DATE_KEY, getCurrentDate());
-            editor.apply();
 
-            if (taskText != null) {
-                taskText.setText(getString(R.string.taskText));
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            String photoPath = data.getStringExtra(getString(R.string.PhotoPath));
+
+            if (photoPath != null) {
+                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(TASK_COMPLETED_KEY, true);
+                editor.putString(COMPLETION_DATE_KEY, getCurrentDate());
+                editor.putString("lastPhotoPath", photoPath);
+                editor.apply();
+
+                // Dismiss the current dialog
+                dismiss();
+
+                // Recreate a new dialog instance
+                new TaskDialogFragment().show(requireActivity().getSupportFragmentManager(), "TaskDialogFragment");
             }
+        }
+    }
 
-            hideButtons();
+
+
+
+
+
+    private void displayPhoto(String photoPath, View dialogView) {
+        ImageView photoImageView = new ImageView(requireContext());
+        photoImageView.setImageURI(Uri.parse(photoPath));
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.setMargins(0, 16, 0, 16);
+        photoImageView.setLayoutParams(layoutParams);
+        photoImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+        LinearLayout taskContainer = dialogView.findViewById(R.id.taskContainer);
+        if (taskContainer != null) {
+            taskContainer.addView(photoImageView, 0); // Add the photo at the top
         }
     }
 
@@ -147,34 +187,26 @@ public class TaskDialogFragment extends DialogFragment {
         }
     }
 
-    private String selectRandomTask() {
+    private void selectRandomTask() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        // Get today's date as a simple string
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String todayDate = dateFormat.format(new Date());
 
-        // Get the last assigned date and task
         String lastAssignedDate = sharedPreferences.getString("lastAssignedDate", "");
         String taskDescription = sharedPreferences.getString("selectedTask", "");
 
-        // If the date has changed or no task is assigned, select a new task
         if (!todayDate.equals(lastAssignedDate) || taskDescription.isEmpty()) {
-            // Select a random task from the list
             Random random = new Random();
             taskDescription = tasks[random.nextInt(tasks.length)];
 
-            // Save the new task and today's date in SharedPreferences
             editor.putString("selectedTask", taskDescription);
             editor.putString("lastAssignedDate", todayDate);
             editor.putBoolean(TASK_COMPLETED_KEY, false); // Reset task completion state
             editor.apply();
         }
-
-        return taskDescription;
     }
-
 
     private String getSelectedTask() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -123,21 +124,48 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     private void showSatisfactionDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.SatifactionDialogTitle))
-                .setPositiveButton(getString(R.string.SatifactionDialogPosButton), (dialog, which) -> saveImageToAlbum(photoFile))
-                .setNegativeButton(getString(R.string.SatifactionDialogRetake), (dialog, which) -> {
-                    // Allow the user to retake the photo
-                    dialog.dismiss();
-                })
-                .show();
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_satisfaction, null);
+
+        ImageView imageView = dialogView.findViewById(R.id.capturedImageView);
+        imageView.setImageURI(photoUri); // Display the captured photo
+
+        AlertDialog dialog = new AlertDialog.Builder(this, R.style.WhiteDialog)
+                .setView(dialogView)
+                .setPositiveButton(getString(R.string.SatifactionDialogPosButton), (dialog1, which) -> saveImageToAlbum(photoFile))
+                .setNegativeButton(getString(R.string.SatifactionDialogRetake), (dialog12, which) -> dialog12.dismiss())
+                .create();
+
+        dialog.show();
+
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+
+        // Apply custom background
+        positiveButton.setBackgroundResource(R.drawable.button_background);
+        positiveButton.setTextSize(14f); // Slightly larger text size
+        positiveButton.setPadding(16, 8, 16, 8); // Reasonable padding
+
+        negativeButton.setBackgroundResource(R.drawable.button_background);
+        negativeButton.setTextSize(14f); // Slightly larger text size
+        negativeButton.setPadding(16, 8, 16, 8); // Reasonable padding
+
+        // Set a fixed height
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                (int) (35 * getResources().getDisplayMetrics().density) // Convert dp to px
+        );
+        params.setMargins(8, 4, 8, 4); // Moderate spacing between buttons
+        positiveButton.setLayoutParams(params);
+        negativeButton.setLayoutParams(params);
     }
+
+
 
     private void saveImageToAlbum(File photoFile) {
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.DISPLAY_NAME, photoFile.getName());
-        values.put(MediaStore.Images.Media.MIME_TYPE, getString(R.string.MIME_TYPE));
-        values.put(MediaStore.Images.Media.RELATIVE_PATH, getString(R.string.RELATIVE_PATH));
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Reminiscences");
 
         Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
@@ -148,19 +176,18 @@ public class CameraActivity extends AppCompatActivity {
                 }
                 Toast.makeText(this, getString(R.string.PhotoSavedToAlbumSuccess), Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
-                Log.e(TAG, getString(R.string.SavingPhotoToAlbumError), e);
-                Toast.makeText(this, getString(R.string.SavingPhotoError), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.SavingPhotoToAlbumError), Toast.LENGTH_SHORT).show();
             }
-        } else {
-            Toast.makeText(this, getString(R.string.SavingPhotoToAlbumError), Toast.LENGTH_SHORT).show();
         }
 
-        // Return the file path to TaskDialogFragment
+        // Ensure the photo file path is passed back
         Intent resultIntent = new Intent();
         resultIntent.putExtra(getString(R.string.PhotoPath), photoFile.getAbsolutePath());
         setResult(RESULT_OK, resultIntent);
         finish();
     }
+
+
 
     private void switchCamera() {
         // Toggle the camera mode

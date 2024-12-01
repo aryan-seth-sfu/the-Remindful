@@ -9,4 +9,9 @@
         <item name="colorAccent">@color/teal_200</item>
     </style>
 
+    <style name="WhiteDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.6</item>
+    </style>
 </resources>

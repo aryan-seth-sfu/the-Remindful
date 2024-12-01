@@ -37,7 +37,7 @@
     <string name="DateFormat">yyyyMMdd_HHmmss</string>
     <string name="beginningImageFileName">IMG_</string>
     <string name="PhotoCaptureError">Photo capture failed: </string>
-    <string name="SatifactionDialogTitle">Are you satisfied with this photo?</string>
+    <string name="SatifactionDialogTitle">Photo Taken!</string>
     <string name="SatifactionDialogPosButton">Yes</string>
     <string name="SatifactionDialogRetake">Retake</string>
     <string name="MIME_TYPE">image/jpeg</string>
@@ -84,4 +84,7 @@
     <string name="cameraPermissionRequired">Camera permission is required to take a picture</string>
     <string name="TakeAPictureText">Take a picture of something interesting!</string>
     <string name="simpleDateFormat">yyyyMMdd</string>
+    <string name="SatifactionDialogMessage">Are you satisfied with this photo?</string>
+    <string name="capturedImageDesc">Captured photo</string>
+
 </resources>
